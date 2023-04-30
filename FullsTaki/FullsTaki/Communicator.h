@@ -1,7 +1,16 @@
 #pragma once
+#include <iostream>
+#include <exception>
 #include <map>
 #include <windows.h>
-#include "RequestHandlerFactory.h"
+//#include "RequestHandlerFactory.h"
+#include "IRequestHandler.h"
+
+#define PORT_NUM 80
+
+using std::cout;
+using std::endl;
+
 class Communicator
 {
 public:
@@ -12,6 +21,6 @@ public:
 	void handleNewClient(SOCKET);
 private:
 	SOCKET m_serverSocket;
-	map<SOCKET, IRequestHandler*> m_clients;
+	std::map<SOCKET, IRequestHandler*> m_clients;
 	SOCKET m_serverSocket;
 };
