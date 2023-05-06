@@ -5,10 +5,7 @@
 
 Communicator::Communicator()
 {
-	// this server use TCP. that why SOCK_STREAM & IPPROTO_TCP
-	// if the server use UDP we will use: SOCK_DGRAM & IPPROTO_UDP
-	this->m_serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-
+	m_serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (m_serverSocket == INVALID_SOCKET)
 		throw std::exception(__FUNCTION__ " - socket");
 }
@@ -30,32 +27,37 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 	std::cout << "Client accepted !" << std::endl;
 	std::string msg = "HELLO";
 	bool active = true;
+	bool alrin = true;
 	try
 	{
 		int code = 0;
 		int size = 0;
 
+		while (active) {
+			char* data = new char[msg.length() + 1];
+			int res = recv(clientSocket, data, msg.length() + 1, 0);
+			if (res == INVALID_SOCKET)
+			{
+				std::string s = "Error while recieving from socket: ";
+				throw std::exception(s.c_str());
+			}
+			data[msg.length()] = 0;
+			std::string received(data);
+			if (msg != received)
+			{
+				std::string s = "Not HELLO";
+				throw std::exception(s.c_str());
+			}
+			if (alrin) {
+				this->m_clients.insert(std::pair<SOCKET, IRequestHandler*>(clientSocket, new IRequestHandler()));
+				alrin = false;
+			}
+			const char* _data = msg.c_str();
 
-		char* data = new char[msg.length() + 1];
-		int res = recv(clientSocket, data, msg.length() + 1, 0);
-		if (res == INVALID_SOCKET)
-		{
-			std::string s = "Error while recieving from socket: ";
-			throw std::exception(s.c_str());
-		}
-		data[msg.length()] = 0;
-		std::string received(data);
-		if (msg != received)
-		{
-			std::string s = "Not HELLO";
-			throw std::exception(s.c_str());
-		}
-		this->m_clients.insert(std::pair<SOCKET, IRequestHandler*>(clientSocket, new IRequestHandler()));
-		const char* _data = msg.c_str();
-
-		if (send(clientSocket, _data, msg.size(), 0) == INVALID_SOCKET)
-		{
-			throw std::exception("Error while sending message to client");
+			if (send(clientSocket, _data, msg.size(), 0) == INVALID_SOCKET)
+			{
+				throw std::exception("Error while sending message to client");
+			}
 		}
 	}
 	catch (const std::exception& e)
@@ -75,24 +77,17 @@ void Communicator::bindAndListen()
 	sa.sin_addr.s_addr = INADDR_ANY;  // when there are few ip's for the machine. We will use always "INADDR_ANY"
 
 	// Connects between the socket and the configuration (port and etc..)
-	if (bind(m_serverSocket, (struct sockaddr*)&sa, sizeof(sa)) == SOCKET_ERROR) {
+	if (bind(this->m_serverSocket, (struct sockaddr*)&sa, sizeof(sa)) == SOCKET_ERROR)
 		throw std::exception(__FUNCTION__ " - bind");
-	}
-
+	std::cout << "binded" << std::endl;
 	// Start listening for incoming requests of clients
-	if (listen(m_serverSocket, SOMAXCONN) == SOCKET_ERROR) {
+	if (listen(this->m_serverSocket, SOMAXCONN) == SOCKET_ERROR)
 		throw std::exception(__FUNCTION__ " - listen");
-	}
-
 	std::cout << "Listening on port " << PORT_NUM << std::endl;
 }
 
 void Communicator::startHandleRequests() 
 {
-	struct sockaddr_in sa = { 0 };
-	sa.sin_port = htons(PORT_NUM); // port that server will listen for
-	sa.sin_family = AF_INET;   // must be AF_INET
-	sa.sin_addr.s_addr = INADDR_ANY;    // when there are few ip's for the machine. We will use always "INADDR_ANY"
 	bindAndListen();
 	while (true)
 	{
