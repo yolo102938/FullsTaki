@@ -45,7 +45,7 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 			std::string received(data);
 			if (msg != received)
 			{
-				std::string s = "Not HELLO";
+				std::string s = "Not HELLO but "+received;
 				throw std::exception(s.c_str());
 			}
 			if (alrin) {
@@ -62,8 +62,9 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "Exception was catched in function communicator. socket = " << clientSocket << ", what = " << e.what() << std::endl;
+		std::cout << "Exception was catched in function communicator. socket = " << clientSocket << ", what = " << e.what() << "\n Logging out."<<std::endl;
 		closesocket(clientSocket);
+		m_clients.erase(clientSocket);
 	}
 
 }
