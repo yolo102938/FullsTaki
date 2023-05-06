@@ -21,7 +21,7 @@ def test_server(ip, port):
             print("The server is working as expected.")
         else:
             print("The server is not working as expected. Received:", response)
-        time.sleep(1)
+        time.sleep(4)
     # Close the socket
     client_socket.close()
 

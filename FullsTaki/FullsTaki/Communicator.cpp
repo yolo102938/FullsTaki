@@ -62,7 +62,7 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "Exception was catched in function communicator. socket = " << clientSocket << ", what = " << e.what() << "\n Logging out."<<std::endl;
+		std::cout << "Exception was catched in function communicator. socket = " << clientSocket << ", what = " << e.what() << "\n Logging out." <<std::endl;
 		closesocket(clientSocket);
 		m_clients.erase(clientSocket);
 	}
