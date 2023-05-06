@@ -3,24 +3,23 @@
 #include <exception>
 #include <map>
 #include <windows.h>
+#include <thread>
 //#include "RequestHandlerFactory.h"
 #include "IRequestHandler.h"
 
-#define PORT_NUM 80
+#define PORT_NUM 888
 
-using std::cout;
-using std::endl;
+
 
 class Communicator
 {
-public:
-	Communicator();
-	~Communicator();
-	void startHandleRequests();
-	void bindAndListen();
-	void handleNewClient(SOCKET);
-private:
-	SOCKET m_serverSocket;
-	std::map<SOCKET, IRequestHandler*> m_clients;
-	SOCKET m_serverSocket;
+	public:
+		Communicator();
+		~Communicator();
+		void startHandleRequests();
+		void bindAndListen();
+		void handleNewClient(SOCKET);
+	private:
+		SOCKET m_serverSocket;
+		std::map<SOCKET, IRequestHandler*> m_clients;
 };
