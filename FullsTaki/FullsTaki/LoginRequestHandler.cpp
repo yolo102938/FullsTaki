@@ -27,5 +27,6 @@ RequestResult LoginRequestHandler::handleRequest(const RequestInfo request, cons
 		ErrorResponse res = { e.what() };
 		return { JsonResponsePacketSerializer::serializeResponse(res), nullptr };
 	}
+	return{ JsonResponsePacketSerializer::serializeResponse(LoginResponse {0}), nullptr};
 }
 

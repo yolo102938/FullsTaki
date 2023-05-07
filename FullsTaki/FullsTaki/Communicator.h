@@ -3,6 +3,7 @@
 //#include "RequestHandlerFactory.h"
 #include "IRequestHandler.h"
 #include "LoginRequestHandler.h"
+#include "JsonRequestPacketDeserializer.h"
 #define PORT_NUM 888
 
 
