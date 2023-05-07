@@ -130,28 +130,21 @@
     <ClCompile Include="Communicator.cpp" />
     <ClCompile Include="IRequestHandler.cpp" />
     <ClCompile Include="JsonResponsePacketSerializer.cpp" />
+    <ClCompile Include="RequestHandlerFactory.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="WSAInitializer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Communicator.h" />
-<<<<<<< HEAD
-<<<<<<< HEAD
     <ClInclude Include="json.hpp" />
     <ClInclude Include="JsonResponsePacketSerializer.h" />
-=======
-    <ClInclude Include="WSAInitializer.h" />
-    <ClInclude Include="incs.h" />
->>>>>>> 599f936599dcd8ec057eb52e2edb88100e348009
-=======
-    <ClInclude Include="WSAInitializer.h" />
-    <ClInclude Include="incs.h" />
->>>>>>> da51ba872a0ed8ecbc830415d1d94e619524b4dc
-    <ClInclude Include="LoginRequestHandler.h" />
-    <ClInclude Include="IRequestHandler.h" />
     <ClInclude Include="RequestTypes.hpp" />
     <ClInclude Include="ResponseTypes.hpp" />
+    <ClInclude Include="WSAInitializer.h" />
+    <ClInclude Include="incs.h" />
+    <ClInclude Include="LoginRequestHandler.h" />
+    <ClInclude Include="IRequestHandler.h" />
     <ClInclude Include="Server.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
