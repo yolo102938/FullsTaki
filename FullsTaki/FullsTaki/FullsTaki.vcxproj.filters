@@ -27,7 +27,11 @@
     <ClCompile Include="Server.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="JsonResponsePacketSerializer.cpp">
+=======
+    <ClCompile Include="WSAInitializer.cpp">
+>>>>>>> 599f936599dcd8ec057eb52e2edb88100e348009
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -44,6 +48,7 @@
     <ClInclude Include="LoginRequestHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="JsonResponsePacketSerializer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -54,6 +59,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RequestTypes.hpp">
+=======
+    <ClInclude Include="incs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WSAInitializer.h">
+>>>>>>> 599f936599dcd8ec057eb52e2edb88100e348009
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
