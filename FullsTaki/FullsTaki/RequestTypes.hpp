@@ -1,5 +1,6 @@
 #pragma once
-#include "IRequestHandler.h"
+#include <vector>
+//#include "IRequestHandler.h"
 #include <iostream>
 #include <string>
 
@@ -9,18 +10,18 @@ using std::string;
 
 #define SIGNUP_REQUEST 100
 #define LOGIN_REQUEST 101
-
+class IRequestHandler;
 typedef struct RequestInfo
 {
 	int id;
 	time_t receivalTime;
-	vector<byte> buffer;
+	std::vector<unsigned char> buffer;
 } RequestInfo;
 
 typedef struct RequestResult
 {
-	vector<char> response;
-	IRequestHandler* newHandler;
+	std::vector<char> response;
+	IRequestHandler *newHandler;
 } RequestResult;
 
 typedef struct SignupRequest

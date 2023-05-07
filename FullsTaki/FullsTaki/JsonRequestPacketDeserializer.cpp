@@ -6,7 +6,7 @@ The function extracts json data from the given buffer, parses it and initializes
 Input: const vector<byte>& buffer (A vector of unsigned chars containing the serialized data).
 Output: A SignupRequest object with the deserialized data.
 */
-SignupRequest JsonRequestPacketDeserializer::deserializeSignupRequest(const vector<byte>& buffer)
+SignupRequest JsonRequestPacketDeserializer::deserializeSignupRequest(const std::vector<unsigned char>& buffer)
 {
     //parsing json data from the buffer to a json object.
     json jsonData = parseJson(buffer);
@@ -20,7 +20,7 @@ The function extracts json data from the given buffer, parses it and initializes
 Input: const vector<byte>& buffer (A vector of unsigned chars containing the serialized data).
 Output: A LoginRequest object with the deserialized data.
 */
-LoginRequest JsonRequestPacketDeserializer::deserializeLoginRequest(const vector<byte>& buffer)
+LoginRequest JsonRequestPacketDeserializer::deserializeLoginRequest(const std::vector<unsigned char>& buffer)
 {
     //parsing json data from the buffer to a json object.
     json jsonData = parseJson(buffer);
@@ -35,7 +35,7 @@ and then parses the data into a json object.
 Input: const vector<byte>& buffer (A vector of unsigned chars containing the serialized data).
 Output: A json object parsed from the given buffer.
 */
-json JsonRequestPacketDeserializer::parseJson(const vector<byte>& buffer)
+json JsonRequestPacketDeserializer::parseJson(const vector<unsigned char>& buffer)
 {
 	string data(buffer.begin(), buffer.end()); //creating a string with the buffer's data.
 	data = data.substr(data.find('{')); //locating the first '{' to get only the json data.

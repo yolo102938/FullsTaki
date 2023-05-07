@@ -21,10 +21,10 @@ class JsonRequestPacketDeserializer
 
 public:
 
-	static LoginRequest deserializeLoginRequest(const vector<byte>& buffer);
+	static LoginRequest deserializeLoginRequest(const std::vector<unsigned char>& buffer);
 
-	static SignupRequest deserializeSignupRequest(const vector<byte>& buffer);
+	static SignupRequest deserializeSignupRequest(const std::vector<unsigned char>& buffer);
 
 private:
-	static json parseJson(const vector<byte>& buffer);
+	static json parseJson(const std::vector<unsigned char>& buffer);
 };

@@ -2,7 +2,6 @@
 #include "Communicator.h"
 
 
-
 Communicator::Communicator()
 {
 	m_serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -49,7 +48,7 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 				throw std::exception(s.c_str());
 			}
 			if (alrin) {
-				this->m_clients.insert(std::pair<SOCKET, IRequestHandler*>(clientSocket, new IRequestHandler()));
+				this->m_clients.insert(std::pair<SOCKET, IRequestHandler*>(clientSocket, new LoginRequestHandler()));
 				alrin = false;
 			}
 			const char* _data = msg.c_str();
