@@ -1,6 +1,7 @@
 #pragma once
 #include "RequestTypes.hpp"
 #include <WinSock2.h>
+#include "incs.h"
 
 using std::exception;
 
