@@ -50,21 +50,22 @@ Output: vector<char> response (A response packet as a vector of chars).
 vector<char> JsonResponsePacketSerializer::responseBuilder(const int resStatusCode, const string sData)
 {
 	vector<char> response;
-
-	//adding the status code (casted to unsigned char) as the first byte of the response vector.
-	response.push_back(static_cast<unsigned char>(resStatusCode));
+	//adding the status code (casted to char) as the first byte of the response vector.
+	
+	int resultCode = static_cast<int>(resStatusCode);
+	resultCode = htonl(resultCode);
+	const char* resCode = reinterpret_cast<const char*>(&resultCode);
+	response.insert(response.end(),resCode, resCode + sizeof(resultCode));
 
 	//converting the length of the json data into a 4 byte data and adding it to the response vector.
-	const int len = sData.size();
-	for (int i = 0; i < 4; i++)
-	{
-		//converting to hexadecimal and pushing to the response vector (took this line's algorithm from the web).
-		response.push_back(static_cast<unsigned char>((len >> ((3 - i) * 8)) & 0xFF));
-	}
+	
+	int resultLen = static_cast<int>(sData.size());
+	resultLen = htonl(resultLen);
+	const char* resLen = (reinterpret_cast<const char*>(&(resultLen)));
+	response.insert(response.end(), resLen, resLen + sizeof(resultLen));
 
 	//adding the json data to the response packet.
 	response.insert(response.end(), sData.begin(), sData.end());
-
 	//returning the response packet.
 	return response;
 }

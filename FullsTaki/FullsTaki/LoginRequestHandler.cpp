@@ -2,22 +2,27 @@
 
 bool LoginRequestHandler::isRequestRelevant(const RequestInfo request) const
 {
+	std::cout << request.id;
 	return (request.id == LOGIN_REQUEST) || (request.id == SIGNUP_REQUEST); //checking if the request is for login/signup processing.
 }
 
 
 RequestResult LoginRequestHandler::handleRequest(const RequestInfo request, const SOCKET socket) const
 {
+	LoginResponse res = { 0 };//temp, will delete before returning
 	try
 	{
 		if (request.id == LOGIN_REQUEST)
 		{
-			//LOGIN - TODO IN A LATER VERSION
+			JsonRequestPacketDeserializer::deserializeLoginRequest(request.buffer).print();//temp for v2
+			LoginResponse res = { LOGIN_RESPONSE};
 		}
 
 		else if (request.id == SIGNUP_REQUEST)
 		{
-			//SIGNUP - TODO IN A LATER VERSION
+			JsonRequestPacketDeserializer::deserializeSignupRequest(request.buffer).print();//temp for v2
+			SignupResponse res = { SIGNUP_RESPONSE };
+
 		}
 	}
 
@@ -27,6 +32,6 @@ RequestResult LoginRequestHandler::handleRequest(const RequestInfo request, cons
 		ErrorResponse res = { e.what() };
 		return { JsonResponsePacketSerializer::serializeResponse(res), nullptr };
 	}
-	return{ JsonResponsePacketSerializer::serializeResponse(LoginResponse {0}), nullptr};
+	return { JsonResponsePacketSerializer::serializeResponse(res), nullptr };
 }
 

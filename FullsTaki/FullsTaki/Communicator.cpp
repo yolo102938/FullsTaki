@@ -26,55 +26,6 @@ Communicator::~Communicator()
 	}
 	catch (...) {}
 }
-/*
-void Communicator::handleNewClient(SOCKET clientSocket)
-{
-
-	std::cout << "Client accepted !" << std::endl;
-	std::string msg = "HELLO";
-	bool active = true;
-	bool alrin = true;
-	try
-	{
-		int code = 0;
-		int size = 0;
-
-		while (active) {
-			char* data = new char[msg.length() + 1];
-			int res = recv(clientSocket, data, msg.length() + 1, 0);
-			if (res == INVALID_SOCKET)
-			{
-				std::string s = "Error while recieving from socket: ";
-				throw std::exception(s.c_str());
-			}
-			data[msg.length()] = 0;
-			std::string received(data);
-			if (msg != received)
-			{
-				std::string s = "Not HELLO but " + received;
-				throw std::exception(s.c_str());
-			}
-			if (alrin) {
-				this->m_clients.insert(std::pair<SOCKET, IRequestHandler*>(clientSocket, new LoginRequestHandler()));
-				alrin = false;
-			}
-			const char* _data = msg.c_str();
-
-			if (send(clientSocket, _data, msg.size(), 0) == INVALID_SOCKET)
-			{
-				throw std::exception("Error while sending message to client");
-			}
-		}
-	}
-	catch (const std::exception& e)
-	{
-		std::cout << "Exception was catched in function communicator. socket = " << clientSocket << ", what = " << e.what() << "\n Logging out." << std::endl;
-		closesocket(clientSocket);
-		m_clients.erase(clientSocket);
-	}
-
-}
-*/
 void Communicator::handleNewClient(SOCKET socketClient)
 {
 	//Notifying that a new client has been accepted
@@ -95,7 +46,7 @@ void Communicator::handleNewClient(SOCKET socketClient)
 			{
 				sendError(socketClient); //sending an error if the request code is not received correctly
 			}
-
+			requestCode = ntohl(requestCode);
 			//Ensuring the received request code is either LOGIN_REQUEST or SIGNUP_REQUEST if the client is not logged in
 			if (requestCode != LOGIN_REQUEST && requestCode != SIGNUP_REQUEST && !isLoggedIn)
 			{
@@ -107,7 +58,7 @@ void Communicator::handleNewClient(SOCKET socketClient)
 			{
 				sendError(socketClient); //sending an error if the message size is not received correctly
 			}
-
+			msgSize = ntohl(msgSize);
 			//Creating a buffer to store the received data and receive the data
 			std::vector<unsigned char> bufferData(msgSize);
 			if (recv(socketClient, reinterpret_cast<char*>(bufferData.data()), msgSize, 0) != msgSize)
@@ -135,15 +86,10 @@ void Communicator::handleNewClient(SOCKET socketClient)
 				//Processing the received request and obtaining the result
 				RequestResult reqResult = this->m_clients[socketClient]->handleRequest(reqInfo, socketClient);
 
-				//Sending the response size
-				int resSize = static_cast<int>(reqResult.response.size());
-				if (send(socketClient, reinterpret_cast<const char*>(&resSize), sizeof(resSize), 0) != sizeof(resSize))
-				{
-					sendError(socketClient); //sending an error if the response size is not sent correctly
-				}
+				
 
 				//Sending the response data
-				if (send(socketClient, reqResult.response.data(), resSize, 0) != resSize)
+				if (send(socketClient,reqResult.response.data(), reqResult.response.size(), 0) == SOCKET_ERROR)
 				{
 					sendError(socketClient); //sending an error if the response data is not sent correctly
 				}
@@ -179,7 +125,7 @@ void Communicator::bindAndListen()
 	std::cout << "Listening on port " << PORT_NUM << std::endl;
 }
 
-void Communicator::startHandleRequests() 
+void Communicator::startHandleRequests()
 {
 	bindAndListen();
 	while (true)
