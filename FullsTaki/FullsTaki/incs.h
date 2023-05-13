@@ -3,6 +3,8 @@
 #pragma comment (lib, "ws2_32.lib")
 #include <WinSock2.h>
 #include <Windows.h>
+#include <vector>
+#include <cstring>
 
 
 #include <vector>
@@ -21,4 +23,5 @@
 #include <chrono>
 #include <Windows.h>
 #include <exception>
+#include <vector>
 
