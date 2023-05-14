@@ -39,6 +39,9 @@
     <ClCompile Include="Source.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SqliteDatabase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IRequestHandler.h">
@@ -72,6 +75,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Server.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IDatabase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SqliteDatabase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
