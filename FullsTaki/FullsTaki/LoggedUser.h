@@ -4,7 +4,7 @@
 class LoggedUser
 {
 public:
-
+	LoggedUser(string username);
 	string getUsername() const;
 
 private:
