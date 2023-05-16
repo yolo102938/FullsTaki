@@ -71,7 +71,7 @@ bool SqliteDataBase::open()
 
 	if (doesFileExist == -1) //if the database file was created only now, setting the content tables.
 	{
-		return !(!executeQuery("CREATE TABLE IF NOT EXISTS USERS (PASSWORD TEXT PRIMARY KEY AUTOINCREMENT NOT NULL, USERNAME TEXT NOT NULL, EMAIL TEXT NOT NULL);"));
+		return !(!executeQuery("CREATE TABLE IF NOT EXISTS USERS (USERNAME TEXT PRIMARY KEY AUTOINCREMENT NOT NULL, PASSWORD TEXT NOT NULL, EMAIL TEXT NOT NULL);"));
 	}
 	return true; //if everything went well, and the database was created and set-up or opend, returning true.
 }
