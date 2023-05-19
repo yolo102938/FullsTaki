@@ -58,7 +58,6 @@ vector<char> JsonResponsePacketSerializer::responseBuilder(const int resStatusCo
 	response.insert(response.end(),resCode, resCode + sizeof(resultCode));
 
 	//converting the length of the json data into a 4 byte data and adding it to the response vector.
-	
 	int resultLen = static_cast<int>(sData.size());
 	resultLen = htonl(resultLen);
 	const char* resLen = (reinterpret_cast<const char*>(&(resultLen)));

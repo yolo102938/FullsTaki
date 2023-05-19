@@ -1,5 +1,9 @@
 #include "LoginRequestHandler.h"
 
+LoginRequestHandler::LoginRequestHandler(RequestHandlerFactory& factory) :
+	IRequestHandler(), m_handlerFactory(factory), m_loginManager(factory.getLoginManager())
+{}
+
 bool LoginRequestHandler::isRequestRelevant(const RequestInfo request) const
 {
 	std::cout << request.id;
@@ -7,7 +11,7 @@ bool LoginRequestHandler::isRequestRelevant(const RequestInfo request) const
 }
 
 
-RequestResult LoginRequestHandler::handleRequest(const RequestInfo request, const SOCKET socket) const
+RequestResult LoginRequestHandler::handleRequest(const RequestInfo request) const
 {
 	LoginResponse res = { 0 };//temp, will delete before returning
 	try
@@ -35,3 +39,19 @@ RequestResult LoginRequestHandler::handleRequest(const RequestInfo request, cons
 	return { JsonResponsePacketSerializer::serializeResponse(res), nullptr };
 }
 
+RequestResult LoginRequestHandler::login(const RequestInfo request) const
+{
+	LoginRequest req = JsonRequestPacketDeserializer::deserializeLoginRequest(request.buffer);
+	this->m_loginManager.login(req.username, req.password);
+	LoginResponse res = { LOGIN_RESPONSE };
+	return { JsonResponsePacketSerializer::serializeResponse(res), /*LATER VERSION: forwarding menu handler after login i guess*/};
+}
+
+
+RequestResult LoginRequestHandler::signup(const RequestInfo request) const
+{
+	SignupRequest req = JsonRequestPacketDeserializer::deserializeSignupRequest(request.buffer);
+	this->m_loginManager.signup(req.username, req.password, req.email);
+	SignupResponse res = { SIGNUP_RESPONSE };
+	return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory.createLoginRequestHandler() };
+}
