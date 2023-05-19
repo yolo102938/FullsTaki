@@ -48,7 +48,7 @@ void Communicator::handleNewClient(SOCKET socketClient)
 			if (!isLoggedIn)
 			{
 				this->m_clients.insert(std::pair<SOCKET, IRequestHandler*>(socketClient, m_handlerFactory.createLoginRequestHandler()));
-				isLoggedIn = false;
+				isLoggedIn = true;
 			}
 			
 			//Receiving the request code

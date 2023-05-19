@@ -16,30 +16,29 @@ bool LoginRequestHandler::isRequestRelevant(const RequestInfo request) const
 
 RequestResult LoginRequestHandler::handleRequest(const RequestInfo request) const
 {
-	LoginResponse res = { 0 };//temp, will delete before returning
+	RequestResult res;//temp, will delete before returning
 	try
 	{
 		if (request.id == LOGIN_REQUEST)
 		{
 			JsonRequestPacketDeserializer::deserializeLoginRequest(request.buffer).print();//temp for v2
-			LoginResponse res = { LOGIN_RESPONSE};
+			res = this->login(request);
 		}
 
 		else if (request.id == SIGNUP_REQUEST)
 		{
 			JsonRequestPacketDeserializer::deserializeSignupRequest(request.buffer).print();//temp for v2
-			SignupResponse res = { SIGNUP_RESPONSE };
-
+			res = this->signup(request);
 		}
 	}
 
 	//if an error occured, returning a RequestResult with the error's info.
 	catch (exception& e)
 	{
-		ErrorResponse res = { e.what() };
-		return { JsonResponsePacketSerializer::serializeResponse(res), nullptr };
+		ErrorResponse err = { e.what() };
+		return { JsonResponsePacketSerializer::serializeResponse(err), (IRequestHandler*)this };
 	}
-	return { JsonResponsePacketSerializer::serializeResponse(res), nullptr };
+	return res;
 }
 
 RequestResult LoginRequestHandler::login(const RequestInfo request) const
