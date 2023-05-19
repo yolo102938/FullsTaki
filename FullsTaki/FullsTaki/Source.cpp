@@ -1,12 +1,18 @@
 #pragma comment(lib, "ws2_32.lib")
 #include "WSAInitializer.h"
 #include "Server.h"
-int main(int argc, char** argv) {
+#include "SqliteDataBase.h"
+#include "IDatabase.h"
+int main(int argc, char** argv)
+{
 
 	WSAInitializer wsaInit;
-	try {
-		Server srvr; //server setup
-		srvr.run();//start running
+	try 
+	{
+		SqliteDataBase* db;
+		db->open();
+		Server* srvr = new Server(db); //server setup
+		srvr->run();//start running
 	}
 	catch (const std::exception& e)
 	{

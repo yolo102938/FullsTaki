@@ -71,12 +71,12 @@ void Communicator::handleNewClient(SOCKET socketClient)
 			//If the client is not logged in, creating a new LoginRequestHandler instance and adding it to the clients map
 			if (!isLoggedIn)
 			{
-				this->m_clients.insert(std::pair<SOCKET, IRequestHandler*>(socketClient, new LoginRequestHandler()));
+				this->m_clients.insert(std::pair<SOCKET, IRequestHandler*>(socketClient, new LoginRequestHandler((m_handlerFactory))));
 				isLoggedIn = false;
 			}
 			else //If the client is logged in, updating the existing LoginRequestHandler instance
 			{
-				m_clients[socketClient] = new LoginRequestHandler();
+				m_clients[socketClient] = new LoginRequestHandler(m_handlerFactory);
 			}
 
 			//Creating a RequestInfo object to store the received request information
@@ -86,7 +86,7 @@ void Communicator::handleNewClient(SOCKET socketClient)
 			if (this->m_clients[socketClient]->isRequestRelevant(reqInfo))
 			{
 				//Processing the received request and obtaining the result
-				RequestResult reqResult = this->m_clients[socketClient]->handleRequest(reqInfo, socketClient);
+				RequestResult reqResult = this->m_clients[socketClient]->handleRequest(reqInfo);
 
 				
 
