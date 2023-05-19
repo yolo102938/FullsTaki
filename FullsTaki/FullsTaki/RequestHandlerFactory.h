@@ -4,12 +4,22 @@
 #include "LoginRequestHandler.h"
 #include "IDatabase.h"
 
+class LoginRequestHandler;
+
 class RequestHandlerFactory
 {
 public:
+
+	RequestHandlerFactory(IDatabase* database);
+
+	~RequestHandlerFactory();
+
 	LoginRequestHandler* createLoginRequestHandler();
+
 	LoginManager& getLoginManager();
+
 	IDatabase* getDataBase();
+
 private:
 	LoginManager m_loginManager;
 	IDatabase* m_database;

@@ -1,5 +1,13 @@
 #include "LoginManager.h"
 
+LoginManager::LoginManager(IDatabase* database) : m_database(database)
+{}
+
+LoginManager::~LoginManager()
+{
+	this->m_loggedUsers.clear();
+}
+
 void LoginManager::signup(const string username, const string password, const string email)
 {
 	if (this->m_database->doesUserExist(username))

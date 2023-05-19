@@ -14,11 +14,11 @@ using std::endl;
 class SqliteDataBase : public IDatabase
 {
 public:
-	bool doesUserExist(const string username) override;
-	bool doesPasswordMatch(const string username, const string password) override;
-	void addNewUser(const string username, const string password, const string email) override;
-	bool open() override;
-	void close() override;
+	virtual bool doesUserExist(const string username) override;
+	virtual bool doesPasswordMatch(const string username, const string password) override;
+	virtual void addNewUser(const string username, const string password, const string email) override;
+	virtual bool open() override;
+	virtual void close() override;
 private:
 	bool executeQuery(const string query);
 	bool executeQueryWithCallback(const string query, const int callbackID, void* data);

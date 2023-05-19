@@ -8,6 +8,10 @@ class LoginManager
 {
 public:
 
+	LoginManager(IDatabase* database);
+
+	~LoginManager();
+
 	void signup(const string username, const string password, const string email);
 
 	void login(const string username, const string password);

@@ -9,11 +9,13 @@ void sendError(SOCKET clientSocket) {
 	throw std::exception("Bad costumer");
 }
 
-Communicator::Communicator()
+Communicator::Communicator(RequestHandlerFactory& factory) : m_handlerFactory(factory)
 {
 	m_serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (m_serverSocket == INVALID_SOCKET)
+	{
 		throw std::exception(__FUNCTION__ " - socket");
+	}
 }
 
 Communicator::~Communicator()
@@ -41,6 +43,14 @@ void Communicator::handleNewClient(SOCKET socketClient)
 		//Continuously process incoming messages in a loop while the connection is active
 		while (isActive)
 		{
+
+			//If the client is not logged in, creating a new LoginRequestHandler instance and adding it to the clients map
+			if (!isLoggedIn)
+			{
+				this->m_clients.insert(std::pair<SOCKET, IRequestHandler*>(socketClient, m_handlerFactory.createLoginRequestHandler()));
+				isLoggedIn = false;
+			}
+			
 			//Receiving the request code
 			if (recv(socketClient, reinterpret_cast<char*>(&requestCode), sizeof(requestCode), 0) != sizeof(requestCode))
 			{
@@ -66,16 +76,6 @@ void Communicator::handleNewClient(SOCKET socketClient)
 				sendError(socketClient); //sending an error if the data is not received correctly
 			}
 
-			//If the client is not logged in, creating a new LoginRequestHandler instance and adding it to the clients map
-			if (!isLoggedIn)
-			{
-				this->m_clients.insert(std::pair<SOCKET, IRequestHandler*>(socketClient, new LoginRequestHandler()));
-				isLoggedIn = false;
-			}
-			else //If the client is logged in, updating the existing LoginRequestHandler instance
-			{
-				m_clients[socketClient] = new LoginRequestHandler();
-			}
 
 			//Creating a RequestInfo object to store the received request information
 			RequestInfo reqInfo = { requestCode, std::time(nullptr), bufferData };
@@ -84,15 +84,15 @@ void Communicator::handleNewClient(SOCKET socketClient)
 			if (this->m_clients[socketClient]->isRequestRelevant(reqInfo))
 			{
 				//Processing the received request and obtaining the result
-				RequestResult reqResult = this->m_clients[socketClient]->handleRequest(reqInfo, socketClient);
-
-				
+				RequestResult reqResult = this->m_clients[socketClient]->handleRequest(reqInfo);
 
 				//Sending the response data
 				if (send(socketClient,reqResult.response.data(), reqResult.response.size(), 0) == SOCKET_ERROR)
 				{
 					sendError(socketClient); //sending an error if the response data is not sent correctly
 				}
+
+				this->m_clients[socketClient] = reqResult.newHandler;
 			}
 			else
 			{
@@ -134,6 +134,8 @@ void Communicator::startHandleRequests()
 		SOCKET client_socket = accept(m_serverSocket, NULL, NULL);
 		if (client_socket == INVALID_SOCKET)
 			throw std::exception(__FUNCTION__);
+		LoginRequestHandler* clientHandler = m_handlerFactory.createLoginRequestHandler();
+		m_clients.insert(std::pair<SOCKET, IRequestHandler*>(client_socket, clientHandler));
 		std::thread handler(&Communicator::handleNewClient, this, client_socket);
 		handler.detach();
 	}

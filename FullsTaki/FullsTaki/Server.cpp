@@ -1,16 +1,12 @@
 #pragma once
 #include "Server.h"
 
-Server::Server()
-{
-
-	//m_communicator =  Communicator();
-}
+Server::Server(IDatabase* database) : 
+	m_database(database), m_handlerFactory(RequestHandlerFactory(database)), m_communicator(Communicator(m_handlerFactory))
+{}
 
 Server::~Server()
-{
-
-}
+{}
 
 void Server::run()
 {
