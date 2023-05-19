@@ -5,6 +5,8 @@
 #include "RequestTypes.hpp"
 #include "RequestHandlerFactory.h"
 
+class RequestHandlerFactory;
+
 class LoginRequestHandler : public IRequestHandler
 {
 public:

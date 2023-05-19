@@ -9,10 +9,10 @@ int main(int argc, char** argv)
 	WSAInitializer wsaInit;
 	try 
 	{
-		SqliteDataBase* db;
+		SqliteDataBase* db = new SqliteDataBase();
 		db->open();
-		Server* srvr = new Server(db); //server setup
-		srvr->run();//start running
+		Server srvr(db); //server setup
+		srvr.run();//start running
 	}
 	catch (const std::exception& e)
 	{
