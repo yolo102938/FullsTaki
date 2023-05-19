@@ -4,6 +4,9 @@ LoginRequestHandler::LoginRequestHandler(RequestHandlerFactory& factory) :
 	IRequestHandler(), m_handlerFactory(factory), m_loginManager(factory.getLoginManager())
 {}
 
+LoginRequestHandler::~LoginRequestHandler()
+{}
+
 bool LoginRequestHandler::isRequestRelevant(const RequestInfo request) const
 {
 	std::cout << request.id;

@@ -9,11 +9,13 @@ void sendError(SOCKET clientSocket) {
 	throw std::exception("Bad costumer");
 }
 
-Communicator::Communicator()
+Communicator::Communicator(RequestHandlerFactory& factory) : m_handlerFactory(factory)
 {
 	m_serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (m_serverSocket == INVALID_SOCKET)
+	{
 		throw std::exception(__FUNCTION__ " - socket");
+	}
 }
 
 Communicator::~Communicator()
@@ -134,6 +136,8 @@ void Communicator::startHandleRequests()
 		SOCKET client_socket = accept(m_serverSocket, NULL, NULL);
 		if (client_socket == INVALID_SOCKET)
 			throw std::exception(__FUNCTION__);
+		LoginRequestHandler* clientHandler = m_handlerFactory.createLoginRequestHandler();
+		m_clients.insert(std::pair<SOCKET, IRequestHandler*>(client_socket, clientHandler));
 		std::thread handler(&Communicator::handleNewClient, this, client_socket);
 		handler.detach();
 	}

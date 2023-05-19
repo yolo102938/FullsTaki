@@ -5,14 +5,16 @@
 #include "RequestTypes.hpp"
 #include "RequestHandlerFactory.h"
 
-class LoginRequestHandler :public IRequestHandler
+class LoginRequestHandler : public IRequestHandler
 {
 public:
 	LoginRequestHandler(RequestHandlerFactory& factory);
 
-	bool isRequestRelevant(const RequestInfo request) const override;
+	~LoginRequestHandler();
 
-	RequestResult handleRequest(const RequestInfo request) const override;
+	virtual bool isRequestRelevant(const RequestInfo request) const override;
+
+	virtual RequestResult handleRequest(const RequestInfo request) const override;
 
 	RequestResult login(const RequestInfo request) const;
 
