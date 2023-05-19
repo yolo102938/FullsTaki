@@ -17,7 +17,7 @@ typedef struct RoomData
 class Room
 {
 public:
-
+	Room(RoomData metadata, LoggedUser user) { m_metadata = metadata; m_users.push_back(user); }
 	void addUser(LoggedUser);
 	void removeUser(LoggedUser);
 	vector<string> getAllUsers();

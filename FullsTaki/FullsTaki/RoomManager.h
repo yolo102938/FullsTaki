@@ -16,5 +16,5 @@ public:
 	Room& getRoom(int ID);
 
 private:
-	map<roomID, Room> m_rooms;
+	std::map<int, Room> m_rooms;
 };
