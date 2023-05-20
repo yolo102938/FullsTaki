@@ -1,22 +1,25 @@
 #pragma once
 #include "RoomManager.h"
 #include "RequestHandlerFactory.h"
-class MenuRequestHandler {
+class RequestHandlerFactory;
+class MenuRequestHandler : public IRequestHandler {
     public:
-        bool isRequestRelevant(RequestInfo request);
-        RequestResult handleRequest(RequestInfo request);
-        //constructor
-        MenuRequestHandler(LoggedUser* user,RoomManager* roomManager,RoomManager* statsManager,RequestHandlerFactory* handlerFactory) : m_user(user), m_roomManager(roomManager),/* m_statisticsManager(statsManager),*/ m_handlerFactory(handlerFactory) {}
+        virtual bool isRequestRelevant(const RequestInfo request) const override;
+        virtual RequestResult handleRequest(const RequestInfo request) const override;
+        //constructor                                                                                                                                                                                                                                           /* m_statisticsManager(statsManager),*/
+        MenuRequestHandler(LoggedUser* user,RoomManager* roomManager,RoomManager* statsManager,RequestHandlerFactory* handlerFactory,LoginManager* loginManager):
+          IRequestHandler(),m_handlerFactory(handlerFactory),m_user(user),m_roomManager(roomManager),m_loginManager(loginManager){}
     private:
-        RequestResult signout(RequestInfo request);
-        RequestResult getRooms(RequestInfo request);
-        RequestResult getPlayersInRoom(RequestInfo request);
-        RequestResult getPersonalStats(RequestInfo request);
-        RequestResult getHighScore(RequestInfo request);
-        RequestResult joinRoom(RequestInfo request);
-        RequestResult createRoom(RequestInfo request);
+        RequestResult signout(RequestInfo request) const;
+        RequestResult getRooms(RequestInfo request) const;
+        RequestResult getPlayersInRoom(RequestInfo request) const;
+        RequestResult getPersonalStats(RequestInfo request) const;
+        RequestResult getHighScore(RequestInfo request) const;
+        RequestResult joinRoom(RequestInfo request) const;
+        RequestResult createRoom(RequestInfo request) const;
         LoggedUser* m_user;
         RoomManager* m_roomManager;
+        LoginManager* m_loginManager; //hpw am i supposed to logout without this
         RequestHandlerFactory* m_handlerFactory;
         //StatisticsManager* m_statisticsManager;
 

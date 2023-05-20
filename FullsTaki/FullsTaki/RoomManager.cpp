@@ -2,7 +2,7 @@
 
 void RoomManager::createRoom(LoggedUser user, RoomData data)
 {
-    m_rooms[data.id] = Room(data, user);;
+    m_rooms[data.id] = Room(data, user);
 }
 
 void RoomManager::deleteRoom(int ID)
