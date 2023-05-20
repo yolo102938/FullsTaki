@@ -1,11 +1,9 @@
 #pragma once
-
+#include "ServerData.h"
 #include "IRequestHandler.h"
 #include "LoginRequestHandler.h"
 #include "JsonRequestPacketDeserializer.h"
 
-#define PORT_NUM 888
-#define IP_ADDR "1.1.1.1"
 
 using std::map;
 
