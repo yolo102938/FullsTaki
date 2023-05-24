@@ -27,5 +27,10 @@ namespace GUI
         {
 
         }
+
+        private void name_label_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

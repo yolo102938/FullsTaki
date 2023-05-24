@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GUI.Forms;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -16,10 +17,17 @@ namespace GUI
         {
             InitializeComponent();
         }
-
+        public MainMenu(string name)
+        {
+            InitializeComponent(name);
+        }
         private void button1_Click(object sender, EventArgs e)
         {
-
+            //ohad backend goes here
+            Rooms menu = new Rooms();
+            this.Hide();
+            menu.Show();
+            //else MessageBox.Show(errormsg.tostring);
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -38,6 +46,21 @@ namespace GUI
         }
 
         private void button4_Click(object sender, EventArgs e)
+        {
+
+            //ohad backend goes here
+            Login menu = new Login();
+            this.Hide();
+            menu.Show();
+            //else MessageBox.Show(errormsg.tostring);
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void MainMenu_Load(object sender, EventArgs e)
         {
 
         }
