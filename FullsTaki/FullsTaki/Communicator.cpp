@@ -96,7 +96,12 @@ void Communicator::handleNewClient(SOCKET socketClient)
 			}
 			else
 			{
-				std::cout << "Not Relevant\n"; //printing a message if the received request is not relevant
+				ErrorResponse res{ "Not Relevant" };
+				//Sending the response data
+				if (send(socketClient, reinterpret_cast<char*>(JsonResponsePacketSerializer::serializeResponse(res).data()), JsonResponsePacketSerializer::serializeResponse(res).size(), 0) == SOCKET_ERROR)
+				{
+					sendError(socketClient); //sending an error if the response data is not sent correctly
+				}
 			}
 		}
 	}
