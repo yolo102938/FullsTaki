@@ -1,6 +1,6 @@
 #include "SqliteDatabase.h"
 
-int usersCallback(void* _data, int argc, char** argv, char** azColName)
+static int usersCallback(void* _data, int argc, char** argv, char** azColName)
 {
 	auto& usersList = *static_cast<std::list<string>*>(_data);
 	string username = "";
@@ -16,7 +16,7 @@ int usersCallback(void* _data, int argc, char** argv, char** azColName)
 }
 
 
-int passwordsCallback(void* _data, int argc, char** argv, char** azColName)
+static int passwordsCallback(void* _data, int argc, char** argv, char** azColName)
 {
 	auto& password = *static_cast<string*>(_data);
 
@@ -32,7 +32,7 @@ bool SqliteDataBase::doesUserExist(const string username)
 	users.clear();
 
 	string query = "SELECT USERNAME FROM USERS WHERE USERNAME = '" + username + "';";
-	executeQueryWithCallback(query, USERS_CALLBACK, &users);
+	executeQueryWithCallback(query, usersCallback, &users);
 
 	return !users.empty();
 }
@@ -40,10 +40,10 @@ bool SqliteDataBase::doesUserExist(const string username)
 bool SqliteDataBase::doesPasswordMatch(const string username, const string password)
 {
 	string userPassword;
-
+	
 	string query = "SELECT PASSWORD FROM USERS WHERE USERNAME = '" + username + "';";
 	executeQueryWithCallback(query, PASSWORDS_CALLBACK, &userPassword);
-
+	std::cout << userPassword + " real->" + password;
 	return userPassword == password;
 }
 

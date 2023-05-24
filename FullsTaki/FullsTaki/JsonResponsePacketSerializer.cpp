@@ -43,6 +43,87 @@ vector<char> JsonResponsePacketSerializer::serializeResponse(const SignupRespons
 }
 
 /*
+Function serializes a LogoutResponse object into a json formatted vector of characters.
+Input: const LogoutResponse response (A LogoutResponse object).
+Output: vector<char> response (A serialized json response as a vector of chars).
+*/
+vector<char> JsonResponsePacketSerializer::serializeResponse(const LogoutResponse response)
+{
+	json sData = { {"status", response.status} };
+
+	return responseBuilder(response.status, sData.dump());
+}
+
+/*
+Function serializes a JoinRoomResponse object into a json formatted vector of characters.
+Input: const JoinRoomResponse response (A JoinRoomResponse object).
+Output: vector<char> response (A serialized json response as a vector of chars).
+*/
+vector<char> JsonResponsePacketSerializer::serializeResponse(const JoinRoomResponse response)
+{
+	json sData = { {"status", response.status} };
+
+	return responseBuilder(response.status, sData.dump());
+}
+
+/*
+Function serializes a GetPlayersInRoomResponse object into a json formatted vector of characters.
+Input: const GetPlayersInRoomResponse response (A GetPlayersInRoomResponse object).
+Output: vector<char> response (A serialized json response as a vector of chars).
+*/
+vector<char> JsonResponsePacketSerializer::serializeResponse(const GetPlayersInRoomResponse response)
+{
+	json sData = { {"players", response.players} };
+
+	return responseBuilder(GENERIC_OK, sData.dump());  // Assuming a SUCCESS_RESPONSE constant for successful responses
+}
+
+/*
+Function serializes a CreateRoomResponse object into a json formatted vector of characters.
+Input: const CreateRoomResponse response (A CreateRoomResponse object).
+Output: vector<char> response (A serialized json response as a vector of chars).
+*/
+vector<char> JsonResponsePacketSerializer::serializeResponse(const CreateRoomResponse response)
+{
+	json sData = { {"status", response.status} };
+
+	return responseBuilder(response.status, sData.dump());
+}
+
+/*
+Function serializes a GetRoomsResponse object into a json formatted vector of characters.
+Input: const GetRoomsResponse response (A GetRoomsResponse object).
+Output: vector<char> response (A serialized json response as a vector of chars).
+*/
+vector<char> JsonResponsePacketSerializer::serializeResponse(const GetRoomsResponse response)
+{
+	// Assuming RoomData can be converted directly to a json object
+	json rooms = json::array();
+	for (const auto& room : response.rooms)
+	{
+		rooms.push_back({"id", room.id,"name",room.name,"max_players",room.maxPlayers,"q_number",room.numOfQuestionsInGame,"time_per_q",room.timePerQuestion,"is_active",room.isActive});
+	}
+
+	json sData = { {"status", response.status}, {"rooms", rooms} };
+
+	return responseBuilder(response.status, sData.dump());
+}
+
+/*
+Function serializes a getHighScoreResponse object into a json formatted vector of characters.
+Input: const getHighScoreResponse response (A getHighScoreResponse object).
+Output: vector<char> response (A serialized json response as a vector of chars).
+*/
+vector<char> JsonResponsePacketSerializer::serializeResponse(const getHighScoreResponse response)
+{
+	json sData = { {"status", response.status}, {"statistics", response.statistics} };
+
+	return responseBuilder(response.status, sData.dump());
+}
+
+
+
+/*
 Function constructs a response packet using a response status code and serialized json data.
 Input: const int resStatusCode (The status code of the response), const string sData (The serialized json data as a string).
 Output: vector<char> response (A response packet as a vector of chars).

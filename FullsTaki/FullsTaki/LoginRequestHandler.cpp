@@ -21,22 +21,22 @@ RequestResult LoginRequestHandler::handleRequest(const RequestInfo request) cons
 	{
 		if (request.id == LOGIN_REQUEST)
 		{
-			JsonRequestPacketDeserializer::deserializeLoginRequest(request.buffer).print();//temp for v2
-			res = this->login(request);
+			
+			res = login(request);
 		}
 
 		else if (request.id == SIGNUP_REQUEST)
 		{
-			JsonRequestPacketDeserializer::deserializeSignupRequest(request.buffer).print();//temp for v2
-			res = this->signup(request);
+			res = signup(request);
+
 		}
 	}
 
 	//if an error occured, returning a RequestResult with the error's info.
 	catch (exception& e)
 	{
-		ErrorResponse err = { e.what() };
-		return { JsonResponsePacketSerializer::serializeResponse(err), (IRequestHandler*)this };
+		ErrorResponse res = { e.what() };
+		return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory.createLoginRequestHandler() };
 	}
 	return res;
 }
@@ -46,13 +46,14 @@ RequestResult LoginRequestHandler::login(const RequestInfo request) const
 	LoginRequest req = JsonRequestPacketDeserializer::deserializeLoginRequest(request.buffer);
 	this->m_loginManager.login(req.username, req.password);
 	LoginResponse res = { LOGIN_RESPONSE };
-	return { JsonResponsePacketSerializer::serializeResponse(res), /*LATER VERSION: forwarding menu handler after login i guess*/};
+	return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory.createMenuRequestHandler(new LoggedUser{req.username})};
 }
 
 
 RequestResult LoginRequestHandler::signup(const RequestInfo request) const
 {
 	SignupRequest req = JsonRequestPacketDeserializer::deserializeSignupRequest(request.buffer);
+	std::cout << req.username, req.password, req.email;
 	this->m_loginManager.signup(req.username, req.password, req.email);
 	SignupResponse res = { SIGNUP_RESPONSE };
 	return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory.createLoginRequestHandler() };

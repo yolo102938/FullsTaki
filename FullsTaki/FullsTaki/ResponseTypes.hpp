@@ -1,14 +1,13 @@
 #pragma once
+#include "ServerData.h"
 #include <iostream>
+#include <vector>
 #include <string>
-
+#include "Room.h"
 using std::cout;
 using std::endl;
 using std::string;
 
-#define ERROR_RESPONSE 100
-#define LOGIN_RESPONSE 101
-#define SIGNUP_RESPONSE 102
 
 typedef struct ErrorResponse
 {
@@ -30,7 +29,6 @@ typedef struct LoginResponse
 	}
 } LoginResponse;
 
-
 typedef struct SignupResponse
 {
 	unsigned int status;
@@ -40,3 +38,29 @@ typedef struct SignupResponse
 		cout << "Response Type: SignupResponse\nStatus: " + status << endl;
 	}
 } SignupResponse;
+
+typedef struct LogoutResponse {
+	unsigned int status;
+} LogoutResponse;
+
+typedef struct JoinRoomResponse {
+	unsigned int status;
+} JoinRoomResponse;
+
+typedef struct GetPlayersInRoomResponse {
+	std::vector<std::string> players;
+} GetPlayersInRoomResponse;
+
+typedef struct CreateRoomResponse {
+	unsigned int status;
+} CreateRoomResponse;
+
+typedef struct GetRoomsResponse {
+	unsigned int status;
+	std::vector<RoomData> rooms;
+} GetRoomsResponse;
+
+typedef struct getHighScoreResponse {
+	unsigned int status;
+	std::vector<std::string> statistics;
+} getHighScoreResponse;

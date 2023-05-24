@@ -2,6 +2,7 @@
 #include "Communicator.h"
 #include "incs.h"
 
+
 class Server
 {
 public:

@@ -14,7 +14,10 @@ LoginRequestHandler* RequestHandlerFactory::createLoginRequestHandler()
 {
     return new LoginRequestHandler(*this);
 }
-
+MenuRequestHandler* RequestHandlerFactory::createMenuRequestHandler(LoggedUser* user)
+{
+    return new MenuRequestHandler(user, &m_roomManager, nullptr, this, &m_loginManager);
+}
 LoginManager& RequestHandlerFactory::getLoginManager()
 {
     return this->m_loginManager;

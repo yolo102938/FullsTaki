@@ -137,12 +137,19 @@
     <ClCompile Include="RequestHandlerFactory.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="RoomManager.cpp" />
+    <ClCompile Include="Room.cpp" />
+    <ClCompile Include="MenuRequestHandler.cpp" />
     <ClCompile Include="sqlite3.c" />
     <ClCompile Include="SqliteDatabase.cpp" />
     <ClCompile Include="WSAInitializer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Communicator.h" />
+    <ClInclude Include="ServerData.h" />
+    <ClInclude Include="MenuRequestHandler.h" />
+    <ClInclude Include="Room.h" />
+    <ClInclude Include="RoomManager.h" />
     <ClInclude Include="IDatabase.h" />
     <ClInclude Include="incs.h" />
     <ClInclude Include="json.hpp" />

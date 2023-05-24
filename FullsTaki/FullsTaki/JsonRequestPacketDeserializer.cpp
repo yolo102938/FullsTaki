@@ -28,6 +28,30 @@ LoginRequest JsonRequestPacketDeserializer::deserializeLoginRequest(const std::v
     return LoginRequest({ jsonData["username"], jsonData["password"] });
 }
 
+GetPlayersInRoomRequest JsonRequestPacketDeserializer::deserializeGetPlayersInRoom(const std::vector<unsigned char>& buffer)
+{
+    //parsing json data from the buffer to a json object.
+    json jsonData = parseJson(buffer);
+    //initializing and returning a SignupRequest object with the extracted data.
+    return GetPlayersInRoomRequest({ jsonData["room_id"]});
+}
+
+JoinRoomRequest JsonRequestPacketDeserializer::deserializeJoinRoom(const std::vector<unsigned char>& buffer)
+{
+    //parsing json data from the buffer to a json object.
+    json jsonData = parseJson(buffer);
+    //initializing and returning a SignupRequest object with the extracted data.
+    return JoinRoomRequest({ jsonData["room_id"] });
+}
+
+CreateRoomRequest JsonRequestPacketDeserializer::deserializeCreateRoom(const std::vector<unsigned char>& buffer)
+{
+    //parsing json data from the buffer to a json object.
+    json jsonData = parseJson(buffer);
+    //initializing and returning a SignupRequest object with the extracted data.
+    return CreateRoomRequest({ jsonData["name"],jsonData["max_users"],jsonData["q_count"],jsonData["answer_time"]});
+}
+
 /*
 Function parses json data from the given buffer.
 The function creates a string from the buffer's data, locates the first '{' to get only the json data,
