@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace GUI.Forms
 {
@@ -63,7 +64,14 @@ namespace GUI.Forms
 
         private void login_button_Click(object sender, EventArgs e)
         {
+            MessageBox.Show("create room" + name_input.Text + " Ohad add server pls");
+        }
 
+        private void Logout_Button_Click(object sender, EventArgs e)
+        {
+            Login menu = new Login();
+            this.Hide();
+            menu.Show();
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 using System;
-
+using GUI.Forms;
 
 namespace GUI
 {
@@ -155,15 +155,18 @@ namespace GUI
 
         private void Signup_Button_Click(object sender, EventArgs e)
         {
-           /*
-             // if code == 101
-                Signup signup_page = new Signup();
-                this.Hide();
-                signup_page.Closed += (s, args) => this.Close(); //https://stackoverflow.com/questions/5548746/c-sharp-open-a-new-form-then-close-the-current-form 
-                signup_page.show();
-            //else MessageBox.Show(errormsg.tostring);
-            */
-        
+            Signup menu = new Signup();
+            this.Hide();
+            menu.Show();
+            /*
+              // if code == 101
+                 Signup signup_page = new Signup();
+                 this.Hide();
+                 signup_page.Closed += (s, args) => this.Close(); //https://stackoverflow.com/questions/5548746/c-sharp-open-a-new-form-then-close-the-current-form 
+                 signup_page.show();
+             //else MessageBox.Show(errormsg.tostring);
+             */
+
         }
         #endregion
 

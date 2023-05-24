@@ -35,13 +35,14 @@ namespace GUI.Forms
             this.components = new System.ComponentModel.Container();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.RoomList = new System.Windows.Forms.ListBox();
-            this.roomsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.button1 = new System.Windows.Forms.Button();
             this.name_label = new System.Windows.Forms.Label();
             this.name_input = new System.Windows.Forms.TextBox();
             this.pass_label = new System.Windows.Forms.Label();
             this.pass_input = new System.Windows.Forms.TextBox();
             this.login_button = new System.Windows.Forms.Button();
+            this.Logout_Button = new System.Windows.Forms.Button();
+            this.roomsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.roomsBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -65,10 +66,6 @@ namespace GUI.Forms
             this.RoomList.Size = new System.Drawing.Size(885, 344);
             this.RoomList.TabIndex = 3;
             this.RoomList.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
-            // 
-            // roomsBindingSource
-            // 
-            this.roomsBindingSource.DataSource = typeof(GUI.Forms.Rooms);
             // 
             // button1
             // 
@@ -125,11 +122,26 @@ namespace GUI.Forms
             this.login_button.Text = "Create Room";
             this.login_button.Click += new System.EventHandler(this.login_button_Click);
             // 
+            // Logout_Button
+            // 
+            this.Logout_Button.Location = new System.Drawing.Point(1053, 24);
+            this.Logout_Button.Name = "Logout_Button";
+            this.Logout_Button.Size = new System.Drawing.Size(136, 55);
+            this.Logout_Button.TabIndex = 10;
+            this.Logout_Button.Text = "Log Out";
+            this.Logout_Button.UseVisualStyleBackColor = true;
+            this.Logout_Button.Click += new System.EventHandler(this.Logout_Button_Click);
+            // 
+            // roomsBindingSource
+            // 
+            this.roomsBindingSource.DataSource = typeof(GUI.Forms.Rooms);
+            // 
             // Rooms
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1231, 622);
+            this.Controls.Add(this.Logout_Button);
             this.Controls.Add(this.name_label);
             this.Controls.Add(this.name_input);
             this.Controls.Add(this.pass_label);
@@ -159,5 +171,6 @@ namespace GUI.Forms
         private System.Windows.Forms.Label pass_label;
         private System.Windows.Forms.TextBox pass_input;
         private System.Windows.Forms.Button login_button;
+        private System.Windows.Forms.Button Logout_Button;
     }
 }
