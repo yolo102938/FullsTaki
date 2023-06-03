@@ -23,11 +23,10 @@ namespace GUI
         }
         private void button1_Click(object sender, EventArgs e)
         {
-            //ohad backend goes here
             Rooms menu = new Rooms();
-            this.Hide();
-            menu.Show();
-            //else MessageBox.Show(errormsg.tostring);
+            Hide();
+            menu.ShowDialog();
+            Show();
         }
 
         private void button2_Click(object sender, EventArgs e)

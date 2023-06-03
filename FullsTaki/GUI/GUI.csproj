@@ -33,8 +33,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Users\test0\Downloads\New folder (2)\Bin\net6.0\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -47,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataTypes\Room.cs" />
+    <Compile Include="Forms\Address.cs" />
     <Compile Include="Forms\Signup.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -71,6 +79,11 @@
     <Compile Include="Forms\Login.Designer.cs">
       <DependentUpon>Login.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Socket.cs" />
+    <Compile Include="Forms\TakiMessage.cs" />
+    <Compile Include="Forms\TakiProtocol.cs" />
+    <Compile Include="Forms\TakiRequest.cs" />
+    <Compile Include="Forms\TakiResponse.cs" />
     <Compile Include="Source.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Forms\Rooms.resx">
@@ -117,6 +130,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="pictures\text logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Newtonsoft.Json.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

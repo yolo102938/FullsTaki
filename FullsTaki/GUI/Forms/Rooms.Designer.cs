@@ -14,7 +14,8 @@ namespace GUI.Forms
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        /// <param .name="disposing<>true if managed resources should be disposed; otherwise, false.</param>
+        /// 
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -69,7 +70,7 @@ namespace GUI.Forms
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(17, 531);
+            this.button1.Location = new System.Drawing.Point(17, 541);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(197, 47);
             this.button1.TabIndex = 4;
@@ -131,10 +132,6 @@ namespace GUI.Forms
             this.Logout_Button.Text = "Log Out";
             this.Logout_Button.UseVisualStyleBackColor = true;
             this.Logout_Button.Click += new System.EventHandler(this.Logout_Button_Click);
-            // 
-            // roomsBindingSource
-            // 
-            this.roomsBindingSource.DataSource = typeof(GUI.Forms.Rooms);
             // 
             // Rooms
             // 

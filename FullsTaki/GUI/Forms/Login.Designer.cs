@@ -1,5 +1,6 @@
 ﻿using System.Windows.Forms;
 using System;
+using TakiClient;
 using GUI.Forms;
 
 namespace GUI
@@ -140,17 +141,21 @@ namespace GUI
         }
         private void Login_Button_Click(object sender, EventArgs e)
         {
-            string username = name_input.Text;
-            string password = pass_input.Text;
+            if (!Source.CheckInput(Controls))
+            {
+                MessageBox.Show("You must fill all fields to continue", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            string sendLoginMsg = TakiProtocol.Login(name_input.Text, pass_input.Text);
+            Socket.SendMsg(sendLoginMsg);
 
-            //ohad backend goes here
-            MessageBox.Show("Login attempt with username: " + username + " Ohad add server pls");
-
-             // if code == 101
-                MainMenu menu = new MainMenu(username);
-                this.Hide();
-                menu.Show();
-            //else MessageBox.Show(errormsg.tostring);
+            string recvLoginMsg = Socket.RecvMsgByResponse((int)TakiResponse.LOGIN);
+            if (recvLoginMsg != null)
+            {
+                MessageBox.Show("Successfully logged in", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Socket.LoggedUser = name_input.Text;
+                Text += Socket.LoggedUserFormatted;
+            }
         }
 
         private void Signup_Button_Click(object sender, EventArgs e)
