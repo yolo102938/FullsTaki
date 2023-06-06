@@ -19,4 +19,7 @@ class Communicator
 		SOCKET m_serverSocket;
 		map<SOCKET, IRequestHandler*> m_clients;
 		RequestHandlerFactory& m_handlerFactory;
+		int GetMsgCode(const SOCKET socket) const;
+		int GetDataLength(const SOCKET socket) const;
+		vector<unsigned char> GetMsgData(const SOCKET socket, const int length) const;
 };

@@ -16,9 +16,9 @@ public:
 	~RequestHandlerFactory();
 
 	LoginRequestHandler* createLoginRequestHandler();
+
 	MenuRequestHandler* createMenuRequestHandler(LoggedUser* user);
 	                    
-
 	LoginManager& getLoginManager();
 
 	IDatabase* getDataBase();

@@ -1,7 +1,6 @@
 #pragma once
 #include "ServerData.h"
 #include <vector>
-//#include "IRequestHandler.h"
 #include <iostream>
 #include <string>
 
@@ -11,6 +10,7 @@ using std::string;
 
 
 class IRequestHandler;
+
 typedef struct RequestInfo
 {
 	int id;

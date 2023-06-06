@@ -1,13 +1,14 @@
 ﻿using System.Windows.Forms;
 using System;
 using TakiClient;
-using GUI.Forms;
+using System.Runtime;
+using GUI;
 
-namespace GUI
+namespace GUI.Forms
 {
-    partial class Login
+    public partial class Login : Form
     {
-        
+
         private Label name_label;
         private Label pass_label;
         private TextBox name_input;
@@ -146,8 +147,8 @@ namespace GUI
                 MessageBox.Show("You must fill all fields to continue", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            string sendLoginMsg = TakiProtocol.Login(name_input.Text, pass_input.Text);
-            Socket.SendMsg(sendLoginMsg);
+            string sendLoginMsg = TakiClient.TakiProtocol.Login(name_input.Text, pass_input.Text);
+            TakiClient.Socket.SendMsg(sendLoginMsg);
 
             string recvLoginMsg = Socket.RecvMsgByResponse((int)TakiResponse.LOGIN);
             if (recvLoginMsg != null)
@@ -155,6 +156,9 @@ namespace GUI
                 MessageBox.Show("Successfully logged in", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 Socket.LoggedUser = name_input.Text;
                 Text += Socket.LoggedUserFormatted;
+                MainMenu mainM = new MainMenu(name_input.Text);
+                this.Hide();
+                mainM.Show();
             }
         }
 
@@ -163,15 +167,6 @@ namespace GUI
             Signup menu = new Signup();
             this.Hide();
             menu.Show();
-            /*
-              // if code == 101
-                 Signup signup_page = new Signup();
-                 this.Hide();
-                 signup_page.Closed += (s, args) => this.Close(); //https://stackoverflow.com/questions/5548746/c-sharp-open-a-new-form-then-close-the-current-form 
-                 signup_page.show();
-             //else MessageBox.Show(errormsg.tostring);
-             */
-
         }
         #endregion
 

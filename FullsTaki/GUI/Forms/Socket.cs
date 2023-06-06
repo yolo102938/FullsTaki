@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Windows.Forms;
 using GUI.Forms;
+using GUI;
 
 namespace TakiClient
 {
@@ -20,7 +21,7 @@ namespace TakiClient
 
         public static bool Connected { get; set; }
 
-        public static Address ServerAddress { get; } = new Address(ConfigurationManager.AppSettings["server_ip"], int.Parse(ConfigurationManager.AppSettings["port"]));
+        public static Address ServerAddress { get; } = new TakiClient.Address("127.0.01", 888);
 
         static Socket()
         {
@@ -79,13 +80,19 @@ namespace TakiClient
             do
             {
                 recvMsg = RecvMsg();
-                response = new TakiMessage(recvMsg);
-                if (response.Code == (int)TakiResponse.ERROR)
+                try
                 {
-                    MessageBox.Show(TakiProtocol.FormatResponseByMessage(recvMsg), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    response = new TakiMessage(int.Parse(recvMsg.Substring(10, 3)), "signUp");
+                    if (response.Code == (int)TakiResponse.ERROR)
+                    {
+                        MessageBox.Show("Error", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return null;
+                    }
+                }
+                catch(Exception e)
+                {
                     return null;
                 }
-
             } while (!responseTypes.Contains(response.Code));
 
             return recvMsg;

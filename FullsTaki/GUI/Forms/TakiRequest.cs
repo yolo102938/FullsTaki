@@ -2,8 +2,8 @@
 {
     public enum TakiRequest
     {
-        LOGIN = 100,
-        SIGN_UP,
+        SIGN_UP = 100,
+        LOGIN,
         CREATE_ROOM,
         GET_ROOMS,
         GET_USERS_IN_ROOM,
