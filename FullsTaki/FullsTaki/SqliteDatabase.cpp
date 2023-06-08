@@ -1,8 +1,8 @@
 #include "SqliteDatabase.h"
 
-int usersCallback(void* _data, int argc, char** argv, char** azColName)
+static int usersCallback(void* data, int argc, char** argv, char** azColName)
 {
-	auto& usersList = *static_cast<std::list<string>*>(_data);
+	auto& usersList = *static_cast<std::list<string>*>(data);
 	string username = "";
 
 	for (int i = 0; i < argc; i++)
@@ -15,14 +15,14 @@ int usersCallback(void* _data, int argc, char** argv, char** azColName)
 	return 0;
 }
 
-
-int passwordsCallback(void* _data, int argc, char** argv, char** azColName)
+static int passwordsCallback(void* data, int argc, char** argv, char** azColName)
 {
-	auto& password = *static_cast<string*>(_data);
+	std::string& password = *static_cast<string*>(data);
 
 	if (string(azColName[0]) == "password")
-		password = argv[0];
-
+		password = std::string(argv[0]);
+	*(std::string*)(data) = std::string(argv[0]);
+	std::cout << *(std::string*)(data) <<"1"<<argv[0]<<"2";
 	return 0;
 }
 
@@ -40,10 +40,10 @@ bool SqliteDataBase::doesUserExist(const string username)
 bool SqliteDataBase::doesPasswordMatch(const string username, const string password)
 {
 	string userPassword;
-
+	
 	string query = "SELECT PASSWORD FROM USERS WHERE USERNAME = '" + username + "';";
 	executeQueryWithCallback(query, PASSWORDS_CALLBACK, &userPassword);
-
+	std::cout << userPassword + " real->" + password;
 	return userPassword == password;
 }
 
@@ -121,11 +121,9 @@ bool SqliteDataBase::executeQueryWithCallback(const string query, const int call
 	switch (callbackID)
 	{
 	case 0: //execute the query with users callback
-		data = &this->_db;
 		res = sqlite3_exec(this->_db, query.c_str(), usersCallback, data, &errMessage) == SQLITE_OK; //executing the query, and setting res to true/false based on success/failure.
 		break;
 	case 1: //execute the query with passwords callback
-		data = &this->_db;
 		res = sqlite3_exec(this->_db, query.c_str(), passwordsCallback, data, &errMessage) == SQLITE_OK; //executing the query, and setting res to true/false based on success/failure.
 		break;
 	}

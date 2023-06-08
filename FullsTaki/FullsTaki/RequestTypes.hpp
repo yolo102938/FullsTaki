@@ -1,6 +1,6 @@
 #pragma once
+#include "ServerData.h"
 #include <vector>
-//#include "IRequestHandler.h"
 #include <iostream>
 #include <string>
 
@@ -8,9 +8,9 @@ using std::cout;
 using std::endl;
 using std::string;
 
-#define SIGNUP_REQUEST 100
-#define LOGIN_REQUEST 101
+
 class IRequestHandler;
+
 typedef struct RequestInfo
 {
 	int id;
@@ -46,3 +46,18 @@ typedef struct LoginRequest
 		cout << "Request Type: LoginRequest\nusername: " + username + "\npassword: " + password << endl;
 	}
 } LoginRequest;
+
+typedef struct GetPlayersInRoomRequest{
+	unsigned int roomId;
+} GetPlayersInRoomRequest;
+
+typedef struct JoinRoomRequest {
+	unsigned int roomId;
+} JoinRoomRequest;
+
+typedef struct CreateRoomRequest {
+	std::string roomName;
+	unsigned int maxUsers;
+	unsigned int questionCount;
+	unsigned int answerTimeout;
+} CreateRoomRequest;

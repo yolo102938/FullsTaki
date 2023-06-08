@@ -30,6 +30,18 @@ def test_server_login(client_socket):
     response_code, response = send_packet(client_socket, LOGIN_REQUEST, login_request)
     print("Server Response Code to test login: " + str(response_code))
     print("Server Response to test login: " + str(response))
+
+def test_server_signup(client_socket):
+    #json object
+    login_request = {
+        "username": "test",
+        "password": "admin",
+        "email":"jonathan@anaki"
+    }
+    response_code, response = send_packet(client_socket, SIGNUP_REQUEST, login_request)
+    print("Server Response Code to test login: " + str(response_code))
+    print("Server Response to test login: " + str(response))
+
 def test_server_basic(client_socket):
     # Send a test message to the server
     test_message = "HELLO"
@@ -49,7 +61,7 @@ if __name__ == "__main__":
     #server info
     server_ip = "127.0.0.1" 
     server_port = 888  
-    func_dict = {"login": test_server_login, "basic": test_server_basic}
+    func_dict = {"login": test_server_login, "basic": test_server_basic,"signup":test_server_signup}
     inp = ""
     while(inp!="EXIT"):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -57,7 +69,7 @@ if __name__ == "__main__":
         inp = input("how many times do you want the test to happen?(1 sec delay each try. EXIT to close program.)")
         if(inp=="EXIT"):
             break
-        func_name = input("choose what to check(login,basic,more in future)")
+        func_name = input("choose what to check(login,basic,signup)")
         for i in range(int(inp)):
             func_dict[func_name](sock)
             time.sleep(1)

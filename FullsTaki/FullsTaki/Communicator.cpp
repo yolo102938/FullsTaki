@@ -30,6 +30,7 @@ Communicator::~Communicator()
 }
 void Communicator::handleNewClient(SOCKET socketClient)
 {
+
 	//Notifying that a new client has been accepted
 	std::cout << "Client accepted !" << std::endl;
 	bool isActive = true; //Flag that indicates if the client's connection is still active
@@ -37,55 +38,40 @@ void Communicator::handleNewClient(SOCKET socketClient)
 
 	try
 	{
-		int requestCode = 0; //The received request code
-		int msgSize = 0; //The received message size
-
 		//Continuously process incoming messages in a loop while the connection is active
 		while (isActive)
 		{
+			int msgCode = GetMsgCode(socketClient); //The code of the messaage
+			int msgSize = GetDataLength(socketClient); //The length of the messaage
+			vector<unsigned char> bufferData = GetMsgData(socketClient, msgSize); //The data of the messaage
+			string dataStr = string(bufferData.begin(), bufferData.end());
 
 			//If the client is not logged in, creating a new LoginRequestHandler instance and adding it to the clients map
 			if (!isLoggedIn)
 			{
 				this->m_clients.insert(std::pair<SOCKET, IRequestHandler*>(socketClient, m_handlerFactory.createLoginRequestHandler()));
-				isLoggedIn = false;
+				isLoggedIn = true;
 			}
-			
-			//Receiving the request code
-			if (recv(socketClient, reinterpret_cast<char*>(&requestCode), sizeof(requestCode), 0) != sizeof(requestCode))
-			{
-				sendError(socketClient); //sending an error if the request code is not received correctly
-			}
-			requestCode = ntohl(requestCode);
+
 			//Ensuring the received request code is either LOGIN_REQUEST or SIGNUP_REQUEST if the client is not logged in
-			if (requestCode != LOGIN_REQUEST && requestCode != SIGNUP_REQUEST && !isLoggedIn)
+			if (msgCode != LOGIN_REQUEST && msgCode != SIGNUP_REQUEST && !isLoggedIn)
 			{
 				sendError(socketClient); //sending an error if the received request code is invalid
 			}
 
-			//Receiving the message size
-			if (recv(socketClient, reinterpret_cast<char*>(&msgSize), sizeof(msgSize), 0) != sizeof(msgSize))
-			{
-				sendError(socketClient); //sending an error if the message size is not received correctly
-			}
-			msgSize = ntohl(msgSize);
-			//Creating a buffer to store the received data and receive the data
-			std::vector<unsigned char> bufferData(msgSize);
-			if (recv(socketClient, reinterpret_cast<char*>(bufferData.data()), msgSize, 0) != msgSize)
-			{
-				sendError(socketClient); //sending an error if the data is not received correctly
-			}
-
-
 			//Creating a RequestInfo object to store the received request information
-			RequestInfo reqInfo = { requestCode, std::time(nullptr), bufferData };
+			RequestInfo reqInfo = { msgCode, std::time(nullptr), bufferData };
 
 			//Checking if the received request is relevant
 			if (this->m_clients[socketClient]->isRequestRelevant(reqInfo))
 			{
 				//Processing the received request and obtaining the result
 				RequestResult reqResult = this->m_clients[socketClient]->handleRequest(reqInfo);
-
+				for (int i = 0; i < reqResult.response.size()-8; i++)
+				{
+					reqResult.response[i] = reqResult.response[i + 8];
+					reqResult.response[i + 8] = '\0';
+				}
 				//Sending the response data
 				if (send(socketClient,reqResult.response.data(), reqResult.response.size(), 0) == SOCKET_ERROR)
 				{
@@ -96,7 +82,12 @@ void Communicator::handleNewClient(SOCKET socketClient)
 			}
 			else
 			{
-				std::cout << "Not Relevant\n"; //printing a message if the received request is not relevant
+				ErrorResponse res{ "Not Relevant" };
+				//Sending the response data
+				if (send(socketClient, reinterpret_cast<char*>(JsonResponsePacketSerializer::serializeResponse(res).data()), JsonResponsePacketSerializer::serializeResponse(res).size(), 0) == SOCKET_ERROR)
+				{
+					sendError(socketClient); //sending an error if the response data is not sent correctly
+				}
 			}
 		}
 	}
@@ -141,4 +132,39 @@ void Communicator::startHandleRequests()
 	}
 }
 
+int Communicator::GetMsgCode(const SOCKET socket) const
+{
+	char code_buffer[2]{};
+	recv(socket, (char*)&code_buffer, 2, 0);
+	unsigned int code = std::stoul(code_buffer, nullptr, 16);
 
+	return code;
+}
+
+
+int Communicator::GetDataLength(const SOCKET socket) const
+{
+	char length_buffer[8]{};
+	recv(socket, (char*)&length_buffer, 8, 0);
+	unsigned int length = std::stoul(length_buffer, nullptr, 16);
+
+	return length;
+}
+
+
+vector<unsigned char> Communicator::GetMsgData(const SOCKET socket, const int length) const
+{
+	char* data_buffer = new char[length + 1];
+
+	const int bytes_per_packet = 2;
+	for (int i = 0; i < length; i = i + bytes_per_packet)
+	{
+		recv(socket, data_buffer + i, bytes_per_packet, 0);
+	}
+
+	data_buffer[length] = '\0';
+
+	vector<unsigned char> data(data_buffer, data_buffer + length);
+	delete[] data_buffer;
+	return data;
+}

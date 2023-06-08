@@ -18,6 +18,7 @@ public:
 
 	void logout(const string username);
 
+
 private:
 	vector<LoggedUser> m_loggedUsers;
 	IDatabase* m_database;
