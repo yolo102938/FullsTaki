@@ -8,8 +8,6 @@ typedef struct RoomData
 	unsigned int id;
 	std::string name;
 	unsigned int maxPlayers;
-	unsigned int numOfQuestionsInGame;
-	unsigned int timePerQuestion;
 	unsigned int isActive;
 } RoomData;
 
@@ -17,7 +15,7 @@ typedef struct RoomData
 class Room
 {
 public:
-	Room() { m_metadata = { 0, "temp", 0, 0 ,0 }; }
+	Room() { m_metadata = { 0, "temp", 0,0 }; }
 	Room(RoomData metadata, LoggedUser user) { m_metadata = metadata; m_users.push_back(user); }
 	void addUser(LoggedUser);
 	void removeUser(LoggedUser);

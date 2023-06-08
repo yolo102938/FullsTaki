@@ -23,6 +23,11 @@ LoginManager& RequestHandlerFactory::getLoginManager()
 {
     return this->m_loginManager;
 }
+ 
+RoomAdminRequestHandler* RequestHandlerFactory::createRoomAdminRequestHandler(Room* room, LoggedUser* user)
+{
+     return new RoomAdminRequestHandler(room, user, &m_roomManager, this);
+}
 
 IDatabase* RequestHandlerFactory::getDataBase()
 {

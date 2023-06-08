@@ -101,7 +101,7 @@ vector<char> JsonResponsePacketSerializer::serializeResponse(const GetRoomsRespo
 	json rooms = json::array();
 	for (const auto& room : response.rooms)
 	{
-		rooms.push_back({"id", room.id,"name",room.name,"max_players",room.maxPlayers,"q_number",room.numOfQuestionsInGame,"time_per_q",room.timePerQuestion,"is_active",room.isActive});
+		rooms.push_back({"id", room.id,"name",room.name,"max_players",room.maxPlayers,"is_active",room.isActive});
 	}
 
 	json sData = { {"status", response.status}, {"rooms", rooms} };
@@ -141,9 +141,12 @@ vector<char> JsonResponsePacketSerializer::serializeResponse(const GetRoomStateR
 	json sData;
 	sData["status"] = response.status;
 	sData["hasGameBegun"] = response.hasGameBegun;
-	sData["players"] = response.players;
-	sData["questionCount"] = response.questionCount;
-	sData["answerTimeout"] = response.answerTimeout;
+	std::string user_line = "";
+	for (auto name : response.players) {
+		user_line = user_line + name + ",";
+	}
+	user_line.pop_back();
+	sData["players"] = user_line;
 	return responseBuilder(response.status, sData.dump());
 }
 

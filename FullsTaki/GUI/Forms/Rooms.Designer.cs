@@ -149,6 +149,7 @@ namespace GUI.Forms
             this.Controls.Add(this.pictureBox1);
             this.Name = "Rooms";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Rooms_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.roomsBindingSource)).EndInit();
             this.ResumeLayout(false);

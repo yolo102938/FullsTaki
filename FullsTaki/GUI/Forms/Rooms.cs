@@ -73,5 +73,10 @@ namespace GUI.Forms
             this.Hide();
             menu.Show();
         }
+
+        private void Rooms_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
