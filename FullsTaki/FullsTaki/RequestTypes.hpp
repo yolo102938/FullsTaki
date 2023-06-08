@@ -58,7 +58,5 @@ typedef struct JoinRoomRequest {
 typedef struct CreateRoomRequest {
 	std::string roomName;
 	unsigned int maxUsers;
-	unsigned int questionCount;
-	unsigned int answerTimeout;
 } CreateRoomRequest;
 

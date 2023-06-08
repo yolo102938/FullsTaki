@@ -1,29 +1,27 @@
-#include "RoomAdminRequestHandler.h"
+#include "RoomRequestHandler.h"
 
-RoomAdminRequestHandler::RoomAdminRequestHandler(Room* room, LoggedUser* user, RoomManager* roomManager, RequestHandlerFactory* handlerFactory) {
+RoomRequestHandler::RoomRequestHandler(Room* room, LoggedUser* user, RoomManager* roomManager, RequestHandlerFactory* handlerFactory) {
     m_room = room;
     m_user = user;
     m_roomManager = roomManager;
     m_handlerFactory = handlerFactory;
 }
 
-bool RoomAdminRequestHandler::isRequestRelevant(RequestInfo request) const {
-    return(request.id == CLOSEROOM_REQUEST || request.id == STARTGAME_REQUEST || request.id == GETROOMSTATE_REQUEST);
+bool RoomRequestHandler::isRequestRelevant(RequestInfo request) const {
+    return(request.id == LEAVEROOM_REQUEST || request.id == GETROOMSTATE_REQUEST);
 }
 
-RequestResult RoomAdminRequestHandler::handleRequest(RequestInfo request)  const {
+RequestResult RoomRequestHandler::handleRequest(RequestInfo request)  const {
     RequestResult ret;//temp, will delete before returning
     try
     {
-        if (request.id == CLOSEROOM_REQUEST) {
-            ret =  closeRoom(request);
+        if (request.id == LEAVEROOM_REQUEST) 
+        {
+            ret = leaveRoom(request);
         }
-
-        else if (request.id == STARTGAME_REQUEST) {
-            ret = startGame(request);
-        }
-        if (request.id == GETROOMSTATE_REQUEST) {
-            ret =  getRoomState(request);
+        if (request.id == GETROOMSTATE_REQUEST) 
+        {
+            ret = getRoomState(request);
         }
     }
 
@@ -37,19 +35,14 @@ RequestResult RoomAdminRequestHandler::handleRequest(RequestInfo request)  const
 
 }
 
-RequestResult RoomAdminRequestHandler::closeRoom(RequestInfo request) const{
+RequestResult RoomRequestHandler::leaveRoom(RequestInfo request) const {
     m_roomManager->deleteRoom(m_room->getRoomData().id);
-        CloseRoomResponse ret = { GENERIC_OK };
-        return { JsonResponsePacketSerializer::serializeResponse(ret) ,m_handlerFactory->createMenuRequestHandler(m_user) };
-    }
-
-RequestResult RoomAdminRequestHandler::startGame(RequestInfo request) const{
-    //for ohad to start game later
-    StartGameResponse ret = { GENERIC_OK };
+    CloseRoomResponse ret = { GENERIC_OK };
     return { JsonResponsePacketSerializer::serializeResponse(ret) ,m_handlerFactory->createMenuRequestHandler(m_user) };
 }
 
-RequestResult RoomAdminRequestHandler::getRoomState(RequestInfo request) const{
+
+RequestResult RoomRequestHandler::getRoomState(RequestInfo request) const {
     try {
         GetRoomStateResponse ret;
         RoomData data = m_room->getRoomData();
@@ -61,13 +54,13 @@ RequestResult RoomAdminRequestHandler::getRoomState(RequestInfo request) const{
             }
         }
         ret.players = users;
-        return { JsonResponsePacketSerializer::serializeResponse(ret) ,m_handlerFactory->createRoomAdminRequestHandler(m_room,m_user) };
+        return { JsonResponsePacketSerializer::serializeResponse(ret) ,m_handlerFactory->createRoomRequestHandler(m_room,m_user) };
     }
     catch (const std::exception& e)
     {
         ErrorResponse ret = { "Room closed" };
         return { JsonResponsePacketSerializer::serializeResponse(ret) ,m_handlerFactory->createMenuRequestHandler(m_user) };
-        try{ 
+        try {
             m_roomManager->deleteRoom(m_room->getRoomData().id);
         }
         catch (...) {}
