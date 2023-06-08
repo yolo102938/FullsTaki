@@ -39,7 +39,7 @@
 *                                     *
 **************************************/
 #define PORT_NUM 888
-#define IP_ADDR "1.1.1.1"
+#define IP_ADDR "127.0.01"
 
 #define SIGNUP_REQUEST 100
 #define LOGIN_REQUEST 101
@@ -51,6 +51,6 @@
 #define GETPARTICIPANTS_REQUEST 203
 
 #define GENERIC_OK 100
-#define ERROR_RESPONSE 666
-#define LOGIN_RESPONSE 101
-#define SIGNUP_RESPONSE 102
+#define ERROR_RESPONSE 101
+#define LOGIN_RESPONSE 102
+#define SIGNUP_RESPONSE 103
