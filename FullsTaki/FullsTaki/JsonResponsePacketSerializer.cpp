@@ -122,6 +122,40 @@ vector<char> JsonResponsePacketSerializer::serializeResponse(const getHighScoreR
 }
 
 
+vector<char> JsonResponsePacketSerializer::serializeResponse(const CloseRoomResponse& response)
+{
+	json sData;
+	sData["status"] = response.status;
+	return responseBuilder(response.status, sData.dump());
+}
+
+vector<char> JsonResponsePacketSerializer::serializeResponse(const StartGameResponse& response)
+{
+	json sData;
+	sData["status"] = response.status;
+	return responseBuilder(response.status, sData.dump());
+}
+
+vector<char> JsonResponsePacketSerializer::serializeResponse(const GetRoomStateResponse& response)
+{
+	json sData;
+	sData["status"] = response.status;
+	sData["hasGameBegun"] = response.hasGameBegun;
+	sData["players"] = response.players;
+	sData["questionCount"] = response.questionCount;
+	sData["answerTimeout"] = response.answerTimeout;
+	return responseBuilder(response.status, sData.dump());
+}
+
+vector<char> JsonResponsePacketSerializer::serializeResponse(const LeaveRoomResponse& response)
+{
+	json sData;
+	sData["status"] = response.status;
+	return responseBuilder(response.status, sData.dump());
+}
+
+
+
 
 /*
 Function constructs a response packet using a response status code and serialized json data.

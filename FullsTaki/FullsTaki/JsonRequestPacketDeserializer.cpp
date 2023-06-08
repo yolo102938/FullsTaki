@@ -65,3 +65,4 @@ json JsonRequestPacketDeserializer::parseJson(const vector<unsigned char>& buffe
 	data = data.substr(data.find('{')); //locating the first '{' to get only the json data.
 	return json::parse(data); //parsing the data to a json object and returning it.
 }
+

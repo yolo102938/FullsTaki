@@ -61,3 +61,4 @@ typedef struct CreateRoomRequest {
 	unsigned int questionCount;
 	unsigned int answerTimeout;
 } CreateRoomRequest;
+
