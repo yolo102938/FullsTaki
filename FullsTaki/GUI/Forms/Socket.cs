@@ -22,7 +22,10 @@ namespace TakiClient
         public static bool Connected { get; set; }
 
         public static Address ServerAddress { get; } = new TakiClient.Address("127.0.01", 888);
-
+        public static TcpClient getSocket()
+        {
+            return clientSocket;
+        }
         static Socket()
         {
             try

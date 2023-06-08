@@ -1,31 +1,87 @@
 ﻿using GUI.DataTypes;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using TakiClient;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace GUI.Forms
 {
     public partial class Rooms : Form
     {
+        private Timer timer;
+
         public Rooms()
         {
 
             InitializeComponent();
-            int listlen = 3;
-            rooms = new Room[listlen];
-            rooms[0] = (new GUI.DataTypes.Room() { name = "temp ohad do it",id= 1,max_players= 5,player_count= 4 });
-            rooms[1] = (new GUI.DataTypes.Room() { name = "temp ohadf do it",id= 2,max_players= 5,player_count= 3 });
-            rooms[2] = (new GUI.DataTypes.Room() { name = "temp ohaad do it",id= 3,max_players= 4,player_count= 4 });
-            RoomList.Items.Add(("|" + "Room ID".ToString().PadLeft(35).PadRight(67) + "|" + "Name".PadLeft(35).PadRight(70) + "|" + ("Players").PadLeft(35).PadRight(70) + "|"));
-            RoomList.Items.AddRange(rooms);     
+            timer = new Timer();
+            timer.Interval = 2000; //2 seconds
+            timer.Tick += Timer_Tick;
+            timer.Start();
+
+
+            UpdateRooms();
+        }
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            UpdateRooms();
+        }
+
+        private void UpdateRooms()
+        {
+            TakiMessage getrooms = new TakiMessage
+            {
+                Code = (int)TakiRequest.GET_ROOMS,
+                Content = ""
+            };
+
+            TakiClient.Socket.SendMsg(getrooms.ToString());
+
+            // Receive and parse your data here
+            byte[] buffer = new byte[4];
+
+            // Get the response code
+            NetworkStream stream = TakiClient.Socket.getSocket().GetStream();
+
+            stream.Read(buffer, 0, 4);
+            int responseCode = BitConverter.ToInt32(buffer, 0);
+           /* if (responseCode != 100)
+            {
+                MainMenu menu = new MainMenu();
+                this.Hide();
+                menu.Show();
+            }*/
+            stream.Read(buffer, 0, 4);
+            int responseLength = BitConverter.ToInt32(buffer, 0);
+
+            buffer = new byte[responseLength];
+            stream.Read(buffer, 0, responseLength);
+            string jsonString = Encoding.UTF8.GetString(buffer);
+            MessageBox.Show(jsonString);
+            rooms = JsonConvert.DeserializeObject<Room[]>(jsonString);
+
+            RoomList.Items.Clear();
+            if(rooms != null)
+            {
+                RoomList.Items.Add("|" + "Room ID".PadLeft(35).PadRight(67) + "|" + "Name".PadLeft(35).PadRight(70) + "|" + "Players".PadLeft(35).PadRight(70) + "|");
+                RoomList.Items.AddRange(rooms);
+            }
+            else
+            {
+                RoomList.Items.Add("|" + "Room ID".PadLeft(35).PadRight(67) + "|" + "Name".PadLeft(35).PadRight(70) + "|" + "Players".PadLeft(35).PadRight(70) + "|");
+                RoomList.Items.Add("No rooms yet. create one!");
+            }
 
         }
 
