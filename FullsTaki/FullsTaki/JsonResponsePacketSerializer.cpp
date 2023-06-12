@@ -101,6 +101,7 @@ vector<char> JsonResponsePacketSerializer::serializeResponse(const GetRoomsRespo
 	json rooms = json::array();
 	for (const auto& room : response.rooms)
 	{
+	
 		rooms.push_back({"id", room.id,"name",room.name,"max_players",room.maxPlayers,"is_active",room.isActive});
 	}
 

@@ -4,9 +4,9 @@
     {
         SIGN_UP = 100,
         LOGIN,
-        CREATE_ROOM,
+        CREATE_ROOM = 201,
         GET_ROOMS = 200,
-        GET_USERS_IN_ROOM,
+        GET_USERS_IN_ROOM = 203,
         JOIN_ROOM,
         LOGOUT,
         CLOSE_ROOM,

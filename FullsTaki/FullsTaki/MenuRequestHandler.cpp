@@ -105,7 +105,7 @@ RequestResult MenuRequestHandler::createRoom(RequestInfo request) const
     CreateRoomResponse res = { GENERIC_OK };
     CreateRoomRequest req = JsonRequestPacketDeserializer::deserializeCreateRoom(request.buffer);
     
-    this->m_roomManager->createRoom(*m_user, { static_cast<unsigned int>(this->m_roomManager->getRooms().size()) + 1, req.roomName,0});
+    this->m_roomManager->createRoom(*m_user, { static_cast<unsigned int>(this->m_roomManager->getRooms().size()) + 1, req.roomName,req.maxUsers,0 });
     return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory->createMenuRequestHandler(m_user) };
 }
 

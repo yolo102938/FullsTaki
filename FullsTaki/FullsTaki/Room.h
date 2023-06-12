@@ -7,7 +7,7 @@ typedef struct RoomData
 {
 	unsigned int id;
 	std::string name;
-	unsigned int maxPlayers;
+	 int maxPlayers;
 	unsigned int isActive;
 } RoomData;
 

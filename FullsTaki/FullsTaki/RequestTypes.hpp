@@ -57,6 +57,6 @@ typedef struct JoinRoomRequest {
 
 typedef struct CreateRoomRequest {
 	std::string roomName;
-	unsigned int maxUsers;
+	int maxUsers;
 } CreateRoomRequest;
 
