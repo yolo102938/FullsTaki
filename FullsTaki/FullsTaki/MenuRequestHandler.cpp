@@ -91,7 +91,6 @@ RequestResult MenuRequestHandler::joinRoom(RequestInfo request) const
     int currPlayers = this->m_roomManager->getRoom(req.roomId).getAllUsers().size();
     if(maxPlayers == currPlayers)
     {
-
         throw("Room is full!");
     }
     else if (this->m_roomManager->getRoom(req.roomId).getRoomData().isActive) {

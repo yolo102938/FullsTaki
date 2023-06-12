@@ -6,9 +6,16 @@ using System.Text;
 using System.Windows.Forms;
 using GUI.Forms;
 using GUI;
+using System.Data.SqlTypes;
 
 namespace TakiClient
 {
+    public class MSG
+    {
+        public int code;
+        public string json;
+        public MSG(int cod,string jso) {code= cod; json = jso; } 
+    }
     public static class Socket
     {
         private static readonly TcpClient clientSocket = new TcpClient();
@@ -58,37 +65,49 @@ namespace TakiClient
             return true;
         }
 
-        public static string RecvMsg()
+        public static MSG RecvMsg()
         {
             try
             {
-                NetworkStream stream = clientSocket.GetStream();
-                byte[] inStream = new byte[8192];
+                byte[] buffer = new byte[4];
 
-                stream.Read(inStream, 0, 8192);
-                return Encoding.ASCII.GetString(inStream);
+                NetworkStream stream = clientSocket.GetStream();
+
+                stream.Read(buffer, 0, 4);
+                if (BitConverter.IsLittleEndian)
+                    Array.Reverse(buffer);
+                int responseCode = BitConverter.ToInt32(buffer, 0);
+
+                stream.Read(buffer, 0, 4);
+                if (BitConverter.IsLittleEndian)
+                    Array.Reverse(buffer);
+                int responseLength = BitConverter.ToInt32(buffer, 0);
+
+                buffer = new byte[responseLength];
+                stream.Read(buffer, 0, responseLength);
+                string jsonString = Encoding.UTF8.GetString(buffer);
+                return new MSG(responseCode, jsonString);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return null;
+                return new MSG(101, "{}");
             }
         }
 
+
         public static string RecvMsgByResponse(params int[] responseTypes)
         {
-            string recvMsg;
-            TakiMessage response;
+            MSG recvMsg;
+            int response;
 
-            do
-            {
                 recvMsg = RecvMsg();
                 try
                 {
-                    response = new TakiMessage(int.Parse(recvMsg.Substring(10, 3)), "signUp");
-                    if (response.Code == (int)TakiResponse.ERROR)
+                    response = recvMsg.code;
+                    if (response == (int)TakiResponse.ERROR || !responseTypes.Contains(response))
                     {
-                        MessageBox.Show("Error", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show( recvMsg.json, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return null;
                     }
                 }
@@ -96,9 +115,9 @@ namespace TakiClient
                 {
                     return null;
                 }
-            } while (!responseTypes.Contains(response.Code));
+            
 
-            return recvMsg;
+            return recvMsg.code.ToString()+recvMsg.json;
         }
     }
 }

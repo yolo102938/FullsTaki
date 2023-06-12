@@ -5,7 +5,7 @@
         SIGN_UP = 100,
         LOGIN,
         CREATE_ROOM,
-        GET_ROOMS,
+        GET_ROOMS = 200,
         GET_USERS_IN_ROOM,
         JOIN_ROOM,
         LOGOUT,

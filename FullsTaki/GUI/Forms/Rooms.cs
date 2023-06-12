@@ -67,21 +67,25 @@ namespace GUI.Forms
 
             buffer = new byte[responseLength];
             stream.Read(buffer, 0, responseLength);
-            string jsonString = Encoding.UTF8.GetString(buffer);
-            MessageBox.Show(jsonString);
-            rooms = JsonConvert.DeserializeObject<Room[]>(jsonString);
+            if(responseLength> 2)
+            {
+                string jsonString = Encoding.UTF8.GetString(buffer);
+                //MessageBox.Show(jsonString);
+                rooms = JsonConvert.DeserializeObject<Room[]>(jsonString);
 
-            RoomList.Items.Clear();
-            if(rooms != null)
-            {
-                RoomList.Items.Add("|" + "Room ID".PadLeft(35).PadRight(67) + "|" + "Name".PadLeft(35).PadRight(70) + "|" + "Players".PadLeft(35).PadRight(70) + "|");
-                RoomList.Items.AddRange(rooms);
+                RoomList.Items.Clear();
+                if (rooms != null)
+                {
+                    RoomList.Items.Add("|" + "Room ID".PadLeft(35).PadRight(67) + "|" + "Name".PadLeft(35).PadRight(70) + "|" + "Players".PadLeft(35).PadRight(70) + "|");
+                    RoomList.Items.AddRange(rooms);
+                }
+                else
+                {
+                    RoomList.Items.Add("|" + "Room ID".PadLeft(35).PadRight(67) + "|" + "Name".PadLeft(35).PadRight(70) + "|" + "Players".PadLeft(35).PadRight(70) + "|");
+                    RoomList.Items.Add("No rooms yet. create one!");
+                }
             }
-            else
-            {
-                RoomList.Items.Add("|" + "Room ID".PadLeft(35).PadRight(67) + "|" + "Name".PadLeft(35).PadRight(70) + "|" + "Players".PadLeft(35).PadRight(70) + "|");
-                RoomList.Items.Add("No rooms yet. create one!");
-            }
+
 
         }
 

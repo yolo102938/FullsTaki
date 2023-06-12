@@ -117,7 +117,7 @@ Output: vector<char> response (A serialized json response as a vector of chars).
 vector<char> JsonResponsePacketSerializer::serializeResponse(const getHighScoreResponse response)
 {
 	json sData = { {"status", response.status}, {"statistics", response.statistics} };
-
+	std::cout << "DONEDID\n";
 	return responseBuilder(response.status, sData.dump());
 }
 
@@ -184,5 +184,6 @@ vector<char> JsonResponsePacketSerializer::responseBuilder(const int resStatusCo
 	//adding the json data to the response packet.
 	response.insert(response.end(), sData.begin(), sData.end());
 	//returning the response packet.
+	std::cout << response.data();
 	return response;
 }
