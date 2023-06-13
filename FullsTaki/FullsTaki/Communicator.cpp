@@ -54,10 +54,10 @@ void Communicator::handleNewClient(SOCKET socketClient)
 			}
 
 			//Ensuring the received request code is either LOGIN_REQUEST or SIGNUP_REQUEST if the client is not logged in
-			if (msgCode != LOGIN_REQUEST && msgCode != SIGNUP_REQUEST && !isLoggedIn)
-			{
-				sendError(socketClient); //sending an error if the received request code is invalid
-			}
+			//if (msgCode != LOGIN_REQUEST && msgCode != SIGNUP_REQUEST && !isLoggedIn)
+			//{
+			//	sendError(socketClient); //sending an error if the received request code is invalid
+			//}
 
 			//Creating a RequestInfo object to store the received request information
 			RequestInfo reqInfo = { msgCode, std::time(nullptr), bufferData };
@@ -67,13 +67,9 @@ void Communicator::handleNewClient(SOCKET socketClient)
 			{
 				//Processing the received request and obtaining the result
 				RequestResult reqResult = this->m_clients[socketClient]->handleRequest(reqInfo);
-				for (int i = 0; i < reqResult.response.size()-8; i++)
-				{
-					reqResult.response[i] = reqResult.response[i + 8];
-					reqResult.response[i + 8] = '\0';
-				}
+				
 				//Sending the response data
-				if (send(socketClient,reqResult.response.data(), reqResult.response.size(), 0) == SOCKET_ERROR)
+				if (send(socketClient, reinterpret_cast<char*>(reqResult.response.data()), reqResult.response.size(), 0) == SOCKET_ERROR)
 				{
 					sendError(socketClient); //sending an error if the response data is not sent correctly
 				}

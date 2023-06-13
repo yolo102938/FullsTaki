@@ -33,17 +33,21 @@ namespace GUI.Forms
         /// </summary>
         private void InitializeComponent()
         {
+            this.index = 0;
             this.components = new System.ComponentModel.Container();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.RoomList = new System.Windows.Forms.ListBox();
             this.button1 = new System.Windows.Forms.Button();
             this.name_label = new System.Windows.Forms.Label();
             this.name_input = new System.Windows.Forms.TextBox();
-            this.pass_label = new System.Windows.Forms.Label();
-            this.pass_input = new System.Windows.Forms.TextBox();
-            this.login_button = new System.Windows.Forms.Button();
             this.Logout_Button = new System.Windows.Forms.Button();
             this.roomsBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.button2 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.roomsBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -70,7 +74,7 @@ namespace GUI.Forms
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(17, 541);
+            this.button1.Location = new System.Drawing.Point(943, 303);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(197, 47);
             this.button1.TabIndex = 4;
@@ -80,7 +84,7 @@ namespace GUI.Forms
             // 
             // name_label
             // 
-            this.name_label.Location = new System.Drawing.Point(978, 264);
+            this.name_label.Location = new System.Drawing.Point(942, 397);
             this.name_label.Name = "name_label";
             this.name_label.Size = new System.Drawing.Size(122, 19);
             this.name_label.TabIndex = 5;
@@ -89,39 +93,12 @@ namespace GUI.Forms
             // 
             // name_input
             // 
-            this.name_input.Location = new System.Drawing.Point(943, 285);
+            this.name_input.Location = new System.Drawing.Point(943, 418);
             this.name_input.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.name_input.Name = "name_input";
             this.name_input.Size = new System.Drawing.Size(205, 26);
             this.name_input.TabIndex = 6;
             this.name_input.TextChanged += new System.EventHandler(this.name_input_TextChanged);
-            // 
-            // pass_label
-            // 
-            this.pass_label.Location = new System.Drawing.Point(956, 313);
-            this.pass_label.Name = "pass_label";
-            this.pass_label.Size = new System.Drawing.Size(192, 28);
-            this.pass_label.TabIndex = 7;
-            this.pass_label.Text = "Rest of the stuff ohad";
-            // 
-            // pass_input
-            // 
-            this.pass_input.Location = new System.Drawing.Point(943, 343);
-            this.pass_input.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.pass_input.Name = "pass_input";
-            this.pass_input.PasswordChar = '*';
-            this.pass_input.Size = new System.Drawing.Size(205, 26);
-            this.pass_input.TabIndex = 8;
-            // 
-            // login_button
-            // 
-            this.login_button.Location = new System.Drawing.Point(943, 508);
-            this.login_button.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.login_button.Name = "login_button";
-            this.login_button.Size = new System.Drawing.Size(214, 70);
-            this.login_button.TabIndex = 9;
-            this.login_button.Text = "Create Room";
-            this.login_button.Click += new System.EventHandler(this.login_button_Click);
             // 
             // Logout_Button
             // 
@@ -133,22 +110,85 @@ namespace GUI.Forms
             this.Logout_Button.UseVisualStyleBackColor = true;
             this.Logout_Button.Click += new System.EventHandler(this.Logout_Button_Click);
             // 
+            // comboBox1
+            // 
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "2",
+            "3",
+            "4",
+            "5"});
+            this.comboBox1.Location = new System.Drawing.Point(943, 477);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(121, 28);
+            this.comboBox1.TabIndex = 11;
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            // 
+            // label1
+            // 
+            this.label1.Location = new System.Drawing.Point(939, 446);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(192, 28);
+            this.label1.TabIndex = 12;
+            this.label1.Text = "Max player count:";
+            // 
+            // label2
+            // 
+            this.label2.Location = new System.Drawing.Point(969, 362);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(188, 23);
+            this.label2.TabIndex = 13;
+            this.label2.Text = "CREATE ROOM";
+            // 
+            // label3
+            // 
+            this.label3.Location = new System.Drawing.Point(969, 228);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(188, 23);
+            this.label3.TabIndex = 14;
+            this.label3.Text = "JOIN ROOM";
+            // 
+            // comboBox2
+            // 
+            this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox2.FormattingEnabled = true;
+            this.comboBox2.Location = new System.Drawing.Point(943, 254);
+            this.comboBox2.Name = "comboBox2";
+            this.comboBox2.Size = new System.Drawing.Size(197, 28);
+            this.comboBox2.TabIndex = 15;
+            this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.comboBox2_SelectedIndexChanged);
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(934, 510);
+            this.button2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(214, 70);
+            this.button2.TabIndex = 16;
+            this.button2.Text = "Create Room";
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
             // Rooms
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1231, 622);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.comboBox2);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.Logout_Button);
             this.Controls.Add(this.name_label);
             this.Controls.Add(this.name_input);
-            this.Controls.Add(this.pass_label);
-            this.Controls.Add(this.pass_input);
-            this.Controls.Add(this.login_button);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.RoomList);
             this.Controls.Add(this.pictureBox1);
             this.Name = "Rooms";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Rooms_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.roomsBindingSource)).EndInit();
             this.ResumeLayout(false);
@@ -162,12 +202,16 @@ namespace GUI.Forms
         private System.Windows.Forms.ListBox RoomList;
         private System.Windows.Forms.BindingSource roomsBindingSource;
         private System.Windows.Forms.Button button1;
-        private Room[] rooms;
+        private List<Room> rooms;
         private System.Windows.Forms.Label name_label;
         private System.Windows.Forms.TextBox name_input;
-        private System.Windows.Forms.Label pass_label;
-        private System.Windows.Forms.TextBox pass_input;
-        private System.Windows.Forms.Button login_button;
         private System.Windows.Forms.Button Logout_Button;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ComboBox comboBox2;
+        private System.Windows.Forms.Button button2;
+        private int index;
     }
 }
