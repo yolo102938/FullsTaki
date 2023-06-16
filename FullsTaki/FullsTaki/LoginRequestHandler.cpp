@@ -9,7 +9,7 @@ LoginRequestHandler::~LoginRequestHandler()
 
 bool LoginRequestHandler::isRequestRelevant(const RequestInfo request) const
 {
-	return (request.id == LOGIN_REQUEST) || (request.id == SIGNUP_REQUEST); //checking if the request is for login/signup processing.
+	return (request.id == LOGIN) || (request.id == SIGN_UP); //checking if the request is for login/signup processing.
 }
 
 
@@ -18,13 +18,13 @@ RequestResult LoginRequestHandler::handleRequest(const RequestInfo request) cons
 	RequestResult res;//temp, will delete before returning
 	try
 	{
-		if (request.id == LOGIN_REQUEST)
+		if (request.id == LOGIN)
 		{
 			
 			res = login(request);
 		}
 
-		else if (request.id == SIGNUP_REQUEST)
+		else if (request.id == SIGN_UP)
 		{
 			res = signup(request);
 

@@ -7,22 +7,30 @@ RoomAdminRequestHandler::RoomAdminRequestHandler(Room* room, LoggedUser* user, R
     m_handlerFactory = handlerFactory;
 }
 
+RoomAdminRequestHandler::RoomAdminRequestHandler(const string username, const SOCKET socket, RoomManager& roomManager, RequestHandlerFactory& factory, const int roomId)
+{
+    m_user = new LoggedUser(username, socket);
+    m_roomManager = new RoomManager(roomManager);
+    m_handlerFactory = &factory;
+    m_room = new Room(roomManager.getRoom(roomId));
+}
+
 bool RoomAdminRequestHandler::isRequestRelevant(RequestInfo request) const {
-    return(request.id == CLOSEROOM_REQUEST || request.id == STARTGAME_REQUEST || request.id == GETROOMSTATE_REQUEST);
+    return(request.id == CLOSE_ROOM || request.id == START_GAME || request.id == GET_ROOM_STATE);
 }
 
 RequestResult RoomAdminRequestHandler::handleRequest(RequestInfo request)  const {
     RequestResult ret;//temp, will delete before returning
     try
     {
-        if (request.id == CLOSEROOM_REQUEST) {
+        if (request.id == CLOSE_ROOM) {
             ret =  closeRoom(request);
         }
 
-        else if (request.id == STARTGAME_REQUEST) {
+        else if (request.id == START_GAME) {
             ret = startGame(request);
         }
-        if (request.id == GETROOMSTATE_REQUEST) {
+        if (request.id == GET_ROOM_STATE) {
             ret =  getRoomState(request);
         }
     }

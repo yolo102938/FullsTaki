@@ -4,11 +4,11 @@
     {
         SIGN_UP = 100,
         LOGIN,
+        LOGOUT,
         CREATE_ROOM = 201,
         GET_ROOMS = 200,
         GET_USERS_IN_ROOM = 203,
         JOIN_ROOM,
-        LOGOUT,
         CLOSE_ROOM,
         START_GAME,
         GET_ROOM_STATE,

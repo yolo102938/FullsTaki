@@ -138,7 +138,6 @@ typedef struct GetRoomStateResponse
     unsigned int status;
     bool hasGameBegun;
     vector<string> players;
-
 } GetRoomStateResponse;
 
 typedef struct LeaveRoomResponse

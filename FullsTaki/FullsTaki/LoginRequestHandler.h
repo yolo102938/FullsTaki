@@ -4,6 +4,7 @@
 #include "JsonResponsePacketSerializer.h"
 #include "RequestTypes.hpp"
 #include "RequestHandlerFactory.h"
+#include "ServerData.h"
 
 class RequestHandlerFactory;
 

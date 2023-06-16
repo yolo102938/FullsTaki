@@ -2,6 +2,7 @@
 #include "incs.h"
 #include "RoomManager.h"
 #include "RequestHandlerFactory.h"
+#include "ServerData.h"
 class RequestHandlerFactory;
 class RoomRequestHandler : public IRequestHandler {
 

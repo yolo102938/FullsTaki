@@ -47,16 +47,24 @@ typedef struct LoginRequest
 	}
 } LoginRequest;
 
-typedef struct GetPlayersInRoomRequest{
+typedef struct GetPlayersInRoomRequest
+{
 	unsigned int roomId;
 } GetPlayersInRoomRequest;
 
-typedef struct JoinRoomRequest {
+typedef struct JoinRoomRequest
+{
 	unsigned int roomId;
 } JoinRoomRequest;
 
-typedef struct CreateRoomRequest {
-	std::string roomName;
+typedef struct CreateRoomRequest
+{
+	string roomName;
 	int maxUsers;
 } CreateRoomRequest;
+
+typedef struct PlaceCardRequest
+{
+	unsigned int cardId;
+} PlaceCardRequest;
 

@@ -8,6 +8,12 @@ class LoginManager
 {
 public:
 
+	static LoginManager& staticInstance(IDatabase* db)
+	{
+		static LoginManager instance(db);
+		return instance;
+	}
+
 	LoginManager(IDatabase* database);
 
 	~LoginManager();
