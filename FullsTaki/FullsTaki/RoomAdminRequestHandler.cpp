@@ -1,13 +1,16 @@
 #include "RoomAdminRequestHandler.h"
 
 RoomAdminRequestHandler::RoomAdminRequestHandler(Room* room, LoggedUser* user, RoomManager* roomManager, RequestHandlerFactory* handlerFactory) {
+
     m_room = room;
     m_user = user;
     m_roomManager = roomManager;
     m_handlerFactory = handlerFactory;
+
 }
 
 bool RoomAdminRequestHandler::isRequestRelevant(RequestInfo request) const {
+
     return(request.id == CLOSEROOM_REQUEST || request.id == STARTGAME_REQUEST || request.id == GETROOMSTATE_REQUEST);
 }
 
@@ -51,16 +54,18 @@ RequestResult RoomAdminRequestHandler::startGame(RequestInfo request) const{
 
 RequestResult RoomAdminRequestHandler::getRoomState(RequestInfo request) const{
     try {
+        
         GetRoomStateResponse ret;
         RoomData data = m_room->getRoomData();
         ret.hasGameBegun = data.isActive;
         std::vector<std::string> users;
-        for (auto user : m_room->getAllUsers()) {
+        /*for (auto user : m_room->getAllUsers()) {
             if (user != m_user->getUsername()) {//just so the list doesnt contain curr player
                 users.push_back(user);
             }
-        }
-        ret.players = users;
+        }*/
+        ret.players = m_room->getAllUsers();
+
         return { JsonResponsePacketSerializer::serializeResponse(ret) ,m_handlerFactory->createRoomAdminRequestHandler(m_room,m_user) };
     }
     catch (const std::exception& e)

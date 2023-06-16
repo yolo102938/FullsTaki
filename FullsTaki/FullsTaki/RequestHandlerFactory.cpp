@@ -26,10 +26,12 @@ LoginManager& RequestHandlerFactory::getLoginManager()
  
 RoomAdminRequestHandler* RequestHandlerFactory::createRoomAdminRequestHandler(Room* room, LoggedUser* user)
 {
+    //std::cout <<"      \n    "<< room->getRoomData().id;
      return new RoomAdminRequestHandler(room, user, &m_roomManager, this);
 }
 RoomRequestHandler* RequestHandlerFactory::createRoomRequestHandler(Room* room, LoggedUser* user)
 {
+
     return new RoomRequestHandler(room, user, &m_roomManager, this);
 }
 IDatabase* RequestHandlerFactory::getDataBase()

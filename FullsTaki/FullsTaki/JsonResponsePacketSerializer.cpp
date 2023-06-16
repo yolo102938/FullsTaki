@@ -86,7 +86,6 @@ Output: vector<char> response (A serialized json response as a vector of chars).
 vector<char> JsonResponsePacketSerializer::serializeResponse(const CreateRoomResponse response)
 {
 	json sData = { {"status", response.status} };
-
 	return responseBuilder(response.status, sData.dump());
 }
 
@@ -139,15 +138,17 @@ vector<char> JsonResponsePacketSerializer::serializeResponse(const StartGameResp
 
 vector<char> JsonResponsePacketSerializer::serializeResponse(const GetRoomStateResponse& response)
 {
+	
 	json sData;
 	sData["status"] = response.status;
 	sData["hasGameBegun"] = response.hasGameBegun;
-	std::string user_line = "";
-	for (auto name : response.players) {
-		user_line = user_line + name + ",";
-	}
-	user_line.pop_back();
-	sData["players"] = user_line;
+	//std::string user_line = "";
+	//for (auto name : response.players) {
+	//	user_line = user_line + name + ",";
+	//}
+	//user_line.pop_back();
+	sData["players"] = response.players;
+	
 	return responseBuilder(response.status, sData.dump());
 }
 

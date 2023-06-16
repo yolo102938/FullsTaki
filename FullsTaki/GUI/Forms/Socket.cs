@@ -14,7 +14,11 @@ namespace TakiClient
     {
         public int code;
         public string json;
-        public MSG(int cod,string jso) {code= cod; json = jso; } 
+        public MSG(int cod,string jso) {code= cod; json = jso; }
+        public override string ToString()
+        {
+            return code.ToString() +" "+ json;
+        }
     }
     public static class Socket
     {

@@ -26,6 +26,8 @@ public:
 
 	RoomRequestHandler* createRoomRequestHandler(Room* room, LoggedUser* user);
 
+
+
 	LoginManager& getLoginManager();
 	
 

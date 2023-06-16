@@ -11,7 +11,7 @@
         LOGOUT,
         CLOSE_ROOM,
         START_GAME,
-        GET_ROOM_STATE,
+        GET_ROOM_STATE = 333,
         LEAVE_ROOM,
         LEAVE_GAME,
         GET_GAME_RESULT,
