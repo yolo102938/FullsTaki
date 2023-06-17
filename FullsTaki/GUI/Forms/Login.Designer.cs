@@ -51,6 +51,7 @@ namespace GUI.Forms
             this.login_button = new System.Windows.Forms.Button();
             this.signup_button = new System.Windows.Forms.Button();
             this.FullLogo = new System.Windows.Forms.PictureBox();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.FullLogo)).BeginInit();
             this.SuspendLayout();
             // 
@@ -117,12 +118,24 @@ namespace GUI.Forms
             this.FullLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.FullLogo.TabIndex = 6;
             this.FullLogo.TabStop = false;
+            this.FullLogo.Click += new System.EventHandler(this.FullLogo_Click);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(62, 70);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(204, 36);
+            this.button1.TabIndex = 7;
+            this.button1.Text = "test game(remove later)";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Login
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1231, 622);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.name_label);
             this.Controls.Add(this.name_input);
             this.Controls.Add(this.pass_label);
@@ -172,5 +185,6 @@ namespace GUI.Forms
         #endregion
 
         private PictureBox FullLogo;
+        private Button button1;
     }
 }

@@ -69,6 +69,12 @@
     <Compile Include="DataTypes\User.cs" />
     <Compile Include="DataTypes\Room.cs" />
     <Compile Include="Forms\Address.cs" />
+    <Compile Include="Forms\GameRoom.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\GameRoom.Designer.cs">
+      <DependentUpon>GameRoom.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\RoomAdmin.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -106,6 +112,9 @@
     <Compile Include="Forms\TakiResponse.cs" />
     <Compile Include="Source.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Forms\GameRoom.resx">
+      <DependentUpon>GameRoom.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\RoomAdmin.resx">
       <DependentUpon>RoomAdmin.cs</DependentUpon>
     </EmbeddedResource>
@@ -127,6 +136,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="packages.config" />
+    <None Include="pictures\Game\Cards\UnoAssets.pdf" />
     <None Include="Properties\DataSources\GUI.Forms.Rooms.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -157,6 +167,68 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="pictures\Game\Cards\Blue_0.png" />
+    <Content Include="pictures\Game\Cards\Blue_1.png" />
+    <Content Include="pictures\Game\Cards\Blue_2.png" />
+    <Content Include="pictures\Game\Cards\Blue_3.png" />
+    <Content Include="pictures\Game\Cards\Blue_4.png" />
+    <Content Include="pictures\Game\Cards\Blue_5.png" />
+    <Content Include="pictures\Game\Cards\Blue_6.png" />
+    <Content Include="pictures\Game\Cards\Blue_7.png" />
+    <Content Include="pictures\Game\Cards\Blue_8.png" />
+    <Content Include="pictures\Game\Cards\Blue_9.png" />
+    <Content Include="pictures\Game\Cards\Blue_Draw.png" />
+    <Content Include="pictures\Game\Cards\Blue_Reverse.png" />
+    <Content Include="pictures\Game\Cards\Blue_Skip.png" />
+    <Content Include="pictures\Game\Cards\Deck.png" />
+    <Content Include="pictures\Game\Cards\Green_0.png" />
+    <Content Include="pictures\Game\Cards\Green_1.png" />
+    <Content Include="pictures\Game\Cards\Green_2.png" />
+    <Content Include="pictures\Game\Cards\Green_3.png" />
+    <Content Include="pictures\Game\Cards\Green_4.png" />
+    <Content Include="pictures\Game\Cards\Green_5.png" />
+    <Content Include="pictures\Game\Cards\Green_6.png" />
+    <Content Include="pictures\Game\Cards\Green_7.png" />
+    <Content Include="pictures\Game\Cards\Green_8.png" />
+    <Content Include="pictures\Game\Cards\Green_9.png" />
+    <Content Include="pictures\Game\Cards\Green_Draw.png" />
+    <Content Include="pictures\Game\Cards\Green_Reverse.png" />
+    <Content Include="pictures\Game\Cards\Green_Skip.png" />
+    <Content Include="pictures\Game\Cards\Red_0.png" />
+    <Content Include="pictures\Game\Cards\Red_1.png" />
+    <Content Include="pictures\Game\Cards\Red_2.png" />
+    <Content Include="pictures\Game\Cards\Red_3.png" />
+    <Content Include="pictures\Game\Cards\Red_4.png" />
+    <Content Include="pictures\Game\Cards\Red_5.png" />
+    <Content Include="pictures\Game\Cards\Red_6.png" />
+    <Content Include="pictures\Game\Cards\Red_7.png" />
+    <Content Include="pictures\Game\Cards\Red_8.png" />
+    <Content Include="pictures\Game\Cards\Red_9.png" />
+    <Content Include="pictures\Game\Cards\Red_Draw.png" />
+    <Content Include="pictures\Game\Cards\Red_Reverse.png" />
+    <Content Include="pictures\Game\Cards\Red_Skip.png" />
+    <Content Include="pictures\Game\Cards\Wild.png" />
+    <Content Include="pictures\Game\Cards\Wild_Draw.png" />
+    <Content Include="pictures\Game\Cards\Yellow_0.png" />
+    <Content Include="pictures\Game\Cards\Yellow_1.png" />
+    <Content Include="pictures\Game\Cards\Yellow_2.png" />
+    <Content Include="pictures\Game\Cards\Yellow_3.png" />
+    <Content Include="pictures\Game\Cards\Yellow_4.png" />
+    <Content Include="pictures\Game\Cards\Yellow_5.png" />
+    <Content Include="pictures\Game\Cards\Yellow_6.png" />
+    <Content Include="pictures\Game\Cards\Yellow_7.png" />
+    <Content Include="pictures\Game\Cards\Yellow_8.png" />
+    <Content Include="pictures\Game\Cards\Yellow_9.png" />
+    <Content Include="pictures\Game\Cards\Yellow_Draw.png" />
+    <Content Include="pictures\Game\Cards\Yellow_Reverse.png" />
+    <Content Include="pictures\Game\Cards\Yellow_Skip.png" />
+    <Content Include="pictures\Game\crown.png" />
+    <Content Include="pictures\Game\Empty.png" />
+    <Content Include="pictures\Game\MockUp 0.png" />
+    <Content Include="pictures\Game\START.png" />
+    <Content Include="pictures\Game\Table.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

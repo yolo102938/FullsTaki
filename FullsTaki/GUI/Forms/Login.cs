@@ -31,5 +31,18 @@ namespace GUI.Forms
         {
 
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            GameRoom menu = new GameRoom();
+            Hide();
+            menu.ShowDialog();
+            Show();
+        }
+
+        private void FullLogo_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
