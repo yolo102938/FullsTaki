@@ -8,7 +8,7 @@ RoomRequestHandler::RoomRequestHandler(Room* room, LoggedUser* user, RoomManager
 }
 
 bool RoomRequestHandler::isRequestRelevant(RequestInfo request) const {
-    return(request.id == LEAVE_ROOM || request.id == GET_ROOM_STATE);
+    return(request.id == LEAVE_ROOM || request.id == GET_ROOM_STATE || request.id == LOGOUT || request.id == GET_ROOMS);
 }
 
 RequestResult RoomRequestHandler::handleRequest(RequestInfo request)  const {

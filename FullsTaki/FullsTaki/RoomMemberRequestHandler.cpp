@@ -6,7 +6,7 @@ RoomMemberRequestHandler::RoomMemberRequestHandler(const string username, const 
 
 bool RoomMemberRequestHandler::isRequestRelevant(const RequestInfo request) const
 {
-	return (request.id == LEAVE_ROOM) || (request.id == GET_ROOM_STATE);
+	return (request.id == LEAVE_ROOM) || (request.id == GET_ROOM_STATE || request.id == LOGOUT || request.id == GET_ROOMS);
 }
 
 

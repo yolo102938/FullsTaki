@@ -16,7 +16,7 @@ RoomAdminRequestHandler::RoomAdminRequestHandler(const string username, const SO
 }
 
 bool RoomAdminRequestHandler::isRequestRelevant(RequestInfo request) const {
-    return(request.id == CLOSE_ROOM || request.id == START_GAME || request.id == GET_ROOM_STATE);
+    return(request.id == CLOSE_ROOM || request.id == START_GAME || request.id == GET_ROOM_STATE || request.id == LOGOUT || request.id == GET_ROOMS);
 }
 
 RequestResult RoomAdminRequestHandler::handleRequest(RequestInfo request)  const {

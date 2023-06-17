@@ -36,12 +36,13 @@ GetPlayersInRoomRequest JsonRequestPacketDeserializer::deserializeGetPlayersInRo
     return GetPlayersInRoomRequest({ jsonData["room_id"]});
 }
 
-JoinRoomRequest JsonRequestPacketDeserializer::deserializeJoinRoom(const std::vector<unsigned char>& buffer)
+JoinRoomRequest JsonRequestPacketDeserializer::desirializeJoinRoom(const vector<unsigned char>& buffer)
 {
-    //parsing json data from the buffer to a json object.
-    json jsonData = parseJson(buffer);
-    //initializing and returning a SignupRequest object with the extracted data.
-    return JoinRoomRequest({ jsonData["room_id"] });
+    string data(buffer.begin(), buffer.end());
+    data = data.substr(data.find('{'));// get only the json part
+
+    json jsonData = json::parse(data); // parse to json
+    return JoinRoomRequest({ jsonData["roomId"] });
 }
 
 CreateRoomRequest JsonRequestPacketDeserializer::deserializeCreateRoom(const std::vector<unsigned char>& buffer)
@@ -50,7 +51,7 @@ CreateRoomRequest JsonRequestPacketDeserializer::deserializeCreateRoom(const std
     json jsonData = parseJson(buffer);
     //initializing and returning a SignupRequest object with the extracted data.
     std::cout<<(jsonData["max_users"]);
-    return CreateRoomRequest({ jsonData["roomName"],jsonData["maxUsers"]});
+    return CreateRoomRequest({ jsonData["name"],jsonData["max_users"]});
 }
 
 /*

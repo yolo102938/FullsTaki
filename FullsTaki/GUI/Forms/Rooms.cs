@@ -7,7 +7,6 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Net.Sockets;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,98 +21,15 @@ namespace GUI.Forms
     public partial class Rooms : Form
     {
 
-        private Timer timer;
-
         public Rooms()
         {
             InitializeComponent();
-            timer = new Timer();
-            timer.Interval = 2000; //2 seconds
-            timer.Tick += Timer_Tick;
-            timer.Start();
-            if (!comboBox2.DroppedDown)
-            {
-                int temp = comboBox2.SelectedIndex;
-                UpdateRooms();
-                comboBox2.SelectedIndex = temp;
-            }
-            
+            Text += Socket.LoggedUserFormatted;
         }
 
-        private void Timer_Tick(object sender, EventArgs e)
+        private void Refresh(object sender, EventArgs e)
         {
-            UpdateRooms();
-        }
-
-        private void UpdateRooms()
-        {
-            TakiMessage getrooms = new TakiMessage
-            {
-                Code = (int)TakiRequest.GET_ROOMS,
-                Content = ""
-            };
-
-            TakiClient.Socket.SendMsg(getrooms.ToString());
-
-            
-            if(true)
-            {
-
-                MSG msg = TakiClient.Socket.RecvMsg();
-                //MessageBox.Show(jsonString);
-                if(msg.code == 100)
-                {
-
-                    JArray jsonArray = (JArray)JObject.Parse(msg.json)["rooms"];
-                    rooms = new List<DataTypes.Room>();
-
-                    foreach (JArray roomArray in jsonArray)
-                    {
-                        int roomId = roomArray[1].Value<int>();
-                        string name = roomArray[3].Value<string>();
-                        int maxPlayers = roomArray[5].Value<int>();
-                        int players = 0;
-                        TakiMessage getplayercount = new TakiMessage
-                        {
-                            Code = (int)TakiRequest.GET_USERS_IN_ROOM,
-                            Content = "{\"room_id\":" + roomId.ToString() + "}"
-                        };
-                        //MessageBox.Show(getplayercount.ToString()); 
-                        TakiClient.Socket.SendMsg(getplayercount.ToString());
-                        string tmp = TakiClient.Socket.RecvMsg().json;
-                        JArray players_ = ((JArray)JObject.Parse(tmp)["players"]);
-                        players = players_.Count;
-                        //add later getplayers inroom request
-                        if (roomArray[7].Value<int>() != 1)
-                        {
-                            rooms.Add(new DataTypes.Room(name, roomId, maxPlayers, players));
-                        }
-                    }
-                    index = comboBox2.SelectedIndex;
-                    comboBox2.Items.Clear();
-                    
-                    RoomList.Items.Clear();
-                    if (rooms.Count!=0)
-                    {
-                        RoomList.Items.Add("|" + "Room ID".PadLeft(35).PadRight(65) + "|" + "Name".PadLeft(35).PadRight(70) + "|" + "Players".PadLeft(35).PadRight(70) + "|");
-                        RoomList.Items.AddRange(rooms.ToArray());
-                        foreach (DataTypes.Room room in rooms)
-                        {
-                            comboBox2.Items.Add(room.name);
-                        }
-                        try { comboBox2.SelectedIndex = index; }
-                        catch(Exception e) { }
-                    }
-                    else
-                    {
-                        RoomList.Items.Add("|" + "Room ID".PadLeft(35).PadRight(66) + "|" + "Name".PadLeft(35).PadRight(70) + "|" + "Players".PadLeft(35).PadRight(70) + "|");
-                        RoomList.Items.Add("                \n\n\n\n\n                              No rooms at the moment. Create one!");
-                    }
-                }
-
-            }
-
-
+            ObsessiveDataRefresher.AutoRefreshData(this);
         }
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
@@ -133,25 +49,41 @@ namespace GUI.Forms
 
         private void button1_Click(object sender, EventArgs e)
         {
-            int room_id = rooms[comboBox2.SelectedIndex].id;
-
-            string sendLoginMsg = TakiClient.TakiProtocol.joinRoom(room_id);
-            TakiClient.Socket.SendMsg(sendLoginMsg);
-
-            MSG recv = TakiClient.Socket.RecvMsg();
-            if (recv.code != 101)
+            bool isGameAlreadyRunning = IsRoomActive(RoomList.SelectedItem.ToString());
+            if (isGameAlreadyRunning)
             {
-                MessageBox.Show("Successfully joined room", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                //TakiClient.Socket.LoggedUser = name_input.Text;
-                //Text += TakiClient.Socket.LoggedUserFormatted;
-                //MainMenu mainM = new MainMenu(name_input.Text);
-                //this.Hide();
-                //mainM.Show();
+                string sendJoinMsg = TakiProtocol.JoinRoom(int.Parse(comboBox2.SelectedItem.ToString()));
+                Socket.SendMsg(sendJoinMsg);
+
+                string recvJoinMsg = Socket.RecvMsgByResponse((int)TakiResponse.JOIN_ROOM);
+                if (recvJoinMsg != null)
+                {
+                    ObsessiveDataRefresher.StopAutoRefreshData();
+
+                    MessageBox.Show($"Successfuly joined to room: {RoomList.SelectedItem}", "Server Response", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    RoomParticipant menu = new RoomParticipant(RoomList.SelectedItem.ToString(), false);
+                    Hide();
+                    menu.ShowDialog();
+                    Close();
+                }
             }
             else
-            {
+                MessageBox.Show("The game is already running in this room", "Can't Join", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
 
+        public static bool IsRoomActive(string roomName)
+        {
+            TakiMessage rooms = ObsessiveDataRefresher.RoomsDataUpdater.GetRooms();
+            if (rooms != null)
+            {
+                for (int i = 0; i < 1; i++)
+                {
+                    dynamic room = rooms;
+                    if ((string)room == roomName)
+                        return (int)room == 1;
+                }
             }
+            return false;
         }
 
         private void name_input_TextChanged(object sender, EventArgs e)
@@ -164,27 +96,26 @@ namespace GUI.Forms
 
         }
 
-        private void login_button_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("create room" + name_input.Text + " Ohad add server pls");
-        }
-
         private void Logout_Button_Click(object sender, EventArgs e)
         {
-            timer.Stop();
-            Login menu = new Login();
-            this.Hide();
-            menu.Show();
+            LogoutClient();
         }
-
-        private void Rooms_Load(object sender, EventArgs e)
+        private void LogoutClient()
         {
+            if (Socket.Connected)
+            {
+                string sendLoginMsg = TakiClient.TakiProtocol.Logout(Socket.LoggedUser, Socket.LoggedUserPass);
+                TakiClient.Socket.SendMsg(sendLoginMsg);
 
-        }
-
-        private void pass_label_Click(object sender, EventArgs e)
-        {
-
+                string recvLoginMsg = Socket.RecvMsgByResponse((int)TakiResponse.LOGOUT);
+                if (recvLoginMsg != null)
+                {
+                    MessageBox.Show("Successfully logged out", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Login login = new Login();
+                    this.Hide();
+                    login.Show();
+                }
+            }
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -194,33 +125,9 @@ namespace GUI.Forms
 
         private void button2_Click(object sender, EventArgs e)
         {
-
-            string sendLoginMsg = TakiClient.TakiProtocol.CreateRoom(name_input.Text, int.Parse((string)comboBox1.SelectedItem));
-            TakiClient.Socket.SendMsg(sendLoginMsg);
-
-            MSG recv = TakiClient.Socket.RecvMsg();
-            if (recv.code != 101)
-            {
-                MessageBox.Show("Successfully created room", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                //TakiClient.Socket.LoggedUser = name_input.Text;
-                //Text += TakiClient.Socket.LoggedUserFormatted;
-                //MainMenu mainM = new MainMenu(name_input.Text);
-                //this.Hide();
-                //mainM.Show();
-                if (rooms.Count != 0) { RoomAdmin menu = new RoomAdmin(rooms[rooms.Count - 1].id + 1); Hide();
-                    menu.ShowDialog();
-                    Show();
-                }
-                else { RoomAdmin menu = new RoomAdmin(0); Hide();
-                    menu.ShowDialog();
-                    Show();
-                }
-                
-            }
-            else
-            {
-
-            }
+            Hide();
+            ObsessiveDataRefresher.CreateRoomForm(name_input.Text, int.Parse(comboBox1.SelectedItem.ToString()));
+            Close();
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -235,8 +142,11 @@ namespace GUI.Forms
 
         private void button3_Click(object sender, EventArgs e)
         {
-            timer.Stop();
+            MainMenu m = new MainMenu(Socket.LoggedUser);
             this.Hide();
+            m.ShowDialog();
+            Close();
+            
         }
     }
 }

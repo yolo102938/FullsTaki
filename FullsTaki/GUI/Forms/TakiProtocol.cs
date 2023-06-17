@@ -54,10 +54,10 @@ namespace TakiClient
         public static string CreateRoom(string name, int maxp)
         {
             Dictionary<string, object> jsonDictionary = new Dictionary<string, object>
-    {
-        { "name", name },
-        { "max_users", maxp }
-    };
+        {
+            { "name", name },
+            { "max_users", maxp }
+        };
 
             TakiMessage loginMessage = new TakiMessage
             {
@@ -97,6 +97,45 @@ namespace TakiClient
             };
             return loginMessage.ToString();
         }
+        public static string LeaveRoom()
+        {
+            TakiMessage leaveRoomMessage = new TakiMessage((int)TakiRequest.LEAVE_ROOM, "");
+            return leaveRoomMessage.ToString();
+        }
+        public static string GetRooms()
+        {
+            TakiMessage getRoomsMessage = new TakiMessage((int)TakiRequest.GET_ROOMS, "");
+            return getRoomsMessage.ToString();
+        }
 
+        public static string GetCurrentRoomState()
+        {
+            TakiMessage getRoomStateMessage = new TakiMessage((int)TakiRequest.GET_ROOM_STATE, "");
+            return getRoomStateMessage.ToString();
+        }
+        public static string StartGame()
+        {
+            TakiMessage startGameMessage = new TakiMessage((int)TakiRequest.START_GAME, "");
+            return startGameMessage.ToString();
+        }
+        public static string CloseRoom()
+        {
+            TakiMessage closeRoomMessage = new TakiMessage((int)TakiRequest.CLOSE_ROOM, "");
+            return closeRoomMessage.ToString();
+        }
+        public static string JoinRoom(int roomId)
+        {
+            Dictionary<string, int> jsonDictionary = new Dictionary<string, int>
+            {
+                { "roomId", roomId }
+            };
+
+            TakiMessage joinRoomMessage = new TakiMessage
+            {
+                Code = (int)TakiRequest.JOIN_ROOM,
+                Content = JsonConvert.SerializeObject(jsonDictionary)
+            };
+            return joinRoomMessage.ToString();
+        }
     }
 }

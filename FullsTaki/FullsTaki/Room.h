@@ -9,10 +9,10 @@ using std::string;
 
 typedef struct RoomData
 {
-	unsigned int id;
+	unsigned int id = 0;
 	string name;
 	int maxPlayers = 4;
-	unsigned int isActive;
+	unsigned int isActive = false;
 	unsigned int timePerPlay = 10;
 } RoomData;
 
@@ -24,6 +24,7 @@ public:
 	Room(RoomData metadata, LoggedUser user) { m_metadata = metadata; m_users.push_back(user); }
 	Room(RoomData data) {this->m_metadata = data;}
 	Room(const Room& room);
+	~Room() = default;
 	void addUser(LoggedUser);
 	void removeUser(LoggedUser);
 	vector<string> getAllUsers() const;

@@ -36,6 +36,11 @@ RoomAdminRequestHandler* RequestHandlerFactory::createRoomAdminRequestHandler(co
 {
     return new RoomAdminRequestHandler(username, socket, this->m_roomManager, *this, roomId);
 }
+RoomAdminRequestHandler* RequestHandlerFactory::createRoomAdminRequestHandler(const string username, const SOCKET socket, const int roomId, RoomManager* temp)
+{
+    (this->m_roomManager) = *temp;
+    return new RoomAdminRequestHandler(username, socket, this->m_roomManager, *this, roomId);
+}
 RoomMemberRequestHandler* RequestHandlerFactory::createRoomMemberRequestHandler(const string username, const SOCKET socket, const int roomId)
 {
     return new RoomMemberRequestHandler(username, socket, this->m_roomManager, *this, roomId);

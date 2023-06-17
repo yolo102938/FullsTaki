@@ -26,8 +26,7 @@ namespace GUI
         {
             Rooms menu = new Rooms();
             Hide();
-            menu.ShowDialog();
-            Show();
+            menu.Show();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -47,13 +46,9 @@ namespace GUI
 
         private void button4_Click(object sender, EventArgs e)
         {
-
             LogoutClient();
-            Login menu = new Login();
-            this.Hide();
-            menu.Show();
         }
-        private void LogoutClient()
+        public void LogoutClient()
         {
             if (Socket.Connected)
             {

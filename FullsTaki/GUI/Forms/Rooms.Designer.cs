@@ -45,9 +45,9 @@ namespace GUI.Forms
             this.button1 = new System.Windows.Forms.Button();
             this.name_input = new System.Windows.Forms.TextBox();
             this.name_label = new System.Windows.Forms.Label();
-            this.Logout_Button = new System.Windows.Forms.Button();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.button3 = new System.Windows.Forms.Button();
+            this.Logout_Button = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.roomsBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -149,16 +149,6 @@ namespace GUI.Forms
             this.name_label.Text = "Room Name:";
             this.name_label.Click += new System.EventHandler(this.name_label_Click);
             // 
-            // Logout_Button
-            // 
-            this.Logout_Button.Location = new System.Drawing.Point(1053, 24);
-            this.Logout_Button.Name = "Logout_Button";
-            this.Logout_Button.Size = new System.Drawing.Size(136, 55);
-            this.Logout_Button.TabIndex = 10;
-            this.Logout_Button.Text = "Log Out";
-            this.Logout_Button.UseVisualStyleBackColor = true;
-            this.Logout_Button.Click += new System.EventHandler(this.Logout_Button_Click);
-            // 
             // comboBox2
             // 
             this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -171,7 +161,7 @@ namespace GUI.Forms
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(879, 24);
+            this.button3.Location = new System.Drawing.Point(896, 24);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(136, 55);
             this.button3.TabIndex = 17;
@@ -179,11 +169,21 @@ namespace GUI.Forms
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
+            // Logout_Button
+            // 
+            this.Logout_Button.Location = new System.Drawing.Point(1053, 24);
+            this.Logout_Button.Name = "Logout_Button";
+            this.Logout_Button.Size = new System.Drawing.Size(136, 55);
+            this.Logout_Button.TabIndex = 10;
+            this.Logout_Button.Text = "Log Out";
+            this.Logout_Button.UseVisualStyleBackColor = true;
+            this.Logout_Button.Click += new System.EventHandler(this.Logout_Button_Click);
+            // 
             // Rooms
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1231, 622);
+            this.ClientSize = new System.Drawing.Size(1200, 617);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.comboBox2);
@@ -199,7 +199,7 @@ namespace GUI.Forms
             this.Controls.Add(this.pictureBox1);
             this.Name = "Rooms";
             this.Text = "Form1";
-            this.Load += new System.EventHandler(this.Rooms_Load);
+            this.Load += new System.EventHandler(this.Refresh);
             ((System.ComponentModel.ISupportInitialize)(this.roomsBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
@@ -208,7 +208,7 @@ namespace GUI.Forms
         }
 
         #endregion
-        private List<DataTypes.Room> rooms;
+        internal List<DataTypes.Room> rooms;
         private int index;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Label label1;
@@ -217,12 +217,12 @@ namespace GUI.Forms
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.BindingSource roomsBindingSource;
         private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.ListBox RoomList;
+        public System.Windows.Forms.ListBox RoomList;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TextBox name_input;
         private System.Windows.Forms.Label name_label;
-        private System.Windows.Forms.Button Logout_Button;
         private System.Windows.Forms.ComboBox comboBox2;
         private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button Logout_Button;
     }
 }

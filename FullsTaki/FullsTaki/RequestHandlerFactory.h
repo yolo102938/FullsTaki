@@ -30,6 +30,8 @@ public:
 
 	RoomAdminRequestHandler* createRoomAdminRequestHandler(Room* room, LoggedUser* user);
 
+	RoomAdminRequestHandler* createRoomAdminRequestHandler(const string username, const SOCKET socket, const int roomId, RoomManager* temp);
+
 	RoomAdminRequestHandler* createRoomAdminRequestHandler(const string username, const SOCKET socket, const int roomId);
 
 	RoomRequestHandler* createRoomRequestHandler(Room* room, LoggedUser* user);

@@ -2,8 +2,14 @@
 
 Room::Room(const Room& room)
 {
-	this->m_metadata = room.m_metadata;
-	this->m_users = room.m_users;
+	try
+	{
+		this->m_metadata = room.m_metadata;
+		this->m_users = room.m_users;
+	}
+	catch (...)
+	{
+	}
 }
 
 void Room::addUser(const LoggedUser user)
