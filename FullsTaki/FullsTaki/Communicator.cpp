@@ -1,5 +1,8 @@
 #pragma once
 #include "Communicator.h"
+#include <algorithm>
+#include <array>
+#include <iostream>
 void sendError(SOCKET clientSocket) {
 	int code = 0;
 	if (send(clientSocket, reinterpret_cast<const char*>(&code), sizeof(code), 0) != sizeof(code))
@@ -45,7 +48,10 @@ void Communicator::handleNewClient(SOCKET socketClient)
 			int msgSize = GetDataLength(socketClient); //The length of the messaage
 			vector<unsigned char> bufferData = GetMsgData(socketClient, msgSize); //The data of the messaage
 			string dataStr = string(bufferData.begin(), bufferData.end());
-
+			if (msgCode == 0)
+			{
+				continue;
+			}
 			//If the client is not logged in, creating a new LoginRequestHandler instance and adding it to the clients map
 			if (!isLoggedIn)
 			{
@@ -54,10 +60,10 @@ void Communicator::handleNewClient(SOCKET socketClient)
 			}
 
 			//Ensuring the received request code is either LOGIN_REQUEST or SIGNUP_REQUEST if the client is not logged in
-			if (msgCode != LOGIN_REQUEST && msgCode != SIGNUP_REQUEST && !isLoggedIn)
-			{
-				sendError(socketClient); //sending an error if the received request code is invalid
-			}
+			//if (msgCode != LOGIN_REQUEST && msgCode != SIGNUP_REQUEST && !isLoggedIn)
+			//{
+			//	sendError(socketClient); //sending an error if the received request code is invalid
+			//}
 
 			//Creating a RequestInfo object to store the received request information
 			RequestInfo reqInfo = { msgCode, std::time(nullptr), bufferData };
@@ -67,13 +73,8 @@ void Communicator::handleNewClient(SOCKET socketClient)
 			{
 				//Processing the received request and obtaining the result
 				RequestResult reqResult = this->m_clients[socketClient]->handleRequest(reqInfo);
-				for (int i = 0; i < reqResult.response.size()-8; i++)
-				{
-					reqResult.response[i] = reqResult.response[i + 8];
-					reqResult.response[i + 8] = '\0';
-				}
 				//Sending the response data
-				if (send(socketClient,reqResult.response.data(), reqResult.response.size(), 0) == SOCKET_ERROR)
+				if (send(socketClient, reinterpret_cast<char*>(reqResult.response.data()), reqResult.response.size(), 0) == SOCKET_ERROR)
 				{
 					sendError(socketClient); //sending an error if the response data is not sent correctly
 				}
@@ -88,7 +89,7 @@ void Communicator::handleNewClient(SOCKET socketClient)
 				{
 					sendError(socketClient); //sending an error if the response data is not sent correctly
 				}
-			}
+			}			
 		}
 	}
 	catch (const std::exception& e)
@@ -136,9 +137,15 @@ int Communicator::GetMsgCode(const SOCKET socket) const
 {
 	char code_buffer[2]{};
 	recv(socket, (char*)&code_buffer, 2, 0);
-	unsigned int code = std::stoul(code_buffer, nullptr, 16);
-
-	return code;
+	try
+	{
+		unsigned int code = std::stoul(code_buffer, nullptr, 16);
+		return code;
+	}
+	catch (...)
+	{
+		return 0;
+	}
 }
 
 
@@ -146,9 +153,15 @@ int Communicator::GetDataLength(const SOCKET socket) const
 {
 	char length_buffer[8]{};
 	recv(socket, (char*)&length_buffer, 8, 0);
-	unsigned int length = std::stoul(length_buffer, nullptr, 16);
-
-	return length;
+	try
+	{
+		unsigned int length = std::stoul(length_buffer, nullptr, 16);
+		return length;
+	}
+	catch (...)
+	{
+		return 0;
+	}
 }
 
 

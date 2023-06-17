@@ -155,6 +155,7 @@ namespace GUI.Forms
             {
                 MessageBox.Show("Successfully logged in", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 Socket.LoggedUser = name_input.Text;
+                Socket.LoggedUserPass = pass_input.Text;
                 Text += Socket.LoggedUserFormatted;
                 MainMenu mainM = new MainMenu(name_input.Text);
                 this.Hide();

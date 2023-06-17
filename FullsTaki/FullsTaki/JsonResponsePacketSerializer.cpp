@@ -101,7 +101,8 @@ vector<char> JsonResponsePacketSerializer::serializeResponse(const GetRoomsRespo
 	json rooms = json::array();
 	for (const auto& room : response.rooms)
 	{
-		rooms.push_back({"id", room.id,"name",room.name,"max_players",room.maxPlayers,"q_number",room.numOfQuestionsInGame,"time_per_q",room.timePerQuestion,"is_active",room.isActive});
+	
+		rooms.push_back({"id", room.id,"name",room.name,"max_players",room.maxPlayers,"is_active",room.isActive});
 	}
 
 	json sData = { {"status", response.status}, {"rooms", rooms} };
@@ -117,9 +118,46 @@ Output: vector<char> response (A serialized json response as a vector of chars).
 vector<char> JsonResponsePacketSerializer::serializeResponse(const getHighScoreResponse response)
 {
 	json sData = { {"status", response.status}, {"statistics", response.statistics} };
-
+	std::cout << "DONEDID\n";
 	return responseBuilder(response.status, sData.dump());
 }
+
+
+vector<char> JsonResponsePacketSerializer::serializeResponse(const CloseRoomResponse& response)
+{
+	json sData;
+	sData["status"] = response.status;
+	return responseBuilder(response.status, sData.dump());
+}
+
+vector<char> JsonResponsePacketSerializer::serializeResponse(const StartGameResponse& response)
+{
+	json sData;
+	sData["status"] = response.status;
+	return responseBuilder(response.status, sData.dump());
+}
+
+vector<char> JsonResponsePacketSerializer::serializeResponse(const GetRoomStateResponse& response)
+{
+	json sData;
+	sData["status"] = response.status;
+	sData["hasGameBegun"] = response.hasGameBegun;
+	std::string user_line = "";
+	for (auto name : response.players) {
+		user_line = user_line + name + ",";
+	}
+	user_line.pop_back();
+	sData["players"] = user_line;
+	return responseBuilder(response.status, sData.dump());
+}
+
+vector<char> JsonResponsePacketSerializer::serializeResponse(const LeaveRoomResponse& response)
+{
+	json sData;
+	sData["status"] = response.status;
+	return responseBuilder(response.status, sData.dump());
+}
+
 
 
 
@@ -147,5 +185,6 @@ vector<char> JsonResponsePacketSerializer::responseBuilder(const int resStatusCo
 	//adding the json data to the response packet.
 	response.insert(response.end(), sData.begin(), sData.end());
 	//returning the response packet.
+	std::cout << response.data();
 	return response;
 }

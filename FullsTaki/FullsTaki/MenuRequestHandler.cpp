@@ -1,9 +1,8 @@
-
 #include "MenuRequestHandler.h"
 
 bool MenuRequestHandler::isRequestRelevant(RequestInfo request) const
 {
-    return request.id == LOGOUT_REQUEST || request.id == GETROOMS_REQUEST || request.id == CREATEROOM_REQUEST || request.id == JOINROOM_REQUEST || request.id == GETPARTICIPANTS_REQUEST;
+    return request.id == LOGOUT || request.id == GET_ROOMS || request.id == CREATE_ROOM || request.id == JOIN_ROOM || request.id == GET_USERS_IN_ROOM;
 }
 
 RequestResult MenuRequestHandler::handleRequest(RequestInfo request) const
@@ -11,23 +10,23 @@ RequestResult MenuRequestHandler::handleRequest(RequestInfo request) const
     RequestResult ret;//temp, will delete before returning
     try
     {
-        if (request.id == LOGOUT_REQUEST)
+        if (request.id == LOGOUT)
         {
-           ret = signout(request);
+           ret = logout(request);
         }
-        else if (request.id == GETROOMS_REQUEST)
+        else if (request.id == GET_ROOMS)
         {
             ret = getRooms(request);
         }
-        else if (request.id == GETPARTICIPANTS_REQUEST)
+        else if (request.id == GET_USERS_IN_ROOM)
         {
             ret = getPlayersInRoom(request);
         }
-        else if (request.id == JOINROOM_REQUEST)
+        else if (request.id == JOIN_ROOM)
         {
            ret = joinRoom(request);
         }
-        else if (request.id == CREATEROOM_REQUEST)
+        else if (request.id == CREATE_ROOM)
         {
             ret = createRoom(request);
         }
@@ -43,25 +42,19 @@ RequestResult MenuRequestHandler::handleRequest(RequestInfo request) const
 }
 
 
-RequestResult MenuRequestHandler::signout(RequestInfo request) const 
+RequestResult MenuRequestHandler::logout(const RequestInfo request) const
 {
-    LoginResponse res = { GENERIC_OK };
-    m_loginManager->logout(m_user->getUsername());
-    for (auto room : m_roomManager->getRooms()) {
-        for (auto user : m_roomManager->getRoom(room.id).getAllUsers()) {
-            if (user == m_user->getUsername()) {
-                m_roomManager->getRoom(room.id).removeUser(*m_user);
-            }
-        }
-    }
-    return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)m_handlerFactory->createLoginRequestHandler()};
+    LoginRequest req = JsonRequestPacketDeserializer::deserializeLoginRequest(request.buffer);
+    LoginRequestHandler* temp = new LoginRequestHandler(*m_handlerFactory);
+    temp->m_loginManager.logout(req.username);
+    LogoutResponse res = { LOGOUT_RESPONSE };
+    return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory->createLoginRequestHandler() };
 }
 
 RequestResult MenuRequestHandler::getRooms(RequestInfo request) const
 {
-
-    GetRoomsResponse res = {GENERIC_OK,this->m_roomManager->getRooms()};
-    return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory->createMenuRequestHandler(m_user) };
+    GetRoomsResponse res = { GET_ROOMS_RESPONSE, this->m_roomManager->getRooms() };
+    return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory->createMenuRequestHandler(this->m_user->getUsername(), this->m_user->getSocket()) };
 }
 
 RequestResult MenuRequestHandler::getPlayersInRoom(RequestInfo request) const
@@ -85,28 +78,43 @@ RequestResult MenuRequestHandler::getHighScore(RequestInfo request) const
 */
 RequestResult MenuRequestHandler::joinRoom(RequestInfo request) const
 {
-    JoinRoomResponse res = { GENERIC_OK };
-    JoinRoomRequest req = JsonRequestPacketDeserializer::deserializeJoinRoom(request.buffer);
-    int maxPlayers = this->m_roomManager->getRoom(req.roomId).getRoomData().maxPlayers;
-    int currPlayers = this->m_roomManager->getRoom(req.roomId).getAllUsers().size();
-    if(maxPlayers == currPlayers)
+    JoinRoomRequest req = JsonRequestPacketDeserializer::desirializeJoinRoom(request.buffer);
+    ErrorResponse error_res;
+    if (this->m_roomManager->hasRoom(req.roomId)) // check if room exist
     {
+        if (this->m_roomManager->getRoom(req.roomId).getRoomData().maxPlayers > this->m_roomManager->getRoom(req.roomId).getAllUsers().size()) // check if room isn't full
+        {
+            this->m_roomManager->getRoom(req.roomId).addUser(*this->m_user);
 
-        throw("Room is full!");
+            JoinRoomResponse res = { JOIN_ROOM_RESPONSE };
+            return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory->createRoomMemberRequestHandler(this->m_user->getUsername(), this->m_user->getSocket(), req.roomId) };
+        }
+
+        else
+            error_res = { "Room is full!" };
     }
-    else if (this->m_roomManager->getRoom(req.roomId).getRoomData().isActive) {
-        throw("Room is currently in a game!");
-    }
-    this->m_roomManager->getRoom(req.roomId).addUser(*m_user);
-    return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory->createMenuRequestHandler(m_user) };
+
+    else
+        error_res = { "Room doesn't exist" };
+
+    return { JsonResponsePacketSerializer::serializeResponse(error_res), (IRequestHandler*)this->m_handlerFactory->createMenuRequestHandler(this->m_user->getUsername(), this->m_user->getSocket()) };
 }
 
-RequestResult MenuRequestHandler::createRoom(RequestInfo request) const
+RequestResult MenuRequestHandler::createRoom(const RequestInfo request) const
 {
-    CreateRoomResponse res = { GENERIC_OK };
+
     CreateRoomRequest req = JsonRequestPacketDeserializer::deserializeCreateRoom(request.buffer);
-    
-    this->m_roomManager->createRoom(*m_user, { static_cast<unsigned int>(this->m_roomManager->getRooms().size()) + 1, req.roomName,req.maxUsers,req.questionCount,0});
-    return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory->createMenuRequestHandler(m_user) };
+
+    if (req.maxUsers > 1)
+    {
+        RoomData room_data = { 0, req.roomName, req.maxUsers, true, 10 };
+        this->m_roomManager->createRoom(*this->m_user, room_data);
+        CreateRoomResponse res = { CREATE_ROOM_RESPONSE };
+        return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory->createRoomAdminRequestHandler(this->m_user->getUsername(), this->m_user->getSocket(), room_data.id, this->m_roomManager) };
+    }
+
+    ErrorResponse error_res = { "Error creating room" }; // get the proper error message
+
+    return { JsonResponsePacketSerializer::serializeResponse(error_res), (IRequestHandler*)this->m_handlerFactory->createMenuRequestHandler(this->m_user->getUsername(), this->m_user->getSocket()) };
 }
 

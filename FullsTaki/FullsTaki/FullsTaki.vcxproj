@@ -135,17 +135,23 @@
     <ClCompile Include="LoginManager.cpp" />
     <ClCompile Include="LoginRequestHandler.cpp" />
     <ClCompile Include="RequestHandlerFactory.cpp" />
+    <ClCompile Include="RoomMemberRequestHandler.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="RoomManager.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="MenuRequestHandler.cpp" />
+    <ClCompile Include="RoomAdminRequestHandler.cpp" />
+    <ClCompile Include="RoomRequestHandler.cpp" />
     <ClCompile Include="sqlite3.c" />
     <ClCompile Include="SqliteDatabase.cpp" />
     <ClCompile Include="WSAInitializer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Communicator.h" />
+    <ClInclude Include="RoomMemberRequestHandler.h" />
+    <ClInclude Include="RoomRequestHandler.h" />
+    <ClInclude Include="RoomAdminRequestHandler.h" />
     <ClInclude Include="ServerData.h" />
     <ClInclude Include="MenuRequestHandler.h" />
     <ClInclude Include="Room.h" />
