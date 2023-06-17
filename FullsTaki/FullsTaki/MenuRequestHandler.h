@@ -17,7 +17,7 @@ class MenuRequestHandler : public IRequestHandler {
             m_handlerFactory = &factory;
         }
     private:
-        RequestResult signout(RequestInfo request) const;
+        RequestResult logout(const RequestInfo request) const;
         RequestResult getRooms(RequestInfo request) const;
         RequestResult getPlayersInRoom(RequestInfo request) const;
         RequestResult getPersonalStats(RequestInfo request) const;

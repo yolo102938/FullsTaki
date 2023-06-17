@@ -14,7 +14,11 @@ namespace TakiClient
     {
         public int code;
         public string json;
-        public MSG(int cod,string jso) {code= cod; json = jso; } 
+        public MSG(int cod,string jso) {code= cod; json = jso; }
+        public override string ToString()
+        {
+            return code.ToString() +" "+ json;
+        }
     }
     public static class Socket
     {
@@ -23,6 +27,8 @@ namespace TakiClient
         public static bool IsLogged => LoggedUser != null;
 
         public static string LoggedUser { get; set; } = null;
+
+        public static string LoggedUserPass { get; set; } = null;
 
         public static string LoggedUserFormatted => IsLogged ? $" (Logged as {LoggedUser})" : "";
 

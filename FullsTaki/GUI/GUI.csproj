@@ -66,8 +66,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataTypes\User.cs" />
     <Compile Include="DataTypes\Room.cs" />
     <Compile Include="Forms\Address.cs" />
+    <Compile Include="Forms\RoomAdmin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\RoomAdmin.Designer.cs">
+      <DependentUpon>RoomAdmin.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Signup.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -99,6 +106,9 @@
     <Compile Include="Forms\TakiResponse.cs" />
     <Compile Include="Source.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Forms\RoomAdmin.resx">
+      <DependentUpon>RoomAdmin.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Rooms.resx">
       <DependentUpon>Rooms.cs</DependentUpon>
     </EmbeddedResource>

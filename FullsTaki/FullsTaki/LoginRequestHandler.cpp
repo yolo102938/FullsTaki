@@ -48,7 +48,6 @@ RequestResult LoginRequestHandler::login(const RequestInfo request) const
 	return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory.createMenuRequestHandler(new LoggedUser{req.username})};
 }
 
-
 RequestResult LoginRequestHandler::signup(const RequestInfo request) const
 {
 	SignupRequest req = JsonRequestPacketDeserializer::deserializeSignupRequest(request.buffer);

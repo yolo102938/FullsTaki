@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Net.Sockets;
 using GUI.Forms;
-
 namespace TakiClient
 {
     public static class TakiProtocol
@@ -81,6 +80,21 @@ namespace TakiClient
                 Content = JsonConvert.SerializeObject(jsonDictionary)
             };
 
+            return loginMessage.ToString();
+        }
+        public static string Logout(string username, string password)
+        {
+            Dictionary<string, string> jsonDictionary = new Dictionary<string, string>
+            {
+                { "username", username },
+                { "password", password }
+            };
+
+            TakiMessage loginMessage = new TakiMessage
+            {
+                Code = (int)TakiRequest.LOGOUT,
+                Content = JsonConvert.SerializeObject(jsonDictionary)
+            };
             return loginMessage.ToString();
         }
 

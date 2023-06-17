@@ -12,7 +12,7 @@ RequestResult MenuRequestHandler::handleRequest(RequestInfo request) const
     {
         if (request.id == LOGOUT)
         {
-           ret = signout(request);
+           ret = logout(request);
         }
         else if (request.id == GET_ROOMS)
         {
@@ -42,18 +42,13 @@ RequestResult MenuRequestHandler::handleRequest(RequestInfo request) const
 }
 
 
-RequestResult MenuRequestHandler::signout(RequestInfo request) const 
+RequestResult MenuRequestHandler::logout(const RequestInfo request) const
 {
-    LoginResponse res = { GENERIC_OK };
-    LoginManager::staticInstance(this->m_handlerFactory->getDataBase()).logout(this->m_user->getUsername());
-    for (auto room : m_roomManager->getRooms()) {
-        for (auto user : m_roomManager->getRoom(room.id).getAllUsers()) {
-            if (user == m_user->getUsername()) {
-                m_roomManager->getRoom(room.id).removeUser(*m_user);
-            }
-        }
-    }
-    return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)m_handlerFactory->createLoginRequestHandler()};
+    LoginRequest req = JsonRequestPacketDeserializer::deserializeLoginRequest(request.buffer);
+    LoginRequestHandler* temp = new LoginRequestHandler(*m_handlerFactory);
+    temp->m_loginManager.logout(req.username);
+    LogoutResponse res = { LOGOUT_RESPONSE };
+    return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory->createLoginRequestHandler() };
 }
 
 RequestResult MenuRequestHandler::getRooms(RequestInfo request) const
