@@ -128,39 +128,25 @@ namespace GUI.Forms
             }
         }
 
-        public static JArray ProcessJsonPlayers(string json)
+        public static List<string> ProcessJsonPlayers(string json)
         {
-            TakiMessage getplayercount = new TakiMessage
+            // Extract the status code
+            int statusCode = Int32.Parse(json.Substring(0, json.IndexOf('{')));
+
+            // Extract the JSON part
+            json = json.Substring(json.IndexOf('{'));
+            JObject jObject = JObject.Parse(json);
+            string playersString = (string)jObject["players"];
+            string[] playersArray = playersString.Split(',');
+
+            List<string> playerStrings = new List<string>();
+            for (int i = 0; i < playersArray.Length; i++)
             {
-                Code = (int)TakiRequest.GET_USERS_IN_ROOM,
-                Content = "{\"room_id\":" + 1.ToString() + "}"
-            };
-
-            TakiClient.Socket.SendMsg(getplayercount.ToString());
-            string tmp = TakiClient.Socket.RecvMsg().json;
-            JArray players_ = ((JArray)JObject.Parse(tmp)["players"]);
-            return players_;
-        }
-
-        public static int ExtractId(string roomString)
-        {
-            // The regular expression pattern to find the ID
-            string pattern = @"Room ID: (\d+)";
-
-            // Get the match object
-            Match match = Regex.Match(roomString, pattern);
-
-            // If the match is successful
-            if (match.Success)
-            {
-                // Parse and return the ID
-                return Int32.Parse(match.Groups[1].Value);
+                string playerString = $"PLAYER {i + 1}: {playersArray[i].Trim()}";
+                playerStrings.Add(playerString);
             }
-            else
-            {
-                // If the ID is not found, throw an exception
-                throw new Exception("No ID found in the room string.");
-            }
+
+            return playerStrings;
         }
 
         internal static class RoomsDataUpdater
@@ -242,15 +228,15 @@ namespace GUI.Forms
                     {
                         if (autoRefreshRunning)
                         {
-                            JArray players = ProcessJsonPlayers(data);
+                            List<string> players = ProcessJsonPlayers(data);
                             form.Invoke(new MethodInvoker(delegate
                             {
                                 form.RoomList.Items.Clear();
 
                                 foreach (var player in players)
                                 {
-                                    MessageBox.Show(player.Value<string>());
-                                    form.RoomList.Items.Add(player.Value<string>());
+                                    MessageBox.Show(player);
+                                    form.RoomList.Items.Add(player);
                                 }
                                 form.RoomList.Items[0] = form.RoomList.Items[0].ToString() + " - ADMIN";
                             }));

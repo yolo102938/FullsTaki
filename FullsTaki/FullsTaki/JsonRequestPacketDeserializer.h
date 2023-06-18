@@ -24,7 +24,7 @@ public:
 	static LoginRequest deserializeLoginRequest(const std::vector<unsigned char>& buffer);
 
 	static SignupRequest deserializeSignupRequest(const std::vector<unsigned char>& buffer);
-
+	static std::string deserializePlaceCard(const std::vector<unsigned char>& buffer);
 	static GetPlayersInRoomRequest deserializeGetPlayersInRoom(const std::vector<unsigned char>& buffer);
 	static JoinRoomRequest desirializeJoinRoom(const vector<unsigned char>& buffer);
 	static CreateRoomRequest deserializeCreateRoom(const std::vector<unsigned char>& buffer);

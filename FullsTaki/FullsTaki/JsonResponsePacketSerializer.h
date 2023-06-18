@@ -47,6 +47,7 @@ public:
 	static vector<char> serializeResponse(const StartGameResponse& response);
 	static vector<char> serializeResponse(const GetRoomStateResponse& response);
 	static vector<char> serializeResponse(const LeaveRoomResponse& response);
+	static vector<char> serializeResponse(const GameData& response);
 
 private:
 

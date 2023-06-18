@@ -1,5 +1,7 @@
 #pragma once
 #include "ServerData.h"
+#include "incs.h"
+#include "GameHandler.h"
 #include <iostream>
 #include <vector>
 #include <string>
@@ -145,3 +147,11 @@ typedef struct LeaveRoomResponse
     unsigned int status;
 
 } LeaveRoomResponse;
+
+typedef struct GameData {
+	std::vector<Player> players;
+	std::vector<Card> cards;
+	std::string turn;
+	Card placed_card;
+	int status = 100;
+}GameData;

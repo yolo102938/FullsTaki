@@ -67,3 +67,13 @@ json JsonRequestPacketDeserializer::parseJson(const vector<unsigned char>& buffe
     data = data.substr(data.find('{')); //locating the first '{' to get only the json data.
     return json::parse(data); //parsing the data to a json object and returning it.
 }
+
+std::string JsonRequestPacketDeserializer::deserializePlaceCard(const std::vector<unsigned char>& buffer)
+{
+    //parsing json data from the buffer to a json object.
+    json jsonData = parseJson(buffer);
+    std::string fullTag = jsonData["picture_tag"];
+
+    //initializing and returning a SignupRequest object with the extracted data.
+    return fullTag;
+}
