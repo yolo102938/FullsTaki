@@ -51,16 +51,9 @@ RequestResult RoomMemberRequestHandler::leaveRoom(const RequestInfo request) con
 
 RequestResult RoomMemberRequestHandler::getRoomState(const RequestInfo request) const
 {
-	if (this->m_roomManager.hasRoom(this->m_room.getRoomData().id))
-	{
-		GetRoomStateResponse res = { GET_ROOM_STATE, this->m_roomManager.getRoomState(this->m_room.getRoomData().id), this->m_room.getAllUsers()};
+	GetRoomStateResponse res = { GET_ROOM_STATE_RESPONSE,
+		this->m_roomManager.getRoomState(this->m_room.getRoomData().id),
+		this->m_room.getAllUsers()};
 
-		return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory.createRoomMemberRequestHandler(this->m_user.getUsername(), this->m_user.getSocket(), this->m_room.getRoomData().id) };
-	}
-	else
-	{
-		vector<char> null_packet;
-		null_packet.push_back(static_cast<unsigned char>(' '));
-		return { null_packet, (IRequestHandler*)this->m_handlerFactory.createMenuRequestHandler(&this->m_user) };
-	}
+	return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory.createRoomAdminRequestHandler(this->m_user.getUsername(), this->m_user.getSocket(), this->m_room.getRoomData().id) };
 }

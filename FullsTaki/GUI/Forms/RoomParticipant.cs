@@ -9,6 +9,7 @@ using System.Drawing;
 using System.Linq;
 using System.Security.Policy;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
@@ -48,6 +49,7 @@ namespace GUI.Forms
             RoomName = roomName;
             IsAdmin = admin;
             Text += Socket.LoggedUserFormatted;
+            ObsessiveDataRefresher.AutoRefreshData(this);
         }
 
         private void Refresh(object sender, EventArgs e)
@@ -55,15 +57,7 @@ namespace GUI.Forms
             ObsessiveDataRefresher.AutoRefreshData(this);
         }
 
-        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void RoomList_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
+        
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {

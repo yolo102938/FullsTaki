@@ -142,7 +142,6 @@
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="MenuRequestHandler.cpp" />
     <ClCompile Include="RoomAdminRequestHandler.cpp" />
-    <ClCompile Include="RoomRequestHandler.cpp" />
     <ClCompile Include="sqlite3.c" />
     <ClCompile Include="SqliteDatabase.cpp" />
     <ClCompile Include="WSAInitializer.cpp" />
@@ -150,7 +149,6 @@
   <ItemGroup>
     <ClInclude Include="Communicator.h" />
     <ClInclude Include="RoomMemberRequestHandler.h" />
-    <ClInclude Include="RoomRequestHandler.h" />
     <ClInclude Include="RoomAdminRequestHandler.h" />
     <ClInclude Include="ServerData.h" />
     <ClInclude Include="MenuRequestHandler.h" />

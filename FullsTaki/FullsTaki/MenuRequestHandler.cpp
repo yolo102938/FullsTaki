@@ -2,7 +2,7 @@
 
 bool MenuRequestHandler::isRequestRelevant(RequestInfo request) const
 {
-    return request.id == LOGOUT || request.id == GET_ROOMS || request.id == CREATE_ROOM || request.id == JOIN_ROOM || request.id == GET_USERS_IN_ROOM;
+    return request.id == LOGOUT || request.id == GET_ROOMS || request.id == CREATE_ROOM || request.id == JOIN_ROOM || request.id == GET_USERS_IN_ROOM || request.id == GET_ROOM_STATE;
 }
 
 RequestResult MenuRequestHandler::handleRequest(RequestInfo request) const
@@ -87,7 +87,7 @@ RequestResult MenuRequestHandler::joinRoom(RequestInfo request) const
             this->m_roomManager->getRoom(req.roomId).addUser(*this->m_user);
 
             JoinRoomResponse res = { JOIN_ROOM_RESPONSE };
-            return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory->createRoomMemberRequestHandler(this->m_user->getUsername(), this->m_user->getSocket(), req.roomId) };
+            return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory->createRoomMemberRequestHandler(this->m_user->getUsername(), this->m_user->getSocket(), req.roomId, m_roomManager) };
         }
 
         else

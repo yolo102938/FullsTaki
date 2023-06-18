@@ -45,7 +45,6 @@ namespace GUI.Forms
             this.button1 = new System.Windows.Forms.Button();
             this.name_input = new System.Windows.Forms.TextBox();
             this.name_label = new System.Windows.Forms.Label();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.button3 = new System.Windows.Forms.Button();
             this.Logout_Button = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.roomsBindingSource)).BeginInit();
@@ -61,7 +60,7 @@ namespace GUI.Forms
             "3",
             "4",
             "5"});
-            this.comboBox1.Location = new System.Drawing.Point(943, 477);
+            this.comboBox1.Location = new System.Drawing.Point(934, 309);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(121, 28);
             this.comboBox1.TabIndex = 11;
@@ -69,7 +68,7 @@ namespace GUI.Forms
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(939, 446);
+            this.label1.Location = new System.Drawing.Point(930, 278);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(192, 28);
             this.label1.TabIndex = 12;
@@ -77,7 +76,7 @@ namespace GUI.Forms
             // 
             // label2
             // 
-            this.label2.Location = new System.Drawing.Point(969, 362);
+            this.label2.Location = new System.Drawing.Point(930, 165);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(188, 23);
             this.label2.TabIndex = 13;
@@ -85,7 +84,7 @@ namespace GUI.Forms
             // 
             // label3
             // 
-            this.label3.Location = new System.Drawing.Point(969, 228);
+            this.label3.Location = new System.Drawing.Point(13, 165);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(188, 23);
             this.label3.TabIndex = 14;
@@ -93,7 +92,7 @@ namespace GUI.Forms
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(934, 510);
+            this.button2.Location = new System.Drawing.Point(934, 369);
             this.button2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(214, 70);
@@ -123,7 +122,7 @@ namespace GUI.Forms
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(943, 303);
+            this.button1.Location = new System.Drawing.Point(352, 558);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(197, 47);
             this.button1.TabIndex = 4;
@@ -133,7 +132,7 @@ namespace GUI.Forms
             // 
             // name_input
             // 
-            this.name_input.Location = new System.Drawing.Point(943, 418);
+            this.name_input.Location = new System.Drawing.Point(934, 237);
             this.name_input.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.name_input.Name = "name_input";
             this.name_input.Size = new System.Drawing.Size(205, 26);
@@ -142,22 +141,12 @@ namespace GUI.Forms
             // 
             // name_label
             // 
-            this.name_label.Location = new System.Drawing.Point(942, 397);
+            this.name_label.Location = new System.Drawing.Point(930, 216);
             this.name_label.Name = "name_label";
             this.name_label.Size = new System.Drawing.Size(122, 19);
             this.name_label.TabIndex = 5;
             this.name_label.Text = "Room Name:";
             this.name_label.Click += new System.EventHandler(this.name_label_Click);
-            // 
-            // comboBox2
-            // 
-            this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(943, 254);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(197, 28);
-            this.comboBox2.TabIndex = 15;
-            this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.comboBox2_SelectedIndexChanged);
             // 
             // button3
             // 
@@ -186,7 +175,6 @@ namespace GUI.Forms
             this.ClientSize = new System.Drawing.Size(1200, 617);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
-            this.Controls.Add(this.comboBox2);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -221,7 +209,6 @@ namespace GUI.Forms
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TextBox name_input;
         private System.Windows.Forms.Label name_label;
-        private System.Windows.Forms.ComboBox comboBox2;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button Logout_Button;
     }

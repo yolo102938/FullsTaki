@@ -46,11 +46,13 @@ RoomMemberRequestHandler* RequestHandlerFactory::createRoomMemberRequestHandler(
     return new RoomMemberRequestHandler(username, socket, this->m_roomManager, *this, roomId);
 }
 
-RoomRequestHandler* RequestHandlerFactory::createRoomRequestHandler(Room* room, LoggedUser* user)
-{
-    return new RoomRequestHandler(room, user, &m_roomManager, this);
-}
 IDatabase* RequestHandlerFactory::getDataBase()
 {
     return this->m_database;
+}
+
+RoomMemberRequestHandler* RequestHandlerFactory::createRoomMemberRequestHandler(const string username, const SOCKET socket, const int roomId, RoomManager* temp)
+{
+    (this->m_roomManager) = *temp;
+    return new RoomMemberRequestHandler(username, socket, this->m_roomManager, *this, roomId);
 }

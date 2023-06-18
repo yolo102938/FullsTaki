@@ -45,39 +45,38 @@ RequestResult RoomAdminRequestHandler::handleRequest(RequestInfo request)  const
 
 }
 
-RequestResult RoomAdminRequestHandler::closeRoom(RequestInfo request) const{
-    m_roomManager->deleteRoom(m_room->getRoomData().id);
-        CloseRoomResponse ret = { GENERIC_OK };
-        return { JsonResponsePacketSerializer::serializeResponse(ret) ,m_handlerFactory->createMenuRequestHandler(m_user) };
-    }
+RequestResult RoomAdminRequestHandler::closeRoom(RequestInfo request) const
+{
+    CloseRoomResponse res = { CLOSE_ROOM_RESPONSE };
 
-RequestResult RoomAdminRequestHandler::startGame(RequestInfo request) const{
-    //for ohad to start game later
+    for (auto& user : this->m_room->m_users)
+    {
+        LeaveRoomResponse leave_res = { LEAVE_ROOM_RESPONSE };
+
+        this->m_roomManager->getRoom(this->m_room->getRoomData().id).removeUser(user);
+
+
+        vector<char> serialized_res = JsonResponsePacketSerializer::serializeResponse(leave_res);
+        string serizlized_res_str(serialized_res.begin(), serialized_res.end());
+        //sendData(user.(), serizlized_res_str);
+    }
+    this->m_roomManager->deleteRoom(this->m_room->getRoomData().id);
+
+    return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory->createMenuRequestHandler(this->m_user->getUsername(), this->m_user->getSocket()) };
+
+}
+
+RequestResult RoomAdminRequestHandler::startGame(RequestInfo request) const
+{
     StartGameResponse ret = { GENERIC_OK };
     return { JsonResponsePacketSerializer::serializeResponse(ret) ,m_handlerFactory->createMenuRequestHandler(m_user) };
 }
 
 RequestResult RoomAdminRequestHandler::getRoomState(RequestInfo request) const{
-    try {
-        GetRoomStateResponse ret;
-        RoomData data = m_room->getRoomData();
-        ret.hasGameBegun = data.isActive;
-        std::vector<std::string> users;
-        for (auto user : m_room->getAllUsers()) {
-            if (user != m_user->getUsername()) {//just so the list doesnt contain curr player
-                users.push_back(user);
-            }
-        }
-        ret.players = users;
-        return { JsonResponsePacketSerializer::serializeResponse(ret) ,m_handlerFactory->createRoomAdminRequestHandler(m_room,m_user) };
-    }
-    catch (const std::exception& e)
-    {
-        ErrorResponse ret = { "Room closed" };
-        return { JsonResponsePacketSerializer::serializeResponse(ret) ,m_handlerFactory->createMenuRequestHandler(m_user) };
-        try{ 
-            m_roomManager->deleteRoom(m_room->getRoomData().id);
-        }
-        catch (...) {}
-    }
+    GetRoomStateResponse res = { GET_ROOM_STATE_RESPONSE,
+        this->m_roomManager->getRoomState(this->m_room->getRoomData().id),
+        this->m_room->getAllUsers()};
+
+    return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory->createRoomAdminRequestHandler(this->m_user->getUsername(), this->m_user->getSocket(), this->m_room->getRoomData().id) };
+
 }
