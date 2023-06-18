@@ -140,93 +140,80 @@ namespace GUI.Forms
 
             internal static void UpdateRooms(Rooms form)
             {
-                try
-                {
-                    string roomName;
-                    int roomIndex;
+                string roomName;
+                int roomIndex;
 
-                    if (autoRefreshRunning)
+                if (autoRefreshRunning)
+                {
+                    form.Invoke(new MethodInvoker(delegate
                     {
-                        form.Invoke(new MethodInvoker(delegate
+                        selectedRoomName = form.RoomList.GetItemText(form.RoomList.SelectedItem); // save current selected index
+                        form.RoomList.Items.Clear(); // clear list
+
+                        object[] rooms = GetRooms();
+                        if (rooms != null)
                         {
-                            selectedRoomName = form.RoomList.GetItemText(form.RoomList.SelectedItem);
-                            form.RoomList.Items.Clear();
-
-                            TakiMessage rooms = GetRooms();
-                            if (rooms != null)
+                            foreach (Dictionary<string, object> room in rooms)
                             {
-                                for (int i = 0; i < 1; i++)
-                                {
-                                    roomName = rooms.Content;
-                                    roomIndex = form.RoomList.Items.Add(roomName);
-                                    form.RoomList.Refresh();
-                                    if (roomName == selectedRoomName)
-                                        form.RoomList.SelectedIndex = roomIndex;
-                                }
-                            }
-                        }));
-                    }
-                }
-                catch
-                {
+                                roomName = room["name"].ToString(); // extract name
+                                roomIndex = form.RoomList.Items.Add(roomName); // refill list
 
+                                if (roomName == selectedRoomName) // check if last added is the selected before
+                                    form.RoomList.SelectedIndex = roomIndex; // restore back selected room (before the update)
+                            }
+                        }
+                    }));
                 }
             }
 
-            public static TakiMessage GetRooms()
+            public static object[] GetRooms()
             {
-                try
-                {
-                    string sendRoomsMsg = TakiProtocol.GetRooms();
-                    Socket.SendMsg(sendRoomsMsg);
+                string sendRoomsMsg = TakiProtocol.GetRooms();
+                Socket.SendMsg(sendRoomsMsg);
 
-                    string recvRoomsMsg = Socket.RecvMsgByResponse((int)TakiResponse.GET_ROOMS);
-                    if (recvRoomsMsg != null)
-                    {
-                        TakiMessage roomsMessage = new TakiMessage(int.Parse(recvRoomsMsg.Substring(0,3)), recvRoomsMsg.Substring(3));
-                        try
-                        {
-                            return roomsMessage;
-                        }
-                        catch
-                        {
-                            return null;
-                        }
-                    }
-                    return null;
-                }
-                catch
+                string recvRoomsMsg = Socket.RecvMsgByResponse((int)TakiResponse.GET_ROOMS);
+                if (recvRoomsMsg != null)
                 {
-                    return null;
+                    TakiMessage roomsMessage = new TakiMessage(recvRoomsMsg);
+                    try
+                    {
+                        return (object[])roomsMessage.ToMultiDict()["rooms"];
+                    }
+                    catch
+                    {
+                        return null;
+                    }
                 }
+                return null;
             }
         }
 
-        internal static class RoomDataUpdater
-        {
-            internal static void UpdateUsers(RoomParticipant form, Dictionary<string, object> data)
+            internal static class RoomDataUpdater
             {
-                try
+                internal static void UpdateUsers(RoomParticipant form, Dictionary<string, object> data)
                 {
-                    if (autoRefreshRunning)
+                    try
                     {
-                        form.Invoke(new MethodInvoker(delegate
+                        if (autoRefreshRunning)
                         {
-                            form.RoomList.Items.Clear();
-
-                            foreach (string player in (object[])data["players"])
+                            form.Invoke(new MethodInvoker(delegate
                             {
-                                form.RoomList.Items.Add(player);
-                            }
-                            form.RoomList.Items[0] = form.RoomList.Items[0].ToString() + " - ADMIN"; // add crown sign to the first user in the list box (which is always the admin)
-                        }));
-                    }
-                }
-                catch
-                {
+                                form.RoomList.Items.Clear();
 
+                                foreach (string player in (object[])data["players"])
+                                {
+                                    form.RoomList.Items.Add(player);
+                                }
+                                form.RoomList.Items[0] = form.RoomList.Items[0].ToString() + " - ADMIN"; // add crown sign to the first user in the list box (which is always the admin)
+                            }));
+                        }
+                    }
+                    catch
+                    {
+
+                    }
                 }
             }
         }
     }
-}
+

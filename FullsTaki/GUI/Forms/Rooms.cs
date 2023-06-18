@@ -73,18 +73,18 @@ namespace GUI.Forms
 
         public static bool IsRoomActive(string roomName)
         {
-            TakiMessage rooms = ObsessiveDataRefresher.RoomsDataUpdater.GetRooms();
+            object[] rooms = ObsessiveDataRefresher.RoomsDataUpdater.GetRooms();
             if (rooms != null)
             {
-                for (int i = 0; i < 1; i++)
+                foreach (Dictionary<string, object> room in rooms)
                 {
-                    dynamic room = rooms;
-                    if ((string)room == roomName)
-                        return (int)room == 1;
+                    if ((string)room["name"] == roomName)
+                        return (int)room["isActive"] == 1;
                 }
             }
             return false;
         }
+
 
         private void name_input_TextChanged(object sender, EventArgs e)
         {
