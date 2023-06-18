@@ -2,7 +2,7 @@
 
 bool MenuRequestHandler::isRequestRelevant(RequestInfo request) const
 {
-    return request.id == LOGOUT || request.id == GET_ROOMS || request.id == CREATE_ROOM || request.id == JOIN_ROOM || request.id == GET_USERS_IN_ROOM;
+    return request.id == LOGOUT || request.id == GET_ROOMS || request.id == CREATE_ROOM || request.id == JOIN_ROOM || request.id == GET_USERS_IN_ROOM || request.id == GET_ROOM_STATE;
 }
 
 RequestResult MenuRequestHandler::handleRequest(RequestInfo request) const

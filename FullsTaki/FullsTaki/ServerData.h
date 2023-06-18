@@ -48,15 +48,15 @@ typedef enum TakiRequest
     LOGOUT,
     GET_ROOMS = 200,
     CREATE_ROOM,
-    JOIN_ROOM = 204,
-    GET_USERS_IN_ROOM = 203,
-    CLOSE_ROOM = 300,
+    GET_USERS_IN_ROOM,
+    JOIN_ROOM,
+    CLOSE_ROOM,
     START_GAME,
-    GET_ROOM_STATE = 333,
-    LEAVE_ROOM = 303,
+    GET_ROOM_STATE,
+    LEAVE_ROOM,
     LEAVE_GAME,
     GET_GAME_RESULT,
-    EXIT_CLIENT = 400
+    EXIT_CLIENT = 250
 } TakiRequest;
 
 typedef enum TakiResponse

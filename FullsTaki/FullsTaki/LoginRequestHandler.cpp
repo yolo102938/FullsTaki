@@ -9,7 +9,7 @@ LoginRequestHandler::~LoginRequestHandler()
 
 bool LoginRequestHandler::isRequestRelevant(const RequestInfo request) const
 {
-	return (request.id == LOGIN) || (request.id == SIGN_UP); //checking if the request is for login/signup processing.
+	return (request.id == LOGIN) || (request.id == SIGN_UP || request.id == GET_ROOMS || request.id == GET_ROOM_STATE); //checking if the request is for login/signup processing.
 }
 
 

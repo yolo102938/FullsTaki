@@ -45,6 +45,7 @@ void Communicator::handleNewClient(SOCKET socketClient)
 		while (isActive)
 		{
 			int msgCode = GetMsgCode(socketClient); //The code of the messaage
+			cout << msgCode << endl;
 			int msgSize = GetDataLength(socketClient); //The length of the messaage
 			vector<unsigned char> bufferData = GetMsgData(socketClient, msgSize); //The data of the messaage
 			string dataStr = string(bufferData.begin(), bufferData.end());
@@ -89,7 +90,8 @@ void Communicator::handleNewClient(SOCKET socketClient)
 				{
 					sendError(socketClient); //sending an error if the response data is not sent correctly
 				}
-			}			
+			}
+			Sleep(300);
 		}
 	}
 	catch (const std::exception& e)

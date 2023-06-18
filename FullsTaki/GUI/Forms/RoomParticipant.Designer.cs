@@ -147,7 +147,7 @@ namespace GUI.Forms
             this.Controls.Add(this.RoomList);
             this.Controls.Add(this.pictureBox1);
             this.Name = "RoomParticipant";
-            this.Text = "Form1";
+            this.Text = "Lobby";
             this.Load += new System.EventHandler(this.Refresh);
             ((System.ComponentModel.ISupportInitialize)(this.RoomAdminBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

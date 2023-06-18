@@ -1,7 +1,10 @@
 ﻿using GUI.DataTypes;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading;
+using System.Web.UI;
 using System.Windows.Forms;
 using TakiClient;
 
@@ -20,18 +23,14 @@ namespace GUI.Forms
 
         public static void AutoRefreshData(Form form)
         {
-            if (!autoRefreshRunning)
-            {
-                autoRefreshRunning = true;
-                DataUpdater = new Thread(new ParameterizedThreadStart(UpdateData));
-                DataUpdater.Start(form);
-            }
+            autoRefreshRunning = true;
+            DataUpdater = new Thread(new ParameterizedThreadStart(UpdateData));
+            DataUpdater.Start(form);
         }
 
         public static void CreateRoomForm(string name, int id)
         {
-            DataUpdater.Abort();
-            DataUpdater = null;
+            StopAutoRefreshData();
             string sendCreateRoomMsg = TakiProtocol.CreateRoom(name, id);
             Socket.SendMsg(sendCreateRoomMsg);
 
@@ -48,8 +47,8 @@ namespace GUI.Forms
 
         public static void StopAutoRefreshData()
         {
+            autoRefreshRunning = false;
             DataUpdater.Abort();
-            DataUpdater = null;
         }
 
         public static void UpdateData(object form)
@@ -66,7 +65,7 @@ namespace GUI.Forms
                     {
                         try
                         {
-                            Dictionary<string, object> roomData = GetCurrentRoomState();
+                            string roomData = GetCurrentRoomState();
                             RoomDataUpdater.UpdateUsers(waitingForGame, roomData);
                         }
                         catch (RoomClosedException)
@@ -96,7 +95,7 @@ namespace GUI.Forms
             }
         }
 
-        public static Dictionary<string, object> GetCurrentRoomState()
+        public static string GetCurrentRoomState()
         {
             try
             {
@@ -107,17 +106,17 @@ namespace GUI.Forms
 
                 if (recvRoomStateMsg != null)
                 {
-                    TakiMessage roomStateMessage = new TakiMessage(recvRoomStateMsg);
+                    TakiMessage roomStateMessage = new TakiMessage(int.Parse(recvRoomStateMsg.Substring(0,3)), recvRoomStateMsg.Substring(3));
 
                     switch (roomStateMessage.Code)
                     {
-                        case (int)TakiRequest.GET_ROOM_STATE:
-                            return roomStateMessage.ToMultiDict();
+                        case (int)TakiResponse.GET_ROOM_STATE:
+                            return recvRoomStateMsg;
 
-                        case (int)TakiRequest.LEAVE_ROOM:
+                        case (int)TakiResponse.LEAVE_ROOM:
                             throw new RoomClosedException();
 
-                        case (int)TakiRequest.START_GAME:
+                        case (int)TakiResponse.START_GAME:
                             throw new GameStartedException();
                     }
                 }
@@ -126,6 +125,41 @@ namespace GUI.Forms
             catch
             {
                 return null;
+            }
+        }
+
+        public static JArray ProcessJsonPlayers(string json)
+        {
+            TakiMessage getplayercount = new TakiMessage
+            {
+                Code = (int)TakiRequest.GET_USERS_IN_ROOM,
+                Content = "{\"room_id\":" + 1.ToString() + "}"
+            };
+
+            TakiClient.Socket.SendMsg(getplayercount.ToString());
+            string tmp = TakiClient.Socket.RecvMsg().json;
+            JArray players_ = ((JArray)JObject.Parse(tmp)["players"]);
+            return players_;
+        }
+
+        public static int ExtractId(string roomString)
+        {
+            // The regular expression pattern to find the ID
+            string pattern = @"Room ID: (\d+)";
+
+            // Get the match object
+            Match match = Regex.Match(roomString, pattern);
+
+            // If the match is successful
+            if (match.Success)
+            {
+                // Parse and return the ID
+                return Int32.Parse(match.Groups[1].Value);
+            }
+            else
+            {
+                // If the ID is not found, throw an exception
+                throw new Exception("No ID found in the room string.");
             }
         }
 
@@ -147,64 +181,78 @@ namespace GUI.Forms
                 {
                     form.Invoke(new MethodInvoker(delegate
                     {
-                        selectedRoomName = form.RoomList.GetItemText(form.RoomList.SelectedItem); // save current selected index
-                        form.RoomList.Items.Clear(); // clear list
+                        selectedRoomName = form.RoomList.GetItemText(form.RoomList.SelectedItem);
+                        form.RoomList.Items.Clear();
 
-                        object[] rooms = GetRooms();
+                        List<string> rooms = ProcessJsonToString();
                         if (rooms != null)
                         {
-                            foreach (Dictionary<string, object> room in rooms)
+                            foreach (var room in rooms)
                             {
-                                roomName = room["name"].ToString(); // extract name
-                                roomIndex = form.RoomList.Items.Add(roomName); // refill list
+                                roomName = room.ToString();
+                                roomIndex = form.RoomList.Items.Add(roomName);
 
-                                if (roomName == selectedRoomName) // check if last added is the selected before
-                                    form.RoomList.SelectedIndex = roomIndex; // restore back selected room (before the update)
+                                if (roomName == selectedRoomName)
+                                    form.RoomList.SelectedIndex = roomIndex;
                             }
                         }
                     }));
                 }
             }
 
-            public static object[] GetRooms()
+
+            public static List<string> ProcessJsonToString()
             {
                 string sendRoomsMsg = TakiProtocol.GetRooms();
                 Socket.SendMsg(sendRoomsMsg);
 
                 string recvRoomsMsg = Socket.RecvMsgByResponse((int)TakiResponse.GET_ROOMS);
-                if (recvRoomsMsg != null)
+
+                int statusCode = Int32.Parse(recvRoomsMsg.Substring(0, recvRoomsMsg.IndexOf('{')));
+
+                // Extract the JSON part
+                recvRoomsMsg = recvRoomsMsg.Substring(recvRoomsMsg.IndexOf('{'));
+                JObject jObject = JObject.Parse(recvRoomsMsg);
+                JArray rooms = (JArray)jObject["rooms"];
+
+                List<string> roomStrings = new List<string>();
+
+                foreach (var room in rooms)
                 {
-                    TakiMessage roomsMessage = new TakiMessage(recvRoomsMsg);
-                    try
-                    {
-                        return (object[])roomsMessage.ToMultiDict()["rooms"];
-                    }
-                    catch
-                    {
-                        return null;
-                    }
+                    string roomString = string.Format(
+                        "Room ID: {0}  |  Room Name: {1}  |  Max Number Of Players: {2}  |  Is Active: {3}",
+                        room[1], // id
+                        room[3], // name
+                        room[5], // max_players
+                        room[7]  // is_active
+                    );
+
+                    roomStrings.Add(roomString);
                 }
-                return null;
+
+                return roomStrings;
             }
         }
 
             internal static class RoomDataUpdater
             {
-                internal static void UpdateUsers(RoomParticipant form, Dictionary<string, object> data)
+                internal static void UpdateUsers(RoomParticipant form, string data)
                 {
                     try
                     {
                         if (autoRefreshRunning)
                         {
+                            JArray players = ProcessJsonPlayers(data);
                             form.Invoke(new MethodInvoker(delegate
                             {
                                 form.RoomList.Items.Clear();
 
-                                foreach (string player in (object[])data["players"])
+                                foreach (var player in players)
                                 {
-                                    form.RoomList.Items.Add(player);
+                                    MessageBox.Show(player.Value<string>());
+                                    form.RoomList.Items.Add(player.Value<string>());
                                 }
-                                form.RoomList.Items[0] = form.RoomList.Items[0].ToString() + " - ADMIN"; // add crown sign to the first user in the list box (which is always the admin)
+                                form.RoomList.Items[0] = form.RoomList.Items[0].ToString() + " - ADMIN";
                             }));
                         }
                     }
