@@ -43,7 +43,15 @@ JoinRoomRequest JsonRequestPacketDeserializer::deserializeJoinRoom(const std::ve
     //initializing and returning a SignupRequest object with the extracted data.
     return JoinRoomRequest({ jsonData["room_id"] });
 }
-
+std::string JsonRequestPacketDeserializer::deserializePlaceCard(const std::vector<unsigned char>& buffer)
+{
+    //parsing json data from the buffer to a json object.
+    json jsonData = parseJson(buffer);
+    std::string fullTag = jsonData["picture_tag"];
+    
+    //initializing and returning a SignupRequest object with the extracted data.
+    return fullTag;
+}
 CreateRoomRequest JsonRequestPacketDeserializer::deserializeCreateRoom(const std::vector<unsigned char>& buffer)
 {
     //parsing json data from the buffer to a json object.

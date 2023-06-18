@@ -48,6 +48,8 @@ public:
 	static vector<char> serializeResponse(const GetRoomStateResponse& response);
 	static vector<char> serializeResponse(const LeaveRoomResponse& response);
 
+	static vector<char> serializeResponse(const GameData& response);
+
 private:
 
 	static vector<char> responseBuilder(const int response_code, const string sData);

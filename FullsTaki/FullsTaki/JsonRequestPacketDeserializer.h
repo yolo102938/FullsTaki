@@ -28,6 +28,7 @@ public:
 	static GetPlayersInRoomRequest deserializeGetPlayersInRoom(const std::vector<unsigned char>& buffer);
 	static JoinRoomRequest deserializeJoinRoom(const std::vector<unsigned char>& buffer);
 	static CreateRoomRequest deserializeCreateRoom(const std::vector<unsigned char>& buffer);
+	static std::string deserializePlaceCard(const std::vector<unsigned char>& buffer);
 private:
 	static json parseJson(const std::vector<unsigned char>& buffer);
 };

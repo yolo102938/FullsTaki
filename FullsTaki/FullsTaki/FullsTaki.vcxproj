@@ -149,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Communicator.h" />
+    <ClInclude Include="GameHandler.h" />
     <ClInclude Include="RoomMemberRequestHandler.h" />
     <ClInclude Include="RoomRequestHandler.h" />
     <ClInclude Include="RoomAdminRequestHandler.h" />
