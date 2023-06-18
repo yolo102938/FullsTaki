@@ -5,12 +5,10 @@
 #include "IDatabase.h"
 #include "MenuRequestHandler.h"
 #include "RoomAdminRequestHandler.h";
-#include "RoomRequestHandler.h";
 #include "RoomMemberRequestHandler.h"
 
 class LoginRequestHandler;
 class MenuRequestHandler;
-class RoomRequestHandler;
 class RoomAdminRequestHandler;
 class RoomMemberRequestHandler;
 
@@ -28,13 +26,13 @@ public:
 
 	MenuRequestHandler* createMenuRequestHandler(const string username, const SOCKET socket);
 
+	RoomMemberRequestHandler* createRoomMemberRequestHandler(const string username, const SOCKET socket, const int roomId, RoomManager* temp);
+
 	RoomAdminRequestHandler* createRoomAdminRequestHandler(Room* room, LoggedUser* user);
 
 	RoomAdminRequestHandler* createRoomAdminRequestHandler(const string username, const SOCKET socket, const int roomId, RoomManager* temp);
 
 	RoomAdminRequestHandler* createRoomAdminRequestHandler(const string username, const SOCKET socket, const int roomId);
-
-	RoomRequestHandler* createRoomRequestHandler(Room* room, LoggedUser* user);
 
 	RoomMemberRequestHandler* createRoomMemberRequestHandler(const string username, const SOCKET socket, const int roomId);
 

@@ -5,7 +5,6 @@
 #include <algorithm>
 #include "ResponseTypes.hpp"
 #include "incs.h"
-
 //found this json library online
 #include "json.hpp"
 using json = nlohmann::json;
@@ -48,7 +47,6 @@ public:
 	static vector<char> serializeResponse(const StartGameResponse& response);
 	static vector<char> serializeResponse(const GetRoomStateResponse& response);
 	static vector<char> serializeResponse(const LeaveRoomResponse& response);
-	static vector<char> serializeResponse(const GameData& response);
 
 private:
 

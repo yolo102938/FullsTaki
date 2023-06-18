@@ -56,10 +56,7 @@ typedef enum TakiRequest
     LEAVE_ROOM,
     LEAVE_GAME,
     GET_GAME_RESULT,
-    EXIT_CLIENT = 250,
-    GET_GAME_STATE = 50,
-    PREMISION_TO_PLACE_CARD = 51,
-    CARD_BANK_PREMISION = 52
+    EXIT_CLIENT = 250
 } TakiRequest;
 
 typedef enum TakiResponse

@@ -11,8 +11,6 @@ using std::string;
 
 class IRequestHandler;
 
-
-
 typedef struct RequestInfo
 {
 	int id;

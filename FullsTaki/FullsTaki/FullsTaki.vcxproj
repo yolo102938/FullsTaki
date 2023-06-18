@@ -128,7 +128,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Communicator.cpp" />
-    <ClCompile Include="GameHandler.cpp" />
     <ClCompile Include="IRequestHandler.cpp" />
     <ClCompile Include="JsonRequestPacketDeserializer.cpp" />
     <ClCompile Include="JsonResponsePacketSerializer.cpp" />
@@ -143,18 +142,13 @@
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="MenuRequestHandler.cpp" />
     <ClCompile Include="RoomAdminRequestHandler.cpp" />
-    <ClCompile Include="RoomRequestHandler.cpp" />
-    <ClCompile Include="gameHeaders.cpp" />
     <ClCompile Include="sqlite3.c" />
     <ClCompile Include="SqliteDatabase.cpp" />
     <ClCompile Include="WSAInitializer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Communicator.h" />
-    <ClInclude Include="GameHandler.h" />
-    <ClInclude Include="gameHeaders.h" />
     <ClInclude Include="RoomMemberRequestHandler.h" />
-    <ClInclude Include="RoomRequestHandler.h" />
     <ClInclude Include="RoomAdminRequestHandler.h" />
     <ClInclude Include="ServerData.h" />
     <ClInclude Include="MenuRequestHandler.h" />

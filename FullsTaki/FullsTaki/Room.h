@@ -30,9 +30,8 @@ public:
 	vector<string> getAllUsers() const;
 	RoomData getRoomData() { return m_metadata; };
 	vector<LoggedUser> getUsers() { return m_users; };
-
+	vector<LoggedUser> m_users;
 private:
 	mutable RoomData m_metadata;
-	vector<LoggedUser> m_users;
 	mutable mutex mtx; // --> mutable - not const
 };

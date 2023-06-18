@@ -149,6 +149,27 @@ namespace GUI.Forms
             return playerStrings;
         }
 
+        public static int ExtractId(string roomString)
+        {
+            // The regular expression pattern to find the ID
+            string pattern = @"Room ID: (\d+)";
+
+            // Get the match object
+            Match match = Regex.Match(roomString, pattern);
+
+            // If the match is successful
+            if (match.Success)
+            {
+                // Parse and return the ID
+                return Int32.Parse(match.Groups[1].Value);
+            }
+            else
+            {
+                // If the ID is not found, throw an exception
+                throw new Exception("No ID found in the room string.");
+            }
+        }
+
         internal static class RoomsDataUpdater
         {
             private static string selectedRoomName;
@@ -235,7 +256,6 @@ namespace GUI.Forms
 
                                 foreach (var player in players)
                                 {
-                                    MessageBox.Show(player);
                                     form.RoomList.Items.Add(player);
                                 }
                                 form.RoomList.Items[0] = form.RoomList.Items[0].ToString() + " - ADMIN";

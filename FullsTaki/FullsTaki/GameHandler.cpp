@@ -21,6 +21,13 @@ RequestResult GameHandler::handleRequest(const RequestInfo request) const
             return bankRequest();
         }
     }
+
+    catch (nlohmann::json::exception& e)
+    {
+        ErrorResponse res = { "ERROR: Request contains invalid json" };
+        return { JsonResponsePacketSerializer::serializeResponse(res), nullptr };
+    }
+
     catch (std::exception& e)
     {
         ErrorResponse res = { e.what() };
@@ -31,119 +38,41 @@ RequestResult GameHandler::handleRequest(const RequestInfo request) const
 RequestResult GameHandler::gameState() const
 {
     GameHandler g = *this;
-    return {JsonResponsePacketSerializer::serializeResponse(m_game->getGameStatus()), &g};
+    return {JsonResponsePacketSerializer::serializeResponse(m_game->getGameState()), &g};
 }
 
 RequestResult GameHandler::bankRequest() const{
-    bool temp = m_game->tryCardBank();
+    bool temp = false;
     LoginResponse resp = { 200 };
     if (temp)
     {
         resp.status = 100;
     }
-    return { JsonResponsePacketSerializer::serializeResponse(resp),nullptr };
-
-}
-GameHandler::~GameHandler() {
-    std::cout << "goodbye";
 }
 RequestResult GameHandler::playCardRequest(const RequestInfo request) const{
     Card ret;
     std::string temp_str = JsonRequestPacketDeserializer::deserializePlaceCard(request.buffer);
     ret.color = m_game->getColor(temp_str);
-    ret.what = m_game->getWhat(temp_str);
+    ret.color = m_game->getWhat(temp_str);
     bool temp = m_game->tryPlacement(ret);
     LoginResponse resp = { 200 };
     if (temp)
     {
         resp.status = 100;
     }
-    return {JsonResponsePacketSerializer::serializeResponse(resp),nullptr };
 }
 
 GameHandler::GameHandler(LoggedUser* user, RequestHandlerFactory* handlerFactory) {
      m_user = user;
      m_handlerFactory = handlerFactory;
-     m_game = new GameEngine();
+     m_game = new Game();
 }
 
 
-GameEngine::GameEngine() 
-{
-    generateCards(av_Cards);
-    shuffleCards(av_Cards);
-    current_player = 0;
-    current_card = { "None","None" };
-    last_card = { "None","None" };
-}
-//function will check if its allowed to place a card in the middle. if it is allowed, it will place it and make all of the changes.
-//then it will return true or false if it did it or not.
-bool GameEngine::tryPlacement(Card card) {
-    if (players[current_player].name == m_user->getUsername() && current_card.what != "Draw") {
-        if (current_card.color == "None" && last_card.color == "None") {
-            current_card = card;
-            last_card = card;
-            players[current_player].cards.erase(std::remove(players[current_player].cards.begin(), players[current_player].cards.end(), card), players[current_player].cards.end());
-            if (card.what == "Skip") {
-                current_player = (current_player + 2) % players.size();
-                current_card = { "None","None" };
-                last_card = card;
-            }
-            else {
-                current_player = (current_player + 1) % players.size();
-            }
-            av_Cards.push_back(card);
-            shuffleCards(av_Cards);
-            return true;
-        }
-        else if (current_card.what != "None" && current_card.what == card.what || current_card.color == card.color) {
-            current_card = card;
-            last_card = card;
-            for (auto it = players[current_player].cards.begin(); it != players[current_player].cards.end(); ++it) {
-                if (it->color == card.color && it->what == card.what) {
-                    players[current_player].cards.erase(it);
-                    break;
-                }
-            }
-            if (card.what == "Skip") {
-                current_player = (current_player + 2) % players.size();
-                current_card = { "None","None" };
-                last_card = card;
-            }
-            else {
-                current_player = (current_player + 1) % players.size();
-            }
-            av_Cards.push_back(card);
-            shuffleCards(av_Cards);
-            return true;
-        }
-        else if (last_card.what != "None" && last_card.what == card.what || last_card.color == card.color) {
-            current_card = card;
-            last_card = card;
-            for (auto it = players[current_player].cards.begin(); it != players[current_player].cards.end(); ++it) {
-                if (it->color == card.color && it->what == card.what) {
-                    players[current_player].cards.erase(it);
-                    break;
-                }
-            }
-            if (card.what == "Skip") {
-                current_player = (current_player + 2) % players.size();
-                current_card = { "None","None" };
-                last_card = card;
-            }
-            else {
-                current_player = (current_player + 1) % players.size();
-            }
-            av_Cards.push_back(card);
-            shuffleCards(av_Cards);
-            return true;
-        }
-    }
-    return false;
-}
 
 
-bool GameEngine::tryCardBank()
+
+bool Game::tryCardBank() 
 {
     if (players[current_player].name ==m_user->getUsername()) {
         if (av_Cards.empty()) {
@@ -169,15 +98,15 @@ bool GameEngine::tryCardBank()
     }
 }
 
-GameData GameEngine::getGameStatus()
+GameData Game::getGameState()
 {
     std::vector<Player> other_players;
     std::string name_temp = players[current_player].name;
-    std::vector<Card> crds = std::vector<Card>();
+    std::vector<Card> crds;
     bool present = false; //is he in the player list already
     for (auto& player : players) {
         if (player.name == m_user->getUsername()) {
-            if (player.name == name_temp)
+            if (player.name == players[current_player].name)
                 present = true;
                 name_temp = "You";
             crds = player.cards;
@@ -210,6 +139,71 @@ GameData GameEngine::getGameStatus()
 }
 
 
+//function will check if its allowed to place a card in the middle. if it is allowed, it will place it and make all of the changes.
+//then it will return true or false if it did it or not.
+bool Game::tryPlacement(Card card) {
+    if (players[current_player].name ==m_user->getUsername() && current_card.what != "Draw") {
+        if (current_card.color=="None" && last_card.color == "None") {
+            current_card = card;
+            last_card = card;
+            players[current_player].cards.erase(std::remove(players[current_player].cards.begin(), players[current_player].cards.end(), card), players[current_player].cards.end());
+            if (card.what == "Skip") {
+                current_player = (current_player + 2) % players.size();
+                current_card = { "None","None" };
+                last_card = card;
+            }
+            else {
+                current_player = (current_player + 1) %players.size();
+            }
+            av_Cards.push_back(card);
+            shuffleCards(av_Cards);
+            return true;
+        }
+        else if (current_card.what!="None" && current_card.what == card.what || current_card.color == card.color) {
+            current_card = card;
+            last_card = card;
+            for (auto it = players[current_player].cards.begin(); it != players[current_player].cards.end(); ++it) {
+                if (it->color == card.color && it->what == card.what) {
+                    players[current_player].cards.erase(it);
+                    break;
+                }
+            }
+            if (card.what == "Skip") {
+                current_player = (current_player + 2) % players.size();
+                current_card = { "None","None" };
+                last_card = card;
+            }
+            else {
+                current_player = (current_player + 1) % players.size();
+            }
+                av_Cards.push_back(card);
+                shuffleCards(av_Cards);
+                return true;
+        }
+        else if (last_card.what != "None" && last_card.what == card.what || last_card.color == card.color) {
+            current_card = card;
+            last_card = card;
+            for (auto it = players[current_player].cards.begin(); it != players[current_player].cards.end(); ++it) {
+                if (it->color == card.color && it->what == card.what) {
+                    players[current_player].cards.erase(it);
+                    break;
+                }
+            }
+            if (card.what == "Skip") {
+                current_player = (current_player + 2) % players.size();
+                current_card = { "None","None" };
+                last_card = card;
+            }
+            else {
+                current_player = (current_player + 1) % players.size();
+            }
+            av_Cards.push_back(card);
+            shuffleCards(av_Cards);
+            return true;
+        }
+    }
+    return false;
+}
 
 
 

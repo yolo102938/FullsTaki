@@ -159,46 +159,6 @@ vector<char> JsonResponsePacketSerializer::serializeResponse(const LeaveRoomResp
 }
 
 
-vector<char> JsonResponsePacketSerializer::serializeResponse(const GameData& response)
-{
-	json jsonData;
-
-	//player list
-	std::vector<json> players;
-	for (const auto& player : response.players) {
-		json playerData;
-		playerData["name"] = player.name;
-		playerData["card_count"] = player.cards.size();
-		players.push_back(playerData);
-	}
-	jsonData["players"] = players;
-
-	//client cards
-	std::vector<json> cards;
-	for (const auto& card : response.cards) {
-		json cardData;
-		cardData["color"] = card.color;
-		cardData["what"] = card.what;
-		cards.push_back(cardData);
-	}
-	jsonData["cards"] = cards;
-
-	//current turn
-	jsonData["turn"] = response.turn;
-
-	//current on top card
-	json placedCard;
-	if (response.placed_card.color != "None") {
-		placedCard["color"] = response.placed_card.color;
-		placedCard["what"] = response.placed_card.what;
-	}
-	else {
-		placedCard["color"] = "none";
-		placedCard["what"] = "";
-	}
-	jsonData["placed_card"] = placedCard;
-	return responseBuilder(response.status, jsonData.dump());
-}
 
 
 /*

@@ -70,12 +70,6 @@
     <Compile Include="DataTypes\Room.cs" />
     <Compile Include="Forms\Address.cs" />
     <Compile Include="Forms\Exceptions.cs" />
-    <Compile Include="Forms\GameRoom.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\GameRoom.Designer.cs">
-      <DependentUpon>GameRoom.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\ObsessiveDataRefresher.cs" />
     <Compile Include="Forms\RoomParticipant.cs">
       <SubType>Form</SubType>
@@ -114,9 +108,6 @@
     <Compile Include="Forms\TakiResponse.cs" />
     <Compile Include="Source.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Forms\GameRoom.resx">
-      <DependentUpon>GameRoom.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\RoomParticipant.resx">
       <DependentUpon>RoomParticipant.cs</DependentUpon>
     </EmbeddedResource>

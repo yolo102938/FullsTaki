@@ -87,7 +87,7 @@ RequestResult MenuRequestHandler::joinRoom(RequestInfo request) const
             this->m_roomManager->getRoom(req.roomId).addUser(*this->m_user);
 
             JoinRoomResponse res = { JOIN_ROOM_RESPONSE };
-            return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory->createRoomMemberRequestHandler(this->m_user->getUsername(), this->m_user->getSocket(), req.roomId) };
+            return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory->createRoomMemberRequestHandler(this->m_user->getUsername(), this->m_user->getSocket(), req.roomId, m_roomManager) };
         }
 
         else

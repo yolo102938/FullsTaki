@@ -1,7 +1,5 @@
 #pragma once
 #include "ServerData.h"
-#include "incs.h"
-#include "GameHandler.h"
 #include <iostream>
 #include <vector>
 #include <string>
@@ -147,5 +145,3 @@ typedef struct LeaveRoomResponse
     unsigned int status;
 
 } LeaveRoomResponse;
-
-

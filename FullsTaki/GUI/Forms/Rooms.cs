@@ -175,7 +175,7 @@ namespace GUI.Forms
         private void button2_Click(object sender, EventArgs e)
         {
             Hide();
-            ObsessiveDataRefresher.CreateRoomForm(name_input.Text, 0);
+            ObsessiveDataRefresher.CreateRoomForm(name_input.Text, int.Parse(comboBox1.SelectedItem.ToString()));
             Close();
         }
 
