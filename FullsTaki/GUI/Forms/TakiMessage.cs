@@ -47,7 +47,7 @@ namespace GUI.Forms
 
         public override string ToString()
         {
-            return Code.ToString("X") + Length + content;
+            return Code.ToString("X").PadLeft(4) + Length + content;
         }
 
         public Dictionary<string, string> ToDict()

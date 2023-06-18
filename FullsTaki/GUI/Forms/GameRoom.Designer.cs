@@ -44,17 +44,21 @@ namespace GUI.Forms
             this.ResumeLayout(false);
 
         }
-
+        Diffrence diff = new Diffrence();
         ServerResponse resp;
+        private Timer timer;
+        private int deck_count = 8;
         //alot of bs not orginized
         private PictureBox[] playerCards;
         private PictureBox[][] opponentCards;
         private List<Image> playedCardStack = new List<Image>();
         private PictureBox deckCardStack;
-        private List<EnemyCard> cardsList = new List<EnemyCard>(); 
-        private List<ClickableCard> playerCardsList = new List<ClickableCard>(); 
+        private List<EnemyCard> cardsList = new List<EnemyCard>();
+        private List<EnemyCard> playedcardsList = new List<EnemyCard>();
+        private List<ClickableCard> playerCardsList = new List<ClickableCard>();
+        private List<ClickableCard> CardsDeckList = new List<ClickableCard>();
         private Dictionary<string,PlayerName> playerNames = new Dictionary<string, PlayerName>();
-        private string currentPlayer;
+        private string currentPlayer = "";
         private  ClickableCard selectedCard = null;
         private List<ClickableCard> cardBank = new List<ClickableCard>();
         int playerCount;

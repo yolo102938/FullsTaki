@@ -15,6 +15,7 @@
         LEAVE_ROOM = 303,
         LEAVE_GAME,
         GET_GAME_RESULT,
+        GET_GAME_STATE = 777,
         EXIT_CLIENT = 400
     }
 }

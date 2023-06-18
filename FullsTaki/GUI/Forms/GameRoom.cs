@@ -1,35 +1,138 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Drawing;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Windows.Forms;
+using TakiClient;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Diagnostics;
 
 namespace GUI.Forms
 {
-
+    
     public partial class GameRoom : Form
     {
-
+        //true means you need to update it
+        public class Diffrence
+        {
+            public bool CardImages = false;
+            public bool firstPlayer = false;
+            public bool secondPlayer = false;
+            public bool thirdPlayer = false;
+            public bool card_bank = false;
+        }
         public class ServerResponse
         {
-            public List<Image> CardImages { get; set; }
-            public List<PlayerInfo> Players { get; set; }
+            public List<Image> CardImages = new List<Image>();
+            public List<PlayerInfo> Players = new List<PlayerInfo>();
             public string turn;
             public Image placed_card;
+            public override bool Equals(object obj)
+            {
+                if (obj == null) return false;
+                if (!(obj is ServerResponse)) return false;
+                ServerResponse tempResp = (ServerResponse)obj;
+               
+                return (this.Players.All(tempResp.Players.Contains)&&this.CardImages.Count==tempResp.CardImages.Count);
+
+            }
+            //function will tell whats the diffrence between last resp and this one to make updating smoother
+            public Diffrence diffrentiate(ServerResponse tempResp)
+            {
+                Diffrence ret = new Diffrence();
+                //oppoments checker
+                for(int i =0; i < this.Players.Count; i++)
+                {
+                    bool temp = tempResp.Players[i].Equals(Players[i]);
+                    if (!temp)
+                    {
+                        ret.card_bank = tempResp.Players[i].cardCount > Players[i].cardCount;
+
+                    }
+                    switch (i)
+                    {
+                        case 0:
+                            ret.firstPlayer = !temp;
+                            break;
+                        case 1:
+                            ret.secondPlayer = !temp;
+                            break;
+                        case 2:
+                            ret.thirdPlayer = !temp;
+                            break;
+                    }
+                    
+                }
+                bool cur = true;
+                for (int i = 0;i< this.CardImages.Count;i++) 
+                {
+                    Debug.WriteLine("this: "+ this.CardImages[i].Tag + " tempResp:" + tempResp.CardImages[i].Tag);
+                    cur = cur && this.CardImages[i].Tag == tempResp.CardImages[i].Tag;
+                }
+                Debug.WriteLine("this: " + this.CardImages.Count + " tempResp:" + tempResp.CardImages.Count);
+                ret.CardImages = cur && this.CardImages.Count == tempResp.CardImages.Count;
+                ret.CardImages = !ret.CardImages;
+                return ret;
+            }
         }
         public ServerResponse call_server()
         {
             ServerResponse response = new ServerResponse();
+            TakiMessage getrooms = new TakiMessage
+            {
+                Code = (int)TakiRequest.GET_GAME_STATE,
+                Content = ""
+            };
 
-            // Replace this with actual server call later
+            TakiClient.Socket.SendMsg(getrooms.ToString());
+            MSG msg = TakiClient.Socket.RecvMsg();
 
+            JArray jsonArray = (JArray)JObject.Parse(msg.json)["players"];
+            response.Players = new List<PlayerInfo>();
 
-            response.CardImages = new List<Image>() { (Bitmap)global::GUI.Properties.Resources.ResourceManager.GetObject($"Blue_4"), (Bitmap)global::GUI.Properties.Resources.ResourceManager.GetObject($"Blue_2"),(Bitmap)global::GUI.Properties.Resources.ResourceManager.GetObject($"Green_7") };
-            response.Players = new List<PlayerInfo>() { new PlayerInfo{ Name = "David", cardCount = 2 }, new PlayerInfo{ Name = "Thomas" ,cardCount = 5} };
-            response.turn = "You";
-            response.placed_card = (Bitmap)global::GUI.Properties.Resources.ResourceManager.GetObject($"Blue_3");
+            foreach (JObject obj in jsonArray)
+            {
+                response.Players.Add(new PlayerInfo { Name = obj.Value<string>("name"), cardCount = obj.Value<int>("card_count") });
+            }
+
+            //Client cards
+
+            jsonArray = (JArray)JObject.Parse(msg.json)["cards"];
+            var imgs = new List<Image>();
+            foreach (JObject obj in jsonArray)
+            {
+                string color = obj.Value<string>("color");
+                string what = obj.Value<string>("what");
+                Image cardImage;
+                cardImage = (Bitmap)global::GUI.Properties.Resources.ResourceManager.GetObject($"{color}_{what}");
+                cardImage.Tag = $"{color}_{what}";
+                response.CardImages.Add((cardImage));
+            }
+
+            //Current player
+
+            response.turn = JObject.Parse(msg.json)["turn"].ToString();
+            
+            //Last Card
+            
+            {
+            var obj = JObject.Parse(msg.json)["placed_card"];
+            string color = obj.Value<string>("color");
+            string what = obj.Value<string>("what");
+               //MessageBox.Show(color + what);
+            if (color == "none")
+            {
+                    response.placed_card = ((Bitmap)global::GUI.Properties.Resources.Empty);
+                }
+            else
+            {
+                response.placed_card = ((Bitmap)global::GUI.Properties.Resources.ResourceManager.GetObject($"{color}_{what}"));
+            }
+           
+            }
             return response;
         }
 
@@ -42,6 +145,20 @@ namespace GUI.Forms
         {
             public string Name { get; set; }
             public int cardCount { get; set; } = 0;
+            public override bool Equals(Object obj)
+            {
+                //Check for null and compare run-time types.
+                if ((obj == null) || !this.GetType().Equals(obj.GetType()))
+                {
+                    return false;
+                }
+                else
+                {
+                    PlayerInfo temp = (PlayerInfo)obj;
+                    return (temp.Name==this.Name&&temp.cardCount == this.cardCount);
+                }
+            }
+
         }
         public class PlayerName
         {
@@ -71,9 +188,32 @@ namespace GUI.Forms
 
             InitializeComponent(playerCount);
             createEmpty();
-            InitializeGameRoom(playerCount);
+            resp = call_server();
+            CreateCardBank(deck_count);
+            InitializeGameRoom();
+            DiscardCard_Click(null,null);
+            timer = new Timer();
+            timer.Interval = 2000;//500; 
+            timer.Tick += Timer_Tick;
+            timer.Start();
+
+            //InitializeGameRoom();
 
         }
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            ServerResponse tempResp = call_server();
+            //if nothing changed, no need to update stuff.
+            if ( true)//!resp.Equals(tempResp))
+            {
+
+                resp = tempResp;
+                diff = resp.diffrentiate(tempResp);
+                InitializeGameRoom();
+            }
+            {
+            }
+        } 
         public void createEmpty()
         {
 
@@ -100,54 +240,33 @@ namespace GUI.Forms
             this.Controls.Add(temp);
 
         }
-        private void InitializeGameRoom(int playerCount)
+        private void InitializeGameRoom()
         {
-            resp = call_server();
-
-            // Initialize random card images
+            currentPlayer = resp.turn;
             cardImages = resp.CardImages;
             playedCardStack.Add(resp.placed_card);
-            // Create the player's cards
-            CreatePlayerCards();
 
-            // Create the opponent's cards
+            // Create the player's cards
+            if (diff.CardImages)
+            {
+                CreatePlayerCards();
+            }
+            
             CreateOpponentCards(resp.Players.Count);
 
             // Create the card piles
             CreateCardPiles();
 
             // Initialize current player
-            currentPlayer = "You";
-        }
+            
+            this.Refresh();
 
-        private List<Image> GetRandomCardImages()
-        {
-            int numCards = rand.Next(1, 15);
-            List<Image> cardImages = new List<Image>();
-
-            if (numCards == 0)
-            {
-                Image cardImage;
-                cardImage = (Bitmap)global::GUI.Properties.Resources.crown;
-                cardImages.Add(cardImage);
-            }
-
-            for (int i = 0; i < numCards; i++)
-            {
-                string cardColor = colors[rand.Next(colors.Length)];
-                int cardNumber = rand.Next(0, 10);
-                Image cardImage;
-                cardImage = (Bitmap)global::GUI.Properties.Resources.ResourceManager.GetObject($"{cardColor}_{cardNumber}");
-                cardImages.Add(cardImage);
-            }
-
-            return cardImages;
         }
 
 
         private void CreatePlayerCards()
         {
-          
+            if (!diff.CardImages) { return; }
             // Clear previous player's cards
             foreach (var card in playerCardsList)
             {
@@ -174,22 +293,29 @@ namespace GUI.Forms
                         BackColor = Color.Transparent
                     }
                 };
+
                 card.Picture.Click += (s, e) => this.Card_Click(card); // Add click event to each card
                 playerCardsList.Add(card);
                 this.Controls.Add(card.Picture);
+                selectedCard = card;
             }
             playerNames["You"] = new PlayerName { Location = new Point(startLocationX + (cardImages.Count * 30) / 2, this.Height - 150), rotate = 0 };
+
         }
 
         private void CreateOpponentCards(int playerCount)
         {
 
-            opponentCards = new PictureBox[playerCount][];
+            PictureBox[][] tempOpponentCards = new PictureBox[playerCount][];
 
             for (int p = 0; p < playerCount; p++)
             {
-                List<Image> cardImages = GetRandomCardImages();
-                opponentCards[p] = new PictureBox[resp.Players[p].cardCount];
+                if (opponentCards == null)
+                {
+                    opponentCards= new PictureBox[playerCount][];
+                }
+                bool change = false;
+                tempOpponentCards[p] = new PictureBox[resp.Players[p].cardCount];
 
                 int startLocationX;
                 int startLocationY;
@@ -198,19 +324,21 @@ namespace GUI.Forms
                 switch (p)
                 {
                     case 0: // Opponent 1 (top)
-                        
+                        change = diff.firstPlayer;
                         startLocationX = this.Width / 2 - ((resp.Players[p].cardCount * 30) / 2);
                         startLocationY = 30;
                         rotate = false;
                         playerNames[resp.Players[p].Name] = new PlayerName { Location = new Point(startLocationX+(resp.Players[p].cardCount * 30) /2, startLocationY+100) ,rotate = 0}; //later in backend add names
                         break;
                     case 1: // Opponent 2 (left)
+                        change = diff.secondPlayer;
                         startLocationX = 30;
                         startLocationY = this.Height / 2 - ((cardImages.Count * 30) / 2);
                         rotate = true;
                         playerNames[resp.Players[p].Name] = new PlayerName { Location = new Point(startLocationX+150, startLocationY+(resp.Players[p].cardCount * 30)/2), rotate = 1 }; //later in backend add names
                         break;
                     case 2: // Opponent 3 (right)
+                        change = diff.thirdPlayer;
                         startLocationX = this.Width - 80;
                         startLocationY = this.Height / 2 - ((cardImages.Count * 30) / 2);
                         rotate = true;
@@ -219,44 +347,58 @@ namespace GUI.Forms
                     default:
                         throw new Exception("Unsupported player count");
                 }
-
-                for (int i = 0; i < opponentCards[p].Length; i++)
+                if (true)
                 {
-                    Image cardImage = global::GUI.Properties.Resources.Deck;
-                    Image resizedImage = cardImage.GetThumbnailImage(70, 100, null, IntPtr.Zero);
-
-                    if (rotate)
+                    for (int i = 0; i < tempOpponentCards[p].Length; i++)
                     {
-                        resizedImage.RotateFlip(RotateFlipType.Rotate90FlipNone);
-                        opponentCards[p][i] = new PictureBox
-                        {
-                            Size = new Size(70,100),
-                            Location = new Point(startLocationX, startLocationY + (i * 30)),
-                            Image = resizedImage,
-                            BackColor = Color.Transparent
-                        };
-                        cardsList.Add(new EnemyCard
-                        {
-                            Image = resizedImage,
-                            Location = new Point(startLocationX, startLocationY + (i * 30))
-                        });
-                    }
-                    else
-                    {
-                        opponentCards[p][i] = new PictureBox
-                        {
-                            Size = new Size(70, 100),
-                            Location = new Point(startLocationX + (i * 30), startLocationY),
-                            Image = resizedImage,
-                            BackColor = Color.Transparent
-                        };
-                        cardsList.Add(new EnemyCard
-                        {
-                            Image = resizedImage,
-                            Location = new Point(startLocationX + (i * 30), startLocationY)
-                        });
-                    }
+                        Image cardImage = global::GUI.Properties.Resources.Deck;
+                        Image resizedImage = cardImage.GetThumbnailImage(70, 100, null, IntPtr.Zero);
 
+                        if (rotate)
+                        {
+                            resizedImage.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                            tempOpponentCards[p][i] = new PictureBox
+                            {
+                                Size = new Size(70, 100),
+                                Location = new Point(startLocationX, startLocationY + (i * 30)),
+                                Image = resizedImage,
+                                BackColor = Color.Transparent
+                            };
+                            cardsList.Add(new EnemyCard
+                            {
+                                Image = resizedImage,
+                                Location = new Point(startLocationX, startLocationY + (i * 30))
+                            });
+                        }
+                        else
+                        {
+                            tempOpponentCards[p][i] = new PictureBox
+                            {
+                                Size = new Size(70, 100),
+                                Location = new Point(startLocationX + (i * 30), startLocationY),
+                                Image = resizedImage,
+                                BackColor = Color.Transparent
+                            };
+                            cardsList.Add(new EnemyCard
+                            {
+                                Image = resizedImage,
+                                Location = new Point(startLocationX + (i * 30), startLocationY)
+                            });
+                        }
+                    }
+                    opponentCards[p] = new PictureBox[resp.Players[p].cardCount];
+                    if (change)
+                    {
+                        this.Refresh();
+                    }
+                    for(int i = 0; i < tempOpponentCards[p].Length; i++)
+                    {
+                        opponentCards[p][i] = tempOpponentCards[p][i];
+                    }
+                    if (change)
+                    {
+                        this.Refresh();
+                    }
 
                     //this.Controls.Add(opponentCards[p][i]);
                 }
@@ -299,7 +441,7 @@ namespace GUI.Forms
                 }
                 if (playedCardStack.Count > 20)
                 {
-                    i = 19;
+                    i = playedCardStack.Count - 20;
                 }
                 Image resizedImage = playedCardStack.Last().GetThumbnailImage(70, 100, null, IntPtr.Zero);
                 resizedImage = (Image)RotateImage((Bitmap)resizedImage, rand.Next(-20, 20));
@@ -312,7 +454,7 @@ namespace GUI.Forms
                     Image = resizedImage,
                     BackColor = Color.Transparent
                 };
-                    cardsList.Add(new EnemyCard
+                    playedcardsList.Add(new EnemyCard
                 {
                     Image = resizedImage,
                     Location = new Point(tempX,tempY)
@@ -326,10 +468,6 @@ namespace GUI.Forms
         }
         private void CreateCardBank(int amount) //creates a pile in the right middle with all the unused cards, rn random until backend
         {
-
-            List<Image> cardImages = GetRandomCardImages();
-
-
             var rand = new Random();
             int space = 0;
             try {
@@ -337,11 +475,11 @@ namespace GUI.Forms
             }
             catch(Exception e) 
             {
-                space = rand.Next( 200 / amount,10); 
+                space = rand.Next( 150 / amount,10); 
             }
-            int LocationX = this.Width / 2 +space*amount;
+            int LocationX = this.Width / 2 +50+space*amount;
             int LocationY = this.Height / 2 - 50;
-            for (int i = 0; i < cardImages.Count; i++)
+            for (int i = 0; i < amount; i++)
             {
                 Image cardImage = global::GUI.Properties.Resources.Deck;
                 Image resizedImage = cardImage.GetThumbnailImage(70, 100, null, IntPtr.Zero);
@@ -361,18 +499,19 @@ namespace GUI.Forms
                 cardBank.Add(card);
                 this.Controls.Add(card.Picture);
                 card.Picture.Click += (s, e) => this.CardBank_Click(); // Add click event to each card
-                playerCardsList.Add(card);
-                
-
-
+                CardsDeckList.Add(card);
             }
         }
         private void CreateCardPiles()
         {
-            var rand = new Random();
-
-            CreatePlayedCards();
-            CreateCardBank(20);
+            if (!diff.card_bank)
+            {
+                CreatePlayedCards();
+            }
+            if (diff.card_bank)
+            {
+                CardBank_Click();
+            }
         }
 
 
@@ -392,15 +531,31 @@ namespace GUI.Forms
                 }
             }
 
-            foreach (var card in cardsList)
+            /*foreach (var card in cardsList)
+            {
+                e.Graphics.DrawImage(card.Image, card.Location);
+            }*/
+            foreach (var card in playedcardsList)
             {
                 e.Graphics.DrawImage(card.Image, card.Location);
             }
+            foreach (var cards in opponentCards)
+            {
+                foreach (var card in cards)
+                {
+                    e.Graphics.DrawImage(card.Image, card.Location);
+                }
+            }
+
             foreach (var card in cardBank)
             {
                 e.Graphics.DrawImage(card.Image, card.Location);
             }
             foreach (var card in playerCardsList)
+            {
+                e.Graphics.DrawImage(card.Image, card.Location);
+            }
+            foreach (var card in CardsDeckList)
             {
                 e.Graphics.DrawImage(card.Image, card.Location);
             }
@@ -460,12 +615,27 @@ namespace GUI.Forms
                     
                 }
         }
-        private void CardBank_Click()
+        private void CardBank_Click(bool allow = false)
         {
-            if (true) 
+            if (allow)//||getCard()) backend add later
             {
                 this.Controls.Remove(cardBank.First().Picture);
                 cardBank.Remove(cardBank.First());
+                deck_count--;
+                CardsDeckList.Remove(CardsDeckList.First());
+                if (deck_count== 0)
+                {
+                    foreach(var remaining in cardBank)
+                    {
+                        this.Controls.Remove(remaining.Picture);
+                    }
+                    
+                    cardBank.Clear();
+                    CardsDeckList.Clear();
+                    this.Refresh();
+                    deck_count = rand.Next(5,10);
+                    CreateCardBank(deck_count);
+                }
                 this.Refresh();
             }
 

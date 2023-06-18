@@ -130,8 +130,8 @@ void Communicator::startHandleRequests()
 
 int Communicator::GetMsgCode(const SOCKET socket) const
 {
-	char code_buffer[2]{};
-	recv(socket, (char*)&code_buffer, 2, 0);
+	char code_buffer[4]{};
+	recv(socket, (char*)&code_buffer, 4, 0);
 	unsigned int code = std::stoul(code_buffer, nullptr, 16);
 
 	return code;
