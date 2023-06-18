@@ -1,4 +1,8 @@
 #pragma once
+struct Card;
+struct Player;
+class GameData;
+#include "gameHeaders.h"
 //all the headers to make it look nice
 #pragma comment (lib, "ws2_32.lib")
 #include <WinSock2.h>

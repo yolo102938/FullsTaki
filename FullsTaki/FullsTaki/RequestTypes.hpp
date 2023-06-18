@@ -11,14 +11,7 @@ using std::string;
 
 class IRequestHandler;
 
-typedef struct Card {
-	std::string color;
-	std::string what;
-}Card;
-typedef struct Player {
-	std::string name;
-	std::vector<Card> cards;
-} Player;
+
 
 typedef struct RequestInfo
 {

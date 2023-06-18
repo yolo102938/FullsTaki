@@ -7,56 +7,26 @@
 #include "ServerData.h"
 #include <vector>
 #include <map>
-#include <algorithm>
+
 #include <iostream>
-#include <random>
+
 #include <mutex>
 #include <string>
+
+
 class RequestHandlerFactory;
 
-void generateCards(std::vector<Card>& av_Cards)
-{
-    std::vector<std::string> colors = { "Red", "Green", "Blue", "Yellow" };
-    std::vector<std::string> symbols = { "Skip", "Draw" };
-    for (const auto& color : colors) {
-        for (int number = 0; number < 10; ++number) {
-            Card card = {color , std::to_string(number)};
-            av_Cards.push_back(card);
-            av_Cards.push_back(card);
-        }
-    }
-    for (const auto& color : colors) {
-        for (const auto& symbol : symbols) {
-            Card card = { color , symbol };
-            av_Cards.push_back(card);
-            av_Cards.push_back(card);
-            av_Cards.push_back(card);
-            av_Cards.push_back(card);
-        }
-    }
-}
 
-void shuffleCards(std::vector<Card>& cards)
-{
-    std::random_device rd;
-    std::mt19937 g(rd());
-    std::shuffle(cards.begin(), cards.end(), g);
-}
-
-class Game
+class GameEngine
 {
     public:
-        Game()
-        {
-            generateCards(av_Cards);
-            shuffleCards(av_Cards);
-            current_player = 0;
-            current_card = { "None","None" };
-            last_card = { "None","None" };
-        }
+        GameEngine();
+
+
+        GameData getGameStatus();
         bool tryPlacement(Card card);
         bool tryCardBank();
-        GameData getGameState();
+        
         std::string getWhat(std::string card)
         {
             std::string full = card;
@@ -99,21 +69,17 @@ class GameHandler : public IRequestHandler
 {
     public:
         GameHandler(LoggedUser* user, RequestHandlerFactory* handlerFactory);
-
+        ~GameHandler();
         virtual bool isRequestRelevant(const RequestInfo request) const override;
         virtual RequestResult handleRequest(const RequestInfo request) const override;
     
-
+        
         RequestResult gameState() const;
         RequestResult bankRequest() const;
         RequestResult playCardRequest(const RequestInfo request) const;
 
     private:
-
-
-
-
-        Game* m_game;
+        GameEngine* m_game;
         LoggedUser* m_user;
         RequestHandlerFactory* m_handlerFactory;
 };

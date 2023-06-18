@@ -148,10 +148,4 @@ typedef struct LeaveRoomResponse
 
 } LeaveRoomResponse;
 
-typedef struct GameData {
-	std::vector<Player> players;
-	std::vector<Card> cards;
-	std::string turn;
-	Card placed_card;
-	int status = 100;
-}GameData;
+
