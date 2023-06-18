@@ -9,6 +9,8 @@ using System.Windows.Forms;
 using TakiClient;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Diagnostics;
+using Newtonsoft.Json;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace GUI.Forms
 {
@@ -23,6 +25,7 @@ namespace GUI.Forms
             public bool secondPlayer = false;
             public bool thirdPlayer = false;
             public bool card_bank = false;
+            public int card_bank_dec = 0;
         }
         public class ServerResponse
         {
@@ -35,44 +38,54 @@ namespace GUI.Forms
                 if (obj == null) return false;
                 if (!(obj is ServerResponse)) return false;
                 ServerResponse tempResp = (ServerResponse)obj;
-               
-                return (this.Players.All(tempResp.Players.Contains)&&this.CardImages.Count==tempResp.CardImages.Count);
+                Diffrence temp = new Diffrence();
+                this.Diffrentiate(tempResp, temp);
+
+                return ((temp.card_bank && temp.CardImages && temp.firstPlayer && temp.secondPlayer && temp.thirdPlayer &&temp.thirdPlayer));
 
             }
             //function will tell whats the diffrence between last resp and this one to make updating smoother
-            public Diffrence diffrentiate(ServerResponse tempResp)
+            public Diffrence Diffrentiate(ServerResponse tempResp, Diffrence ret)
             {
-                Diffrence ret = new Diffrence();
+                //Diffrence ret = new Diffrence();
                 //oppoments checker
-                for(int i =0; i < this.Players.Count; i++)
+                bool temp = false;
+                for (int i =0; i < this.Players.Count; i++)
                 {
-                    bool temp = tempResp.Players[i].Equals(Players[i]);
-                    if (!temp)
+                    temp = !(tempResp.Players[i].Equals(Players[i]));
+                    if (temp)
                     {
-                        ret.card_bank = tempResp.Players[i].cardCount > Players[i].cardCount;
-
+                        ret.card_bank = tempResp.Players[i].cardCount > this.Players[i].cardCount;
+                        ret.card_bank_dec = tempResp.Players[i].cardCount - this.Players[i].cardCount; i++;
                     }
                     switch (i)
                     {
                         case 0:
-                            ret.firstPlayer = !temp;
+                            ret.firstPlayer = temp;
                             break;
                         case 1:
-                            ret.secondPlayer = !temp;
+                            ret.secondPlayer = temp;
                             break;
                         case 2:
-                            ret.thirdPlayer = !temp;
+                            ret.thirdPlayer = temp;
                             break;
                     }
                     
                 }
                 bool cur = true;
-                for (int i = 0;i< this.CardImages.Count;i++) 
+                for (int i = 0;i< tempResp.CardImages.Count;i++) 
                 {
-                    Debug.WriteLine("this: "+ this.CardImages[i].Tag + " tempResp:" + tempResp.CardImages[i].Tag);
-                    cur = cur && this.CardImages[i].Tag == tempResp.CardImages[i].Tag;
+                    try {
+                        bool start = !cur;
+                        cur = cur && (string)this.CardImages[i].Tag == (string)tempResp.CardImages[i].Tag;
+                    }
+                    catch
+                    {
+                        cur = false; break;
+                    }
+                    
                 }
-                Debug.WriteLine("this: " + this.CardImages.Count + " tempResp:" + tempResp.CardImages.Count);
+                //Debug.WriteLine("this: " + this.CardImages.Count + " tempResp:" + tempResp.CardImages.Count);
                 ret.CardImages = cur && this.CardImages.Count == tempResp.CardImages.Count;
                 ret.CardImages = !ret.CardImages;
                 return ret;
@@ -92,11 +105,14 @@ namespace GUI.Forms
 
             JArray jsonArray = (JArray)JObject.Parse(msg.json)["players"];
             response.Players = new List<PlayerInfo>();
-
-            foreach (JObject obj in jsonArray)
-            {
-                response.Players.Add(new PlayerInfo { Name = obj.Value<string>("name"), cardCount = obj.Value<int>("card_count") });
+            try {
+                foreach (JObject obj in jsonArray)
+                {
+                    response.Players.Add(new PlayerInfo { Name = obj.Value<string>("name"), cardCount = obj.Value<int>("card_count") });
+                }
             }
+            catch { MessageBox.Show(msg.json); }
+
 
             //Client cards
 
@@ -108,8 +124,9 @@ namespace GUI.Forms
                 string what = obj.Value<string>("what");
                 Image cardImage;
                 cardImage = (Bitmap)global::GUI.Properties.Resources.ResourceManager.GetObject($"{color}_{what}");
-                cardImage.Tag = $"{color}_{what}";
+                cardImage.Tag = (color + what);
                 response.CardImages.Add((cardImage));
+                
             }
 
             //Current player
@@ -126,11 +143,13 @@ namespace GUI.Forms
             if (color == "none")
             {
                     response.placed_card = ((Bitmap)global::GUI.Properties.Resources.Empty);
+                    response.placed_card.Tag = (color+what);
                 }
             else
             {
                 response.placed_card = ((Bitmap)global::GUI.Properties.Resources.ResourceManager.GetObject($"{color}_{what}"));
-            }
+                    response.placed_card.Tag = (color + what);
+             }
            
             }
             return response;
@@ -147,7 +166,6 @@ namespace GUI.Forms
             public int cardCount { get; set; } = 0;
             public override bool Equals(Object obj)
             {
-                //Check for null and compare run-time types.
                 if ((obj == null) || !this.GetType().Equals(obj.GetType()))
                 {
                     return false;
@@ -156,6 +174,16 @@ namespace GUI.Forms
                 {
                     PlayerInfo temp = (PlayerInfo)obj;
                     return (temp.Name==this.Name&&temp.cardCount == this.cardCount);
+                }
+            }
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    int hash = 17;
+                    hash = hash * 23 + (Name != null ? Name.GetHashCode() : 0);
+                    hash = hash * 23 + cardCount.GetHashCode();
+                    return hash;
                 }
             }
 
@@ -190,10 +218,13 @@ namespace GUI.Forms
             createEmpty();
             resp = call_server();
             CreateCardBank(deck_count);
+            diff = new Diffrence { CardImages = true, firstPlayer = true, secondPlayer = true, thirdPlayer = true, card_bank = false };
             InitializeGameRoom();
+
             DiscardCard_Click(null,null);
+
             timer = new Timer();
-            timer.Interval = 2000;//500; 
+            timer.Interval = 300; 
             timer.Tick += Timer_Tick;
             timer.Start();
 
@@ -204,11 +235,12 @@ namespace GUI.Forms
         {
             ServerResponse tempResp = call_server();
             //if nothing changed, no need to update stuff.
-            if ( true)//!resp.Equals(tempResp))
+            if (!resp.Equals(tempResp))
             {
-
+                diff = new Diffrence();
+                diff = resp.Diffrentiate(tempResp,diff);
                 resp = tempResp;
-                diff = resp.diffrentiate(tempResp);
+                
                 InitializeGameRoom();
             }
             {
@@ -232,7 +264,7 @@ namespace GUI.Forms
                 BackColor = Color.Transparent
             };
             temp.Click += (s, e) => this.PlayedCard_Click(); // Add click event to each card
-            cardsList.Add(new EnemyCard
+            playedcardsList.Add(new EnemyCard
             {
                 Image = resized_Image,
                 Location = new Point(tempX_, tempY_)
@@ -247,10 +279,9 @@ namespace GUI.Forms
             playedCardStack.Add(resp.placed_card);
 
             // Create the player's cards
-            if (diff.CardImages)
-            {
-                CreatePlayerCards();
-            }
+
+            CreatePlayerCards();
+            
             
             CreateOpponentCards(resp.Players.Count);
 
@@ -275,12 +306,12 @@ namespace GUI.Forms
             }
             playerCardsList.Clear();
             this.Refresh();
-            int startLocationX = this.Width / 2 - ((cardImages.Count * 40) / 2);
+            int startLocationX = this.Width / 2 - ((resp.CardImages.Count * 40) / 2);
 
-            for (int i = 0; i < cardImages.Count; i++)
+            for (int i = 0; i < resp.CardImages.Count; i++)
             {
-                Image resizedImage = cardImages[i].GetThumbnailImage(70, 100, null, IntPtr.Zero);
-
+                Image resizedImage = resp.CardImages[i].GetThumbnailImage(70, 100, null, IntPtr.Zero);
+                resizedImage.Tag = resp.CardImages[i].Tag;
                 var card = new ClickableCard
                 {
                     Image = resizedImage,
@@ -299,7 +330,7 @@ namespace GUI.Forms
                 this.Controls.Add(card.Picture);
                 selectedCard = card;
             }
-            playerNames["You"] = new PlayerName { Location = new Point(startLocationX + (cardImages.Count * 30) / 2, this.Height - 150), rotate = 0 };
+            playerNames["You"] = new PlayerName { Location = new Point(startLocationX + (resp.CardImages.Count * 30) / 2, this.Height - 150), rotate = 0 };
 
         }
 
@@ -425,7 +456,7 @@ namespace GUI.Forms
         {
 
 
-            var second_playedCardStack = new PictureBox[1];
+            var second_playedCardStack = new PictureBox();
             
             int LocationX = this.Width / 2 -120;
             int LocationY = this.Height / 2-50 ;
@@ -433,21 +464,20 @@ namespace GUI.Forms
             int tempX = LocationX + rand.Next(-5, 5);
             int tempY = LocationY + rand.Next(-3, 3);
 
-            for (int i = 0; i < 1; i++)
-            {
+           
                 if (playedCardStack.Count == 0)
                 {
-                    break;
+                    return;
                 }
-                if (playedCardStack.Count > 20)
+                /*if (playedCardStack.Count > 20)
                 {
                     i = playedCardStack.Count - 20;
-                }
+                }*/
                 Image resizedImage = playedCardStack.Last().GetThumbnailImage(70, 100, null, IntPtr.Zero);
                 resizedImage = (Image)RotateImage((Bitmap)resizedImage, rand.Next(-20, 20));
                 tempX = LocationX + rand.Next(-5, 5);
                 tempY = LocationY + rand.Next(-3, 3);
-                second_playedCardStack[i] = new PictureBox
+                second_playedCardStack = new PictureBox
                 {
                     Size = new Size(70, 100),
                     Location = new Point(tempX,tempY),
@@ -463,7 +493,7 @@ namespace GUI.Forms
 
 
 
-            }
+            
 
         }
         private void CreateCardBank(int amount) //creates a pile in the right middle with all the unused cards, rn random until backend
@@ -504,13 +534,17 @@ namespace GUI.Forms
         }
         private void CreateCardPiles()
         {
-            if (!diff.card_bank)
+            if (!diff.card_bank && (diff.firstPlayer || diff.secondPlayer || diff.thirdPlayer || diff.CardImages) && ((string)resp.placed_card.Tag).ToCharArray()[0] != 'n' && ((string)resp.placed_card.Tag).ToCharArray()[0] != 'N')
             {
+                playedCardStack.Add(resp.placed_card);
                 CreatePlayedCards();
             }
             if (diff.card_bank)
             {
-                CardBank_Click();
+                for(int i = 0; i < diff.card_bank_dec; i++)
+                {
+                    CardBank_Click(true);
+                }
             }
         }
 
@@ -584,40 +618,69 @@ namespace GUI.Forms
         {
 
                 if (selectedCard != null)
-                {
-                    if (true)//add if server allows after ohad finished
+                { 
+                    string tem = selectedCard.Image.Tag as string;
+                    Dictionary<string, string> jsonDictionary = new Dictionary<string, string>
                     {
-                    int ind = 0;
-                    //not sure if even needed, when u do it serverResp will be with updated cards
-                    foreach(ClickableCard img in playerCardsList)
-                    {
-
-                        if(img.Image.Equals(selectedCard.Image)) {
-                           
-                            cardImages.RemoveAt(ind);
-                        }
-                        ind++;
-                       
-                           
-                        
-                    }
-                    this.playedCardStack.Add(selectedCard.Image);
-
-                    CreatePlayedCards();
-                    selectedCard.Picture.Location = selectedCard.Location;
-                    selectedCard.Picture.Size = new Size(70, 100);
-                    selectedCard = null;
-
-                   this.Refresh();
+                        { "picture_tag",tem }
+                    };
                     
-                    CreatePlayerCards();
-                }
+                    TakiMessage loginMessage = new TakiMessage
+                    {
+                        Code = (int)700,
+                        Content = JsonConvert.SerializeObject(jsonDictionary)
+                    };
+                    
+                    TakiClient.Socket.SendMsg(loginMessage.ToString());
+                    MSG msg = TakiClient.Socket.RecvMsg();
+
+                    //string status = JObject.Parse(msg.json)["status"].ToString(); ;
+
+                    if ( msg.code == 100)
+                    {
+                        int ind = 0;
+                        //not sure if even needed, when u do it serverResp will be with updated cards
+                        foreach(ClickableCard img in playerCardsList)
+                        {
+
+                            if(img.Image.Equals(selectedCard.Image)) {
+                           
+                                cardImages.RemoveAt(ind);
+                            }
+                            ind++;
+                        
+                        }
+                        this.playedCardStack.Add(selectedCard.Image);
+
+                        CreatePlayedCards();
+                        selectedCard.Picture.Location = selectedCard.Location;
+                        selectedCard.Picture.Size = new Size(70, 100);
+                        selectedCard = null;
+
+                       this.Refresh();
+                    
+                        CreatePlayerCards();
+                    }
                     
                 }
         }
         private void CardBank_Click(bool allow = false)
         {
-            if (allow)//||getCard()) backend add later
+            bool serverAllow = false;
+            if (!allow)
+            {
+                TakiMessage getrooms = new TakiMessage
+                {
+                    Code = (int)TakiRequest.CARD_BANK_PREMISION,
+                    Content = ""
+                };
+
+                TakiClient.Socket.SendMsg(getrooms.ToString());
+                MSG msg = TakiClient.Socket.RecvMsg();
+                serverAllow = msg.code == 100;
+
+            }
+            if (allow||serverAllow)
             {
                 this.Controls.Remove(cardBank.First().Picture);
                 cardBank.Remove(cardBank.First());

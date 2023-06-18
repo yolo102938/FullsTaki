@@ -16,6 +16,7 @@
         LEAVE_GAME,
         GET_GAME_RESULT,
         GET_GAME_STATE = 777,
+        CARD_BANK_PREMISION = 701,
         EXIT_CLIENT = 400
     }
 }
