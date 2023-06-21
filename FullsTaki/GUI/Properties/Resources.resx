@@ -127,4 +127,187 @@
   <data name="text logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\pictures\text logo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Blue_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\blue_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Blue_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\blue_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Blue_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\blue_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Blue_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\blue_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Blue_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\blue_4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Blue_5" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\blue_5.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Blue_6" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\blue_6.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Blue_7" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\blue_7.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Blue_8" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\blue_8.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Blue_9" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\blue_9.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Blue_Draw" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\blue_draw.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Blue_Reverse" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\blue_reverse.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Blue_Skip" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\blue_skip.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="crown" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\crown.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Deck" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\deck.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Green_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\green_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Green_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\green_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Green_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\green_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Green_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\green_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Green_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\green_4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Green_5" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\green_5.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Green_6" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\green_6.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Green_7" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\green_7.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Green_8" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\green_8.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Green_9" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\green_9.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Green_Draw" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\green_draw.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Green_Reverse" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\green_reverse.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Green_Skip" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\green_skip.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MockUp_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\mockup 0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Red_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\red_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Red_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\red_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Red_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\red_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Red_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\red_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Red_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\red_4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Red_5" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\red_5.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Red_6" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\red_6.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Red_7" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\red_7.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Red_8" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\red_8.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Red_9" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\red_9.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Red_Draw" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\red_draw.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Red_Reverse" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\red_reverse.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Red_Skip" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\red_skip.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Table" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\table.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="UnoAssets" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\unoassets.pdf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Wild" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\wild.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Wild_Draw" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\wild_draw.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Yellow_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\yellow_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Yellow_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\yellow_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Yellow_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\yellow_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Yellow_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\yellow_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Yellow_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\yellow_4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Yellow_5" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\yellow_5.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Yellow_6" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\yellow_6.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Yellow_7" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\yellow_7.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Yellow_8" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\yellow_8.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Yellow_9" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\yellow_9.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Yellow_Draw" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\yellow_draw.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Yellow_Reverse" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\yellow_reverse.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Yellow_Skip" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\cards\yellow_skip.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Empty" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\empty.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="START" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\pictures\game\start.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

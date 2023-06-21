@@ -121,6 +121,7 @@ namespace GUI.Forms
             this.button3.TabIndex = 17;
             this.button3.Text = "Close Room";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.CloseRoomButton_Click);
             // 
             // button4
             // 

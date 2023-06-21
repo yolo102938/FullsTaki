@@ -6,11 +6,14 @@
 #include "MenuRequestHandler.h"
 #include "RoomAdminRequestHandler.h";
 #include "RoomMemberRequestHandler.h"
+#include "GameManager.h"
+#include "GameRequestHandler.h"
 
 class LoginRequestHandler;
 class MenuRequestHandler;
 class RoomAdminRequestHandler;
 class RoomMemberRequestHandler;
+class GameRequestHandler;
 
 class RequestHandlerFactory
 {
@@ -36,12 +39,17 @@ public:
 
 	RoomMemberRequestHandler* createRoomMemberRequestHandler(const string username, const SOCKET socket, const int roomId);
 
+	GameRequestHandler* createGameRequestHandler(const string username, const SOCKET socket, Game& game);
+
+	GameManager& getGameManager();
+
 	LoginManager& getLoginManager();
 
 	IDatabase* getDataBase();
 	
 private:
-	RoomManager m_roomManager;
+	GameManager m_gameManager;
+	mutable RoomManager m_roomManager;
 	LoginManager m_loginManager;
 	IDatabase* m_database;
 };

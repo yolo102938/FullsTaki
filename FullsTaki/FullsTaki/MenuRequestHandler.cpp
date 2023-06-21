@@ -59,11 +59,16 @@ RequestResult MenuRequestHandler::getRooms(RequestInfo request) const
 
 RequestResult MenuRequestHandler::getPlayersInRoom(RequestInfo request) const
 {
-
     GetPlayersInRoomRequest req = JsonRequestPacketDeserializer::deserializeGetPlayersInRoom(request.buffer);
-    
-    GetPlayersInRoomResponse res = { this->m_roomManager->getRoom(req.roomId).getAllUsers() };
-    return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory->createMenuRequestHandler(m_user) };
+
+    if (!this->m_roomManager->hasRoom(req.roomId))
+    {
+        ErrorResponse error_res = { "Room doesn't exist!" };
+        return { JsonResponsePacketSerializer::serializeResponse(error_res), (IRequestHandler*)this->m_handlerFactory->createMenuRequestHandler(this->m_user->getUsername(), this->m_user->getSocket()) };
+    }
+
+    GetPlayersInRoomResponse res = { GET_PLAYERS_RESPONSE, this->m_roomManager->getRoom(req.roomId).getAllUsers() };
+    return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory->createMenuRequestHandler(this->m_user->getUsername(), this->m_user->getSocket()) };
 }
 /*
 RequestResult MenuRequestHandler::getPersonalStats(RequestInfo request) const
@@ -113,7 +118,7 @@ RequestResult MenuRequestHandler::createRoom(const RequestInfo request) const
         return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory->createRoomAdminRequestHandler(this->m_user->getUsername(), this->m_user->getSocket(), room_data.id, this->m_roomManager) };
     }
 
-    ErrorResponse error_res = { "Error creating room" }; // get the proper error message
+    ErrorResponse error_res = { "Error creating room" };
 
     return { JsonResponsePacketSerializer::serializeResponse(error_res), (IRequestHandler*)this->m_handlerFactory->createMenuRequestHandler(this->m_user->getUsername(), this->m_user->getSocket()) };
 }

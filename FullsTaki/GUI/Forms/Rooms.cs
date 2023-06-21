@@ -50,6 +50,7 @@ namespace GUI.Forms
 
         private void button1_Click(object sender, EventArgs e)
         {
+            ObsessiveDataRefresher.StopAutoRefreshData();
             bool isGameAlreadyRunning = IsRoomActive(RoomList.SelectedItem.ToString());
             if (isGameAlreadyRunning)
             {
@@ -59,8 +60,6 @@ namespace GUI.Forms
                 string recvJoinMsg = Socket.RecvMsgByResponse((int)TakiResponse.JOIN_ROOM);
                 if (recvJoinMsg != null)
                 {
-                    ObsessiveDataRefresher.StopAutoRefreshData();
-
                     MessageBox.Show($"Successfuly joined to room: {RoomList.SelectedItem}", "Server Response", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     RoomParticipant menu = new RoomParticipant(ExtractName(RoomList.SelectedItem.ToString()), false);
                     Hide();

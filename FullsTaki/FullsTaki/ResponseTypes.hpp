@@ -102,6 +102,7 @@ typedef struct JoinRoomResponse
 
 typedef struct GetPlayersInRoomResponse
 {
+	unsigned int status;
 	vector<string> players;
 } GetPlayersInRoomResponse;
 

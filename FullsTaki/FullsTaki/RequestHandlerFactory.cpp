@@ -1,7 +1,6 @@
 #include "RequestHandlerFactory.h"
 
-RequestHandlerFactory::RequestHandlerFactory(IDatabase* database) :
-    m_database(database), m_loginManager(LoginManager(database))
+RequestHandlerFactory::RequestHandlerFactory(IDatabase* database) : m_database(database), m_roomManager(), m_loginManager(database), m_gameManager(database)
 {}
 
 RequestHandlerFactory::~RequestHandlerFactory()
@@ -30,7 +29,7 @@ LoginManager& RequestHandlerFactory::getLoginManager()
  
 RoomAdminRequestHandler* RequestHandlerFactory::createRoomAdminRequestHandler(Room* room, LoggedUser* user)
 {
-     return new RoomAdminRequestHandler(room, user, &m_roomManager, this);
+     return new RoomAdminRequestHandler(room, user, m_roomManager, this);
 }
 RoomAdminRequestHandler* RequestHandlerFactory::createRoomAdminRequestHandler(const string username, const SOCKET socket, const int roomId)
 {
@@ -38,7 +37,7 @@ RoomAdminRequestHandler* RequestHandlerFactory::createRoomAdminRequestHandler(co
 }
 RoomAdminRequestHandler* RequestHandlerFactory::createRoomAdminRequestHandler(const string username, const SOCKET socket, const int roomId, RoomManager* temp)
 {
-    (this->m_roomManager) = *temp;
+    m_roomManager = *temp;
     return new RoomAdminRequestHandler(username, socket, this->m_roomManager, *this, roomId);
 }
 RoomMemberRequestHandler* RequestHandlerFactory::createRoomMemberRequestHandler(const string username, const SOCKET socket, const int roomId)
@@ -53,6 +52,16 @@ IDatabase* RequestHandlerFactory::getDataBase()
 
 RoomMemberRequestHandler* RequestHandlerFactory::createRoomMemberRequestHandler(const string username, const SOCKET socket, const int roomId, RoomManager* temp)
 {
-    (this->m_roomManager) = *temp;
+    m_roomManager = *temp;
     return new RoomMemberRequestHandler(username, socket, this->m_roomManager, *this, roomId);
+}
+
+GameManager& RequestHandlerFactory::getGameManager()
+{
+    return this->m_gameManager;
+}
+
+GameRequestHandler* RequestHandlerFactory::createGameRequestHandler(const string username, const SOCKET socket, Game& game)
+{
+    return new GameRequestHandler(username, socket, this->m_gameManager, *this, game);
 }

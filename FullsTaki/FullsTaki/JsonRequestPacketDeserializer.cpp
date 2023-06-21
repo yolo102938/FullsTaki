@@ -54,6 +54,16 @@ CreateRoomRequest JsonRequestPacketDeserializer::deserializeCreateRoom(const std
     return CreateRoomRequest({ jsonData["name"],jsonData["max_users"]});
 }
 
+PlaceCardRequest JsonRequestPacketDeserializer::deserializePlayCardRequest(const vector<unsigned char>& buffer)
+{
+    string data(buffer.begin(), buffer.end());
+    data = data.substr(data.find('{'));// get only the json part
+
+    json jsonData = json::parse(data); // parse to json
+    return PlaceCardRequest({ jsonData["cardId"] });
+}
+
+
 /*
 Function parses json data from the given buffer.
 The function creates a string from the buffer's data, locates the first '{' to get only the json data,

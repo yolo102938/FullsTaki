@@ -3,7 +3,8 @@
 #include <algorithm>
 #include <array>
 #include <iostream>
-void sendError(SOCKET clientSocket) {
+void sendError(SOCKET clientSocket)
+{
 	int code = 0;
 	if (send(clientSocket, reinterpret_cast<const char*>(&code), sizeof(code), 0) != sizeof(code))
 	{
@@ -38,7 +39,7 @@ void Communicator::handleNewClient(SOCKET socketClient)
 	std::cout << "Client accepted !" << std::endl;
 	bool isActive = true; //Flag that indicates if the client's connection is still active
 	bool isLoggedIn = false; //Flag that indicates if the client is logged in
-
+	
 	try
 	{
 		//Continuously process incoming messages in a loop while the connection is active
@@ -46,6 +47,10 @@ void Communicator::handleNewClient(SOCKET socketClient)
 		{
 			int msgCode = GetMsgCode(socketClient); //The code of the messaage
 			cout << msgCode << endl;
+			if (msgCode == 205)
+			{
+				cout << "break";
+			}
 			int msgSize = GetDataLength(socketClient); //The length of the messaage
 			vector<unsigned char> bufferData = GetMsgData(socketClient, msgSize); //The data of the messaage
 			string dataStr = string(bufferData.begin(), bufferData.end());
@@ -91,7 +96,7 @@ void Communicator::handleNewClient(SOCKET socketClient)
 					sendError(socketClient); //sending an error if the response data is not sent correctly
 				}
 			}
-			Sleep(300);
+			Sleep(200);
 		}
 	}
 	catch (const std::exception& e)

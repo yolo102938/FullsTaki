@@ -106,6 +106,13 @@
     <Compile Include="Forms\TakiProtocol.cs" />
     <Compile Include="Forms\TakiRequest.cs" />
     <Compile Include="Forms\TakiResponse.cs" />
+    <Compile Include="GameRoom.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GameRoom.designer.cs">
+      <DependentUpon>GameRoom.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs" />
     <Compile Include="Source.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Forms\RoomParticipant.resx">
@@ -123,22 +130,16 @@
     <EmbeddedResource Include="Forms\Signup.resx">
       <DependentUpon>Signup.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    <EmbeddedResource Include="GameRoom.resx">
+      <DependentUpon>GameRoom.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx" />
     <None Include="packages.config" />
     <None Include="Properties\DataSources\GUI.Forms.Rooms.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>

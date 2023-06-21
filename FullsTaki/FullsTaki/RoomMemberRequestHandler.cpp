@@ -55,5 +55,5 @@ RequestResult RoomMemberRequestHandler::getRoomState(const RequestInfo request) 
 		this->m_roomManager.getRoomState(this->m_room.getRoomData().id),
 		this->m_room.getAllUsers()};
 
-	return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory.createRoomAdminRequestHandler(this->m_user.getUsername(), this->m_user.getSocket(), this->m_room.getRoomData().id) };
+	return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory.createRoomMemberRequestHandler(this->m_user.getUsername(), this->m_user.getSocket(), this->m_room.getRoomData().id, &m_roomManager) };
 }

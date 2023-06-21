@@ -10,14 +10,19 @@ using std::map;
 class Communicator
 {
 	public:
-		Communicator(RequestHandlerFactory& factory);;
+		static Communicator& staticInstance(RequestHandlerFactory& factory_handle)
+		{
+			static Communicator instance(factory_handle);
+			return instance;
+		}
+		Communicator(RequestHandlerFactory& factory);
 		~Communicator();
 		void startHandleRequests();
 		void bindAndListen();
 		void handleNewClient(SOCKET);
+		map<SOCKET, IRequestHandler*> m_clients;
 	private:
 		SOCKET m_serverSocket;
-		map<SOCKET, IRequestHandler*> m_clients;
 		RequestHandlerFactory& m_handlerFactory;
 		int GetMsgCode(const SOCKET socket) const;
 		int GetDataLength(const SOCKET socket) const;

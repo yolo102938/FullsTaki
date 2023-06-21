@@ -23,9 +23,9 @@ public:
 	void login(const string username, const string password);
 
 	void logout(const string username);
-
+	vector<LoggedUser> m_loggedUsers;
 
 private:
-	vector<LoggedUser> m_loggedUsers;
+	
 	IDatabase* m_database;
 };

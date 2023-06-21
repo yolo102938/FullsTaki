@@ -14,7 +14,10 @@
         GET_ROOM_STATE,
         LEAVE_ROOM,
         LEAVE_GAME,
+        PLAY_CARD,
         GET_GAME_RESULT,
+        GET_GAME_STATE,
+        CARD_BANK_PREMISION,
         EXIT_CLIENT = 250
     }
 }

@@ -158,7 +158,34 @@ vector<char> JsonResponsePacketSerializer::serializeResponse(const LeaveRoomResp
 	return responseBuilder(response.status, sData.dump());
 }
 
+vector<char> JsonResponsePacketSerializer::serializeResponse(const LeaveGameResponse response)
+{
+	json serializedData = { {"status", response.status} };
+	return responseBuilder(LEAVE_GAME_RESPONSE, serializedData.dump());
+}
 
+
+vector<char> JsonResponsePacketSerializer::serializeResponse(const PlaceCardResponse response)
+{
+	json serializedData = { {"status", response.status} };
+	return responseBuilder(PLAY_CARD_RESPONSE, serializedData.dump());
+}
+
+vector<char> JsonResponsePacketSerializer::serializeResponse(const GetGameResultsResponse response)
+{
+	json serializedData = { {"status", response.status}, {"Results", {}} };
+
+	for (auto& result : response.results)
+	{
+		serializedData["Results"].push_back({
+			{"username", result.username},
+			{"correctAnswerCount", result.cardsInHand},
+			{"wrongAnswerCount", result.averagePlayTime}
+			});
+	}
+
+	return responseBuilder(GET_GAME_RESULT_RESPONSE, serializedData.dump());
+}
 
 
 /*

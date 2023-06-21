@@ -48,7 +48,6 @@ namespace GUI.Forms
             InitializeComponent();
             RoomName = roomName;
             IsAdmin = admin;
-            Text += Socket.LoggedUserFormatted;
             ObsessiveDataRefresher.AutoRefreshData(this);
         }
 
@@ -110,14 +109,13 @@ namespace GUI.Forms
 
         private void button2_Click(object sender, EventArgs e)
         {
-
+            ObsessiveDataRefresher.StopAutoRefreshData();
             string sendStartGameMsg = TakiProtocol.StartGame();
             Socket.SendMsg(sendStartGameMsg);
 
             string recvStartGameMsg = Socket.RecvMsgByResponse((int)TakiResponse.START_GAME);
             if (recvStartGameMsg != null)
             {
-                ObsessiveDataRefresher.StopAutoRefreshData();
                 StartGameForm();
             }
         }
@@ -125,9 +123,9 @@ namespace GUI.Forms
 
         public void StartGameForm()
         {
-            //Game game = new Game();
+            GameRoom game = new GameRoom();
             Hide();
-            //game.ShowDialog();
+            game.ShowDialog();
             Close();
         }
 
@@ -165,6 +163,7 @@ namespace GUI.Forms
         internal void ExitMenu()
         {
             Hide();
+            MainMenu menu = new MainMenu();
             Close();
         }
 

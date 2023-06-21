@@ -23,9 +23,12 @@ namespace GUI.Forms
 
         public static void AutoRefreshData(Form form)
         {
-            autoRefreshRunning = true;
-            DataUpdater = new Thread(new ParameterizedThreadStart(UpdateData));
-            DataUpdater.Start(form);
+            if (!autoRefreshRunning)
+            {
+                autoRefreshRunning = true;
+                DataUpdater = new Thread(new ParameterizedThreadStart(UpdateData));
+                DataUpdater.Start(form);
+            }
         }
 
         public static void CreateRoomForm(string name, int id)
@@ -130,9 +133,6 @@ namespace GUI.Forms
 
         public static List<string> ProcessJsonPlayers(string json)
         {
-            // Extract the status code
-            int statusCode = Int32.Parse(json.Substring(0, json.IndexOf('{')));
-
             // Extract the JSON part
             json = json.Substring(json.IndexOf('{'));
             JObject jObject = JObject.Parse(json);
@@ -147,27 +147,6 @@ namespace GUI.Forms
             }
 
             return playerStrings;
-        }
-
-        public static int ExtractId(string roomString)
-        {
-            // The regular expression pattern to find the ID
-            string pattern = @"Room ID: (\d+)";
-
-            // Get the match object
-            Match match = Regex.Match(roomString, pattern);
-
-            // If the match is successful
-            if (match.Success)
-            {
-                // Parse and return the ID
-                return Int32.Parse(match.Groups[1].Value);
-            }
-            else
-            {
-                // If the ID is not found, throw an exception
-                throw new Exception("No ID found in the room string.");
-            }
         }
 
         internal static class RoomsDataUpdater

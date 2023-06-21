@@ -44,9 +44,18 @@ public:
 	static vector<char> serializeResponse(const getHighScoreResponse response);
 
 	static vector<char> serializeResponse(const CloseRoomResponse& response);
+
 	static vector<char> serializeResponse(const StartGameResponse& response);
+
 	static vector<char> serializeResponse(const GetRoomStateResponse& response);
+
 	static vector<char> serializeResponse(const LeaveRoomResponse& response);
+
+	static vector<char> serializeResponse(const LeaveGameResponse response);
+
+	static vector<char> serializeResponse(const PlaceCardResponse response);
+
+	static vector<char> serializeResponse(const GetGameResultsResponse response);
 
 private:
 
