@@ -51,9 +51,17 @@ RequestResult RoomMemberRequestHandler::leaveRoom(const RequestInfo request) con
 
 RequestResult RoomMemberRequestHandler::getRoomState(const RequestInfo request) const
 {
-	GetRoomStateResponse res = { GET_ROOM_STATE_RESPONSE,
-		this->m_roomManager.getRoomState(this->m_room.getRoomData().id),
-		this->m_room.getAllUsers()};
 
+
+	if (!this->m_room.m_metadata.isActive) {
+		GetRoomStateResponse res = {START_GAME_RESPONSE,
+	this->m_roomManager.getRoomState(this->m_room.getRoomData().id),
+	this->m_room.getAllUsers() };
+		Game& current_game = this->m_handlerFactory.getGameManager().getGame(this->m_room);
+		return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory.createGameRequestHandler(this->m_user.getUsername(), this->m_user.getSocket(), current_game) };
+	}
+	GetRoomStateResponse res = { GET_ROOM_STATE_RESPONSE,
+	this->m_roomManager.getRoomState(this->m_room.getRoomData().id),
+	this->m_room.getAllUsers() };
 	return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory.createRoomMemberRequestHandler(this->m_user.getUsername(), this->m_user.getSocket(), this->m_room.getRoomData().id, &m_roomManager) };
 }

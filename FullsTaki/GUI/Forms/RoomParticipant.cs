@@ -113,8 +113,8 @@ namespace GUI.Forms
             string sendStartGameMsg = TakiProtocol.StartGame();
             Socket.SendMsg(sendStartGameMsg);
 
-            string recvStartGameMsg = Socket.RecvMsgByResponse((int)TakiResponse.START_GAME);
-            if (recvStartGameMsg != null)
+            MSG recvStartGameMsg = Socket.RecvMsg();
+            if (recvStartGameMsg.code!=101)
             {
                 StartGameForm();
             }

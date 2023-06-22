@@ -18,7 +18,19 @@ Game& GameManager::createGame(const Room& room)
 
 	return (*new_game);
 }
+Game& GameManager::getGame(const Room& room)
+{
+	vector<LoggedUser> players = room.m_users;
 
+	Game* new_game = nullptr;
+	for (auto g : this->m_games) {
+
+		if (g->m_players[0] == room.getAllUsers()[0]) {
+			new_game = g;
+		}
+	}
+	return (*new_game);
+}
 
 void GameManager::deleteGame(const Game& game)
 {
