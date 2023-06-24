@@ -8,6 +8,7 @@
 //found this json library online
 #include "json.hpp"
 using json = nlohmann::json;
+using ordered_json = nlohmann::ordered_json;
 //--------------------------
 
 //using specific functions from the std namespace
@@ -54,8 +55,6 @@ public:
 	static vector<char> serializeResponse(const LeaveGameResponse response);
 
 	static vector<char> serializeResponse(const PlaceCardResponse response);
-
-	static vector<char> serializeResponse(const GetGameResultsResponse response);
 
 	static vector<char> serializeResponse(const GameData& response);
 

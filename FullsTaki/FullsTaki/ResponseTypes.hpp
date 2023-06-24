@@ -79,12 +79,6 @@ struct PlaceCardResponse
 	unsigned int status;
 };
 
-struct GetGameResultsResponse
-{
-	unsigned int status;
-	vector<PlayerResults> results;
-};
-
 struct CallLastCardInHandResponse
 {
 	unsigned int status;

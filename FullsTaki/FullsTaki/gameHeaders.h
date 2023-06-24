@@ -24,7 +24,7 @@ public:
     std::vector<Card> cards;
     std::string turn;
     Card placed_card;
-    int status = 100;
+    int status = 200;
 private:
     int L = 9;
 };

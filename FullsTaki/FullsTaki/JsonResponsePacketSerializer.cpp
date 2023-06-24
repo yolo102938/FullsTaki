@@ -171,30 +171,16 @@ vector<char> JsonResponsePacketSerializer::serializeResponse(const PlaceCardResp
 	return responseBuilder(PLAY_CARD_RESPONSE, serializedData.dump());
 }
 
-vector<char> JsonResponsePacketSerializer::serializeResponse(const GetGameResultsResponse response)
-{
-	json serializedData = { {"status", response.status}, {"Results", {}} };
-
-	for (auto& result : response.results)
-	{
-		serializedData["Results"].push_back({
-			{"username", result.username},
-			{"correctAnswerCount", result.cardsInHand},
-			{"wrongAnswerCount", result.averagePlayTime}
-			});
-	}
-
-	return responseBuilder(GET_GAME_RESULT_RESPONSE, serializedData.dump());
-}
 
 vector<char> JsonResponsePacketSerializer::serializeResponse(const GameData& response)
 {
-	json jsonData;
+	ordered_json jsonData;
 
 	//player list
-	std::vector<json> players;
-	for (const auto& player : response.players) {
-		json playerData;
+	std::vector<ordered_json> players;
+	for (const auto& player : response.players)
+	{
+		ordered_json playerData;
 		playerData["name"] = player.name;
 		playerData["card_count"] = player.cards.size();
 		players.push_back(playerData);
@@ -202,9 +188,10 @@ vector<char> JsonResponsePacketSerializer::serializeResponse(const GameData& res
 	jsonData["players"] = players;
 
 	//client cards
-	std::vector<json> cards;
-	for (const auto& card : response.cards) {
-		json cardData;
+	std::vector<ordered_json> cards;
+	for (const auto& card : response.cards)
+	{
+		ordered_json cardData;
 		cardData["color"] = card.color;
 		cardData["what"] = card.what;
 		cards.push_back(cardData);
@@ -215,8 +202,8 @@ vector<char> JsonResponsePacketSerializer::serializeResponse(const GameData& res
 	jsonData["turn"] = response.turn;
 
 	//current on top card
-	json placedCard;
-	if (response.placed_card.color != "None") {
+	ordered_json placedCard;
+	if (response.placed_card.color != "none" && response.placed_card.color != "None") {
 		placedCard["color"] = response.placed_card.color;
 		placedCard["what"] = response.placed_card.what;
 	}

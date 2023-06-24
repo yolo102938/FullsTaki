@@ -166,7 +166,7 @@ namespace GUI.Forms
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox comboBox2;
-        private System.Windows.Forms.Button button2;
+        internal System.Windows.Forms.Button button2;
         private int index;
         private int room_id;
         private System.Windows.Forms.Button button3;

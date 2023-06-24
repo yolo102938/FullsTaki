@@ -56,52 +56,45 @@ namespace GUI.Forms
 
         public static void UpdateData(object form)
         {
-            try
+            while (autoRefreshRunning)
             {
-                while (autoRefreshRunning)
+                if (form is Rooms joinRoom)
                 {
-                    if (form is Rooms joinRoom)
-                    {
-                        RoomsDataUpdater.UpdateRooms(joinRoom);
-                    }
-                    else if (form is RoomParticipant waitingForGame)
-                    {
-                        try
-                        {
-                            string roomData = GetCurrentRoomState();
-                            RoomDataUpdater.UpdateUsers(waitingForGame, roomData);
-                        }
-                        catch (RoomClosedException)
-                        {
-                            autoRefreshRunning = false;
-                            MessageBox.Show("The room was closed by the admin", "Leaving Room...", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            waitingForGame.Invoke(new MethodInvoker(delegate
-                            {
-                                waitingForGame.ExitMenu();
-                            }));
-                        }
-                        catch (GameStartedException)
-                        {
-                            autoRefreshRunning = false;
-                            waitingForGame.Invoke(new MethodInvoker(delegate
-                            {
-                                waitingForGame.StartGameForm();
-                            }));
-                        }
-                    }
-                    Thread.Sleep(AutoRefreshSeconds * 1000);
+                    RoomsDataUpdater.UpdateRooms(joinRoom);
                 }
-            }
-            catch
-            {
-
+                else if (form is RoomParticipant waitingForGame)
+                {
+                    try
+                    {
+                        string roomData = GetCurrentRoomState();
+                        RoomDataUpdater.UpdateUsers(waitingForGame, roomData);
+                    }
+                    catch (RoomClosedException)
+                    {
+                        autoRefreshRunning = false;
+                        MessageBox.Show("The room was closed by the admin", "Leaving Room...", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        waitingForGame.Invoke(new MethodInvoker(delegate
+                        {
+                            waitingForGame.ExitMenu();
+                        }));
+                    }
+                    catch (GameStartedException)
+                    {
+                        autoRefreshRunning = false;
+                        waitingForGame.Invoke(new MethodInvoker(delegate
+                        {
+                            waitingForGame.StartGameForm();
+                        }));
+                    }
+                    
+                }
+                Thread.Sleep(AutoRefreshSeconds * 1000);
             }
         }
 
         public static string GetCurrentRoomState()
         {
-            try
-            {
+
                 string sendRoomStateMsg = TakiProtocol.GetCurrentRoomState();
                 Socket.SendMsg(sendRoomStateMsg);
 
@@ -124,11 +117,6 @@ namespace GUI.Forms
                     }
                 }
                 return null;
-            }
-            catch
-            {
-                return null;
-            }
         }
 
         public static List<string> ProcessJsonPlayers(string json)

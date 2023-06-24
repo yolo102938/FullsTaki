@@ -123,37 +123,72 @@ bool Game::tryCardBank()
 
 GameData Game::getGameStatus()
 {
-    std::vector<Player> other_players;
+    std::vector<Player*> other_players;
+    Player* tempPlayer = new Player;
     std::string name_temp = players[current_player].name;
     std::vector<Card> crds = std::vector<Card>();
     bool present = false; //is he in the player list already
-    for (auto& player : players) {
+
+    for (auto& player : players)
+    {
         if (player.name == m_user->getUsername())
         {
             if (player.name == name_temp)
+            {
                 present = true;
+                tempPlayer = &player;
+            }
             name_temp = "You";
             crds = player.cards;
         }
         else
         {
-            other_players.push_back(player);
+            other_players.push_back(&player);
         }
     }
-    if (!present) {
+
+    if (!present)
+    {
         std::vector<Card>* first_cards = new std::vector<Card>(8);
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 7; i++)
+        {
             Card temp = av_Cards.back();
             first_cards->push_back({ temp.color,temp.what });
             av_Cards.pop_back();
         }
         players.push_back({ m_user->getUsername(),*first_cards });
     }
-    GameData response_data;
-    for (auto& player : other_players) {
-        response_data.players.push_back(player);
+
+    else if ((tempPlayer->cards.size() == 0) && (av_Cards.size() + other_players[0]->cards.size()) == 112)
+    {
+        std::vector<Card>* first_cards = new std::vector<Card>(8);
+        for (int i = 0; i < 7; i++)
+        {
+            Card temp = av_Cards.back();
+            tempPlayer->cards.push_back({ temp.color,temp.what });
+            av_Cards.pop_back();
+        }
     }
-    for (auto& card : crds) {
+
+    if ((other_players[0]->cards.size() == 0) && (av_Cards.size() + tempPlayer->cards.size()) == 112)
+    {
+        std::vector<Card>* first_cards = new std::vector<Card>(8);
+        for (int i = 0; i < 7; i++)
+        {
+            Card temp = av_Cards.back();
+            other_players[0]->cards.push_back({ temp.color,temp.what });
+            av_Cards.pop_back();
+        }
+    }
+
+    GameData response_data;
+
+    for (auto& player : other_players)
+    {
+        response_data.players.push_back(*player);
+    }
+    for (auto& card : tempPlayer->cards)
+    {
         response_data.cards.push_back(card);
     }
     response_data.turn = name_temp;

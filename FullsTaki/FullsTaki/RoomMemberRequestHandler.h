@@ -22,6 +22,9 @@ private:
 
 	RequestResult leaveRoom(const RequestInfo request) const;
 	RequestResult getRoomState(const RequestInfo request) const;
+	RequestResult startGame(RequestInfo request) const;
+	void sendData(SOCKET sc, vector<char> message) const;
+
 
 	mutable Room* m_room;
 	mutable LoggedUser* m_user;

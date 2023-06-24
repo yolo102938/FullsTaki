@@ -48,12 +48,20 @@ namespace GUI.Forms
             InitializeComponent();
             RoomName = roomName;
             IsAdmin = admin;
-            ObsessiveDataRefresher.AutoRefreshData(this);
+            //ObsessiveDataRefresher.AutoRefreshData(this);
         }
 
         private void Refresh(object sender, EventArgs e)
         {
-            ObsessiveDataRefresher.AutoRefreshData(this);
+            try
+            {
+                ObsessiveDataRefresher.AutoRefreshData(this);
+            }
+            catch
+            {
+                ObsessiveDataRefresher.StopAutoRefreshData();
+                StartGameForm();
+            }
         }
 
         
@@ -107,7 +115,7 @@ namespace GUI.Forms
 
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        internal void button2_Click(object sender, EventArgs e)
         {
             ObsessiveDataRefresher.StopAutoRefreshData();
             string sendStartGameMsg = TakiProtocol.StartGame();

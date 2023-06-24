@@ -100,7 +100,9 @@ namespace GUI.Forms
 
             TakiClient.Socket.SendMsg(getrooms);
             MSG p1 = TakiClient.Socket.RecvMsg();
+            Console.WriteLine(Socket.LoggedUser + p1.ToString());
             MSG msg = TakiClient.Socket.RecvMsg();
+            Console.WriteLine(Socket.LoggedUser + msg.ToString());
             if (p1.code == 112 && msg != null)
             {
                 ///string msg = Socket.RecvMsgByResponse((int)TakiResponse.GET_GAME_STATE);
