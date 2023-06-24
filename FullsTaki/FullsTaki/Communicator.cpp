@@ -54,7 +54,7 @@ void Communicator::handleNewClient(SOCKET socketClient)
 			{
 				cout << "\nMsg code: " << msgCode << "\nSocket: " << socketClient << endl;
 			}
-			if (msgCode == START_GAME)
+			if (msgCode == PLAY_CARD)
 			{
 				cout << "\nMsg code: " << msgCode << "\nSocket: " << socketClient << endl;
 			}

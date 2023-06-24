@@ -58,6 +58,7 @@ public:
 
 	static vector<char> serializeResponse(const GameData& response);
 
+	static vector<char> serializeResponse(const CardBankResponse response);
 private:
 
 	static vector<char> responseBuilder(const int response_code, const string sData);

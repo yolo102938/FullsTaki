@@ -20,6 +20,7 @@
         PLAY_CARD_ANSWER,
         GET_GAME_RESULT,
         GET_GAME_STATE,
+        CARD_BANK_PREMISION,
         SUCCESS = 1,
         FAIL = 0
     }

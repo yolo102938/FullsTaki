@@ -81,14 +81,17 @@ RequestResult GameRequestHandler::bankRequest() const
 {
 	mutexUsers.lock();
 	bool temp = m_game.tryCardBank();
-	LoginResponse resp = { 200 };
+	CardBankResponse resp = { 101 };
 	if (temp)
 	{
-		resp.status = 199;
+		resp.status = (int)CARD_BANK_PREMISION_RESPONSE;
 	}
+	m_game.m_user = &this->m_user;
+	m_game.m_user->setSocket(this->m_user.getSocket());
+	GameRequestHandler* g = new GameRequestHandler(this->m_user.getUsername(), this->m_user.getSocket(), this->m_gameManager, this->m_handlerFactory, this->m_game);
 	mutexUsers.unlock();
 
-	return { JsonResponsePacketSerializer::serializeResponse(resp),nullptr };
+	return { JsonResponsePacketSerializer::serializeResponse(resp), g };
 
 }
 
@@ -100,14 +103,17 @@ RequestResult GameRequestHandler::playCardRequest(const RequestInfo request) con
 	ret.color = m_game.getColor(temp_str);
 	ret.what = m_game.getWhat(temp_str);
 	bool temp = m_game.tryPlacement(ret);
-	LoginResponse resp = { 200 };
+	PlaceCardResponse resp = { 101 };
 	if (temp)
 	{
-		resp.status = 199;
+		resp.status = (int)PLAY_CARD_RESPONSE;
 	}
+	m_game.m_user = &this->m_user;
+	m_game.m_user->setSocket(this->m_user.getSocket());
+	GameRequestHandler* g = new GameRequestHandler(this->m_user.getUsername(), this->m_user.getSocket(), this->m_gameManager, this->m_handlerFactory, this->m_game);
 	mutexUsers.unlock();
 
-	return { JsonResponsePacketSerializer::serializeResponse(resp),nullptr };
+	return { JsonResponsePacketSerializer::serializeResponse(resp), g };
 }
 
 

@@ -43,70 +43,83 @@ Game::Game(LoggedUser* curr, vector<LoggedUser> users, int gameId)
 bool Game::tryPlacement(Card card)
 {
     mutexGame.lock();
-    if (players[current_player].name == m_user->getUsername() && current_card.what != "Draw") {
-        if (current_card.color == "None" && last_card.color == "None") {
+    current_player++;
+    if (players[current_player%players.size()].name == m_user->getUsername() && current_card.what != "Draw")
+    {
+        if (current_card.color == "None" && last_card.color == "None")
+        {
             current_card = card;
             last_card = card;
-            players[current_player].cards.erase(std::remove(players[current_player].cards.begin(), players[current_player].cards.end(), card), players[current_player].cards.end());
-            if (card.what == "Skip") {
-                current_player = (current_player + 2) % players.size();
+            players[current_player % players.size()].cards.erase(std::remove(players[current_player % players.size()].cards.begin(), players[current_player % players.size()].cards.end(), card), players[current_player % players.size()].cards.end());
+            if (card.what == "Skip")
+            {
+                current_player = (current_player + 2);
                 current_card = { "None","None" };
                 last_card = card;
             }
-            else {
-                current_player = (current_player + 1) % players.size();
+            else
+            {
+                current_player = (current_player + 1);
             }
             av_Cards.push_back(card);
             shuffleCards(av_Cards);
             mutexGame.unlock();
+            current_player--;
             return true;
         }
-        else if (current_card.what != "None" && current_card.what == card.what || current_card.color == card.color) {
+        else if ((current_card.what != "None" && current_card.what != "") &&  (current_card.what == card.what || current_card.color == card.color))
+        {
             current_card = card;
             last_card = card;
-            for (auto it = players[current_player].cards.begin(); it != players[current_player].cards.end(); ++it) {
-                if (it->color == card.color && it->what == card.what) {
-                    players[current_player].cards.erase(it);
+            for (auto it = players[current_player % players.size()].cards.begin(); it != players[current_player % players.size()].cards.end(); ++it)
+            {
+                if (it->color == card.color && it->what == card.what)
+                {
+                    players[current_player % players.size()].cards.erase(it);
                     break;
                 }
             }
             if (card.what == "Skip") {
-                current_player = (current_player + 2) % players.size();
+                current_player = (current_player + 2);
                 current_card = { "None","None" };
                 last_card = card;
             }
             else {
-                current_player = (current_player + 1) % players.size();
+                current_player = (current_player + 1);
             }
             av_Cards.push_back(card);
             shuffleCards(av_Cards);
             mutexGame.unlock();
+            current_player--;
             return true;
         }
         else if (last_card.what != "None" && last_card.what == card.what || last_card.color == card.color) {
             current_card = card;
             last_card = card;
-            for (auto it = players[current_player].cards.begin(); it != players[current_player].cards.end(); ++it) {
+            for (auto it = players[current_player % players.size()].cards.begin(); it != players[current_player % players.size()].cards.end(); ++it) {
                 if (it->color == card.color && it->what == card.what) {
-                    players[current_player].cards.erase(it);
+                    players[current_player % players.size()].cards.erase(it);
                     break;
                 }
             }
             if (card.what == "Skip") {
-                current_player = (current_player + 2) % players.size();
+                current_player = (current_player + 2);
                 current_card = { "None","None" };
                 last_card = card;
             }
-            else {
-                current_player = (current_player + 1) % players.size();
+            else
+            {
+                current_player = (current_player + 1);
             }
             av_Cards.push_back(card);
             shuffleCards(av_Cards);
             mutexGame.unlock();
+            current_player--;
             return true;
         }
     }
     mutexGame.unlock();
+    current_player--;
     return false;
 }
 
@@ -114,27 +127,33 @@ bool Game::tryPlacement(Card card)
 bool Game::tryCardBank()
 {
     mutexGame.lock();
-    if (players[current_player].name == m_user->getUsername()) {
-        if (av_Cards.empty()) {
+    current_player++;
+    if (players[current_player % players.size()].name == m_user->getUsername())
+    {
+        if (av_Cards.empty())
+        {
             generateCards(av_Cards);
             shuffleCards(av_Cards);
         }
         Card card = av_Cards.back();
         av_Cards.pop_back();
-        players[current_player].cards.push_back(card);
+        players[current_player % players.size()].cards.push_back(card);
 
         if (current_card.what == "Draw") {
             card = av_Cards.back();
             av_Cards.pop_back();
-            players[current_player].cards.push_back(card);
+            players[current_player % players.size()].cards.push_back(card);
         }
         last_card = current_card;
         current_card = { "None","None" };
-        current_player = (current_player + 1) % players.size();
+        current_player = (current_player + 1);
         mutexGame.unlock();
+        current_player--;
         return(true);
     }
-    else {
+    else
+    {
+        current_player--;
         mutexGame.unlock();
         return(false);
     }
@@ -148,7 +167,7 @@ GameData Game::getGameStatus()
     std::string name_temp;
     if (players.size() > 0)
     {
-        name_temp = players[current_player % 2].name;
+        name_temp = players[current_player % players.size()].name;
     }
     else
     {
@@ -161,7 +180,7 @@ GameData Game::getGameStatus()
     {
          std::cout << p.name << " , ";
     }
-    std::cout << "Count: " << players.size() << "\CurrentPlayerNum: " << current_player << std::endl;
+    std::cout << "Count: " << players.size() << "  |  CurrentPlayerNum: " << current_player << std::endl;
 
     std::vector<Card> crds = std::vector<Card>();
     bool present = CheckInPlayers(players, name_temp); //is he in the player list already
@@ -226,7 +245,7 @@ GameData Game::getGameStatus()
     }
     response_data.turn = name_temp;
     response_data.placed_card = current_card;
-    current_player++;
+    //current_player++;
     //std::cout << "\nCurrent Player: " << current_player << " --> " << players[current_player % 2].name;
     mutexGame.unlock();
     return response_data;

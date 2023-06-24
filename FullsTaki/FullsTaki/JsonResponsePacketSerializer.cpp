@@ -171,6 +171,11 @@ vector<char> JsonResponsePacketSerializer::serializeResponse(const PlaceCardResp
 	return responseBuilder(PLAY_CARD_RESPONSE, serializedData.dump());
 }
 
+vector<char> JsonResponsePacketSerializer::serializeResponse(const CardBankResponse response)
+{
+	json serializedData = { {"status", response.status} };
+	return responseBuilder(CARD_BANK_PREMISION_RESPONSE, serializedData.dump());
+}
 
 vector<char> JsonResponsePacketSerializer::serializeResponse(const GameData& response)
 {

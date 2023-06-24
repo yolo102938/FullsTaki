@@ -79,6 +79,11 @@ struct PlaceCardResponse
 	unsigned int status;
 };
 
+struct CardBankResponse
+{
+	unsigned int status;
+};
+
 struct CallLastCardInHandResponse
 {
 	unsigned int status;

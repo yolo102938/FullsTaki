@@ -639,7 +639,7 @@ namespace GUI.Forms
                     
                     TakiMessage loginMessage = new TakiMessage
                     {
-                        Code = (int)700,
+                        Code = (int)TakiRequest.PLAY_CARD,
                         Content = JsonConvert.SerializeObject(jsonDictionary)
                     };
                     
@@ -648,14 +648,15 @@ namespace GUI.Forms
 
                     //string status = JObject.Parse(msg.json)["status"].ToString(); ;
 
-                    if ( msg.code == 100)
+                    if (msg.code == (int)TakiResponse.PLAY_CARD_ANSWER)
                     {
                         int ind = 0;
                         //not sure if even needed, when u do it serverResp will be with updated cards
                         foreach(ClickableCard img in playerCardsList)
                         {
 
-                            if(img.Image.Equals(selectedCard.Image)) {
+                            if(img.Image.Equals(selectedCard.Image))
+                            {
                            
                                 cardImages.RemoveAt(ind);
                             }
