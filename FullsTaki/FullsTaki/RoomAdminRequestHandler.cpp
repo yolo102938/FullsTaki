@@ -14,9 +14,9 @@ RoomAdminRequestHandler::RoomAdminRequestHandler(Room* room, LoggedUser* user, R
 RoomAdminRequestHandler::RoomAdminRequestHandler(const string username, const SOCKET socket, RoomManager& roomManager, RequestHandlerFactory& factory, const int roomId)
 {
     m_user = new LoggedUser(username, socket);
-    m_roomManager = new RoomManager(roomManager);
+    m_roomManager = &roomManager;
     m_handlerFactory = &factory;
-    m_room = new Room(roomManager.getRoom(roomId));
+    m_room = &(roomManager.getRoom(roomId));
 }
 
 bool RoomAdminRequestHandler::isRequestRelevant(RequestInfo request) const
@@ -29,6 +29,14 @@ RequestResult RoomAdminRequestHandler::handleRequest(RequestInfo request)  const
     RequestResult ret;
     try
     {
+        try
+        {
+            cout << "Admin Is Active: ";
+            cout << &m_room->m_metadata.isActive << " --> " << m_room->m_metadata.isActive << endl;
+        }
+        catch (...)
+        {
+        }
         if (request.id == CLOSE_ROOM)
         {
             ret =  closeRoom(request);
@@ -80,7 +88,7 @@ RequestResult RoomAdminRequestHandler::getRoomState(RequestInfo request) const
     GetRoomStateResponse res = { GET_ROOM_STATE_RESPONSE,
         this->m_roomManager->getRoomState(this->m_room->getRoomData().id),
         this->m_room->getAllUsers() };
-    cout << std::to_string(this->m_user->getSocket());
+    //cout << std::to_string(this->m_user->getSocket());
     return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory->createRoomAdminRequestHandler(this->m_user->getUsername(), this->m_user->getSocket(), this->m_room->getRoomData().id) };
 }
 
@@ -88,13 +96,12 @@ RequestResult RoomAdminRequestHandler::startGame(RequestInfo request) const
 {
     StartGameResponse res = { START_GAME_RESPONSE };
 
-    map<SOCKET, IRequestHandler*>& clients = Communicator::staticInstance(*this->m_handlerFactory).m_clients;
+    map<SOCKET, IRequestHandler*>& clients = Communicator::m_clients_stat;
 
-    Game& current_game = this->m_handlerFactory->getGameManager().createGame(*this->m_room);
+    Game& current_game = this->m_handlerFactory->getGameManager().createGame(this->m_user, *this->m_room);
 
     for (auto& user : this->m_room->m_users)
     {
-        cout << std::to_string(user.getSocket());
         clients[user.getSocket()] = this->m_handlerFactory->createGameRequestHandler(user.getUsername(), user.getSocket(), current_game);
 
         StartGameResponse start_game_res = { START_GAME_RESPONSE };
@@ -102,16 +109,15 @@ RequestResult RoomAdminRequestHandler::startGame(RequestInfo request) const
         sendData(user.getSocket(), serialized_res);
     }
 
-    this->m_room->m_metadata.isActive = 0;
+    this->m_room->m_metadata.isActive = true;
 
     return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory->createGameRequestHandler(this->m_user->getUsername(), this->m_user->getSocket(), current_game) };
 }
 
 void sendData(SOCKET sc, vector<char> message)
 {
-    if (send(sc, reinterpret_cast<const char*>(message.data()), message.size(), 0) != SOCKET_ERROR)
+    if (send(sc, reinterpret_cast<const char*>(message.data()), message.size(), 0) == SOCKET_ERROR)
     {
-        //break;
         throw exception("Error while sending message to client");
     }
 }

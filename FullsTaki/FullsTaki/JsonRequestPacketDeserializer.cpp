@@ -50,10 +50,10 @@ CreateRoomRequest JsonRequestPacketDeserializer::deserializeCreateRoom(const std
     //parsing json data from the buffer to a json object.
     json jsonData = parseJson(buffer);
     //initializing and returning a SignupRequest object with the extracted data.
-    std::cout<<(jsonData["max_users"]);
+    //std::cout<<(jsonData["max_users"]);
     return CreateRoomRequest({ jsonData["name"],jsonData["max_users"]});
 }
-
+/*
 PlaceCardRequest JsonRequestPacketDeserializer::deserializePlayCardRequest(const vector<unsigned char>& buffer)
 {
     string data(buffer.begin(), buffer.end());
@@ -62,7 +62,17 @@ PlaceCardRequest JsonRequestPacketDeserializer::deserializePlayCardRequest(const
     json jsonData = json::parse(data); // parse to json
     return PlaceCardRequest({ jsonData["cardId"] });
 }
+*/
 
+string JsonRequestPacketDeserializer::deserializePlaceCard(const vector<unsigned char>& buffer)
+{
+    //parsing json data from the buffer to a json object.
+    json jsonData = parseJson(buffer);
+    std::string fullTag = jsonData["picture_tag"];
+
+    //initializing and returning a SignupRequest object with the extracted data.
+    return fullTag;
+}
 
 /*
 Function parses json data from the given buffer.

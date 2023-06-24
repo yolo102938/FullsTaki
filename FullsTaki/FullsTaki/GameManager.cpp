@@ -6,11 +6,13 @@ GameManager::GameManager(IDatabase* db)
 }
 
 
-Game& GameManager::createGame(const Room& room)
+Game& GameManager::createGame(LoggedUser* user, const Room& room)
 {
 	vector<LoggedUser> players = room.m_users;
 
-	Game* new_game = new Game(players, room.m_metadata.id);
+	Game* new_game = new Game(user, players, room.m_metadata.id);
+
+	room.m_metadata.isActive = true;
 
 	this->games_mtx.lock();
 	this->m_games.push_back(new_game);
@@ -18,26 +20,14 @@ Game& GameManager::createGame(const Room& room)
 
 	return (*new_game);
 }
-Game& GameManager::getGame(const Room& room)
-{
-	vector<LoggedUser> players = room.m_users;
 
-	Game* new_game = nullptr;
-	for (auto g : this->m_games) {
-
-		if (g->m_players[0] == room.getAllUsers()[0]) {
-			new_game = g;
-		}
-	}
-	return (*new_game);
-}
 
 void GameManager::deleteGame(const Game& game)
 {
 	this->games_mtx.lock();
 	for (vector<Game*>::iterator curr_game = m_games.begin(); curr_game != m_games.end(); curr_game++)
 	{
-		if ((*curr_game)->getGameId() == game.getGameId())
+		if ((*curr_game)->gameId == game.gameId)
 		{
 			delete* curr_game;
 			this->m_games.erase(curr_game);
@@ -55,7 +45,7 @@ Game& GameManager::getGame(const int id) const
 	this->games_mtx.lock();
 	for (Game* game : this->m_games)
 	{
-		if (game->getGameId() == id)
+		if (game->gameId == id)
 		{
 			this->games_mtx.unlock();
 			return *game;

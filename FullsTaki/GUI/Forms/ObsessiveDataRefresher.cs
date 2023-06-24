@@ -133,20 +133,34 @@ namespace GUI.Forms
 
         public static List<string> ProcessJsonPlayers(string json)
         {
-            // Extract the JSON part
-            json = json.Substring(json.IndexOf('{'));
-            JObject jObject = JObject.Parse(json);
-            string playersString = (string)jObject["players"];
-            string[] playersArray = playersString.Split(',');
-
-            List<string> playerStrings = new List<string>();
-            for (int i = 0; i < playersArray.Length; i++)
+            try
             {
-                string playerString = $"PLAYER {i + 1}: {playersArray[i].Trim()}";
-                playerStrings.Add(playerString);
-            }
+                if (json != null)
+                {
+                    // Extract the JSON part
+                    json = json.Substring(json.IndexOf('{'));
+                    JObject jObject = JObject.Parse(json);
+                    string playersString = (string)jObject["players"];
+                    string[] playersArray = playersString.Split(',');
 
-            return playerStrings;
+                    List<string> playerStrings = new List<string>();
+                    for (int i = 0; i < playersArray.Length; i++)
+                    {
+                        string playerString = $"PLAYER {i + 1}: {playersArray[i].Trim()}";
+                        playerStrings.Add(playerString);
+                    }
+
+                    return playerStrings;
+                }
+                else
+                {
+                    return new List<string> { };
+                }
+            }
+            catch
+            {
+                return new List<string> { };
+            }
         }
 
         internal static class RoomsDataUpdater
@@ -237,7 +251,10 @@ namespace GUI.Forms
                                 {
                                     form.RoomList.Items.Add(player);
                                 }
-                                form.RoomList.Items[0] = form.RoomList.Items[0].ToString() + " - ADMIN";
+                                if (form.RoomList.Items.Count > 0)
+                                {
+                                    form.RoomList.Items[0] = form.RoomList.Items[0].ToString() + " - ADMIN";
+                                }
                             }));
                         }
                     }

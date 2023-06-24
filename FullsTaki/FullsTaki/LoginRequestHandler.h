@@ -19,9 +19,10 @@ public:
 
 	virtual RequestResult handleRequest(const RequestInfo request) const override;
 
-	RequestResult login(const RequestInfo request) const;
-	RequestResult logout(const RequestInfo request) const;
-	RequestResult signup(const RequestInfo request) const;
+	RequestResult handleRequest(const RequestInfo request, SOCKET sock) const;
+
+	RequestResult login(const RequestInfo request, SOCKET sock) const;
+	RequestResult signup(const RequestInfo request, SOCKET sock) const;
 	LoginManager& m_loginManager;
 private:
 

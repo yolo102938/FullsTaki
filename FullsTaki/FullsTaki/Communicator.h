@@ -7,6 +7,8 @@
 
 using std::map;
 
+class RequestHandlerFactory;
+
 class Communicator
 {
 	public:
@@ -21,6 +23,7 @@ class Communicator
 		void bindAndListen();
 		void handleNewClient(SOCKET);
 		map<SOCKET, IRequestHandler*> m_clients;
+		static map<SOCKET, IRequestHandler*> m_clients_stat;
 	private:
 		SOCKET m_serverSocket;
 		RequestHandlerFactory& m_handlerFactory;

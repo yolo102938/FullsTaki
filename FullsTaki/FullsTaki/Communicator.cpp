@@ -3,6 +3,9 @@
 #include <algorithm>
 #include <array>
 #include <iostream>
+
+map<SOCKET, IRequestHandler*> Communicator::m_clients_stat;
+
 void sendError(SOCKET clientSocket)
 {
 	int code = 0;
@@ -46,10 +49,14 @@ void Communicator::handleNewClient(SOCKET socketClient)
 		while (isActive)
 		{
 			int msgCode = GetMsgCode(socketClient); //The code of the messaage
-			cout << msgCode << endl;
-			if (msgCode == 205)
+			cout << "\nMsg code: " << msgCode << endl;
+			if (msgCode == 211)
 			{
-				cout << "break";
+				cout << "\nMsg code: " << msgCode << "\nSocket: " << socketClient << endl;
+			}
+			if (msgCode == START_GAME)
+			{
+				cout << "\nMsg code: " << msgCode << "\nSocket: " << socketClient << endl;
 			}
 			int msgSize = GetDataLength(socketClient); //The length of the messaage
 			vector<unsigned char> bufferData = GetMsgData(socketClient, msgSize); //The data of the messaage
@@ -77,8 +84,17 @@ void Communicator::handleNewClient(SOCKET socketClient)
 			//Checking if the received request is relevant
 			if (this->m_clients[socketClient]->isRequestRelevant(reqInfo))
 			{
-				//Processing the received request and obtaining the result
-				RequestResult reqResult = this->m_clients[socketClient]->handleRequest(reqInfo);
+				RequestResult reqResult;
+
+				if (msgCode == LOGIN || msgCode == SIGN_UP)
+				{
+					reqResult = ((LoginRequestHandler*)(this->m_clients[socketClient]))->handleRequest(reqInfo, socketClient);
+				}
+				else
+				{
+					//Processing the received request and obtaining the result
+					reqResult = this->m_clients[socketClient]->handleRequest(reqInfo);
+				}
 				//Sending the response data
 				if (send(socketClient, reinterpret_cast<char*>(reqResult.response.data()), reqResult.response.size(), 0) == SOCKET_ERROR)
 				{
@@ -135,6 +151,7 @@ void Communicator::startHandleRequests()
 			throw std::exception(__FUNCTION__);
 		LoginRequestHandler* clientHandler = m_handlerFactory.createLoginRequestHandler();
 		m_clients.insert(std::pair<SOCKET, IRequestHandler*>(client_socket, clientHandler));
+		m_clients_stat.insert(std::pair<SOCKET, IRequestHandler*>(client_socket, clientHandler));
 		std::thread handler(&Communicator::handleNewClient, this, client_socket);
 		handler.detach();
 	}

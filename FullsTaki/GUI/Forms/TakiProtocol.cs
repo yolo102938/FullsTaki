@@ -137,5 +137,10 @@ namespace TakiClient
             };
             return joinRoomMessage.ToString();
         }
+        public static string GetCurrentGameState()
+        {
+            TakiMessage getRoomStateMessage = new TakiMessage((int)TakiRequest.GET_GAME_STATE, "");
+            return getRoomStateMessage.ToString();
+        }
     }
 }

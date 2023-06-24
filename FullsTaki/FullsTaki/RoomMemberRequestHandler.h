@@ -8,6 +8,7 @@
 #include "IDatabase.h"
 #include "RequestHandlerFactory.h"
 #include "RoomManager.h"
+#include "Communicator.h"
 
 class RequestHandlerFactory;
 
@@ -22,8 +23,8 @@ private:
 	RequestResult leaveRoom(const RequestInfo request) const;
 	RequestResult getRoomState(const RequestInfo request) const;
 
-	mutable Room m_room;
-	mutable LoggedUser m_user;
-	RoomManager& m_roomManager;
-	RequestHandlerFactory& m_handlerFactory;
+	mutable Room* m_room;
+	mutable LoggedUser* m_user;
+	RoomManager* m_roomManager;
+	RequestHandlerFactory* m_handlerFactory;
 };

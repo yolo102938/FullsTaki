@@ -112,7 +112,7 @@ RequestResult MenuRequestHandler::createRoom(const RequestInfo request) const
 
     if (req.maxUsers > 1)
     {
-        RoomData room_data = { 0, req.roomName, req.maxUsers, true, 10 };
+        RoomData room_data = { 0, req.roomName, req.maxUsers, false, 10 };
         this->m_roomManager->createRoom(*this->m_user, room_data);
         CreateRoomResponse res = { CREATE_ROOM_RESPONSE };
         return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory->createRoomAdminRequestHandler(this->m_user->getUsername(), this->m_user->getSocket(), room_data.id, this->m_roomManager) };

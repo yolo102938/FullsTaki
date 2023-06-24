@@ -17,6 +17,7 @@ namespace GUI.Forms
     
     public partial class GameRoom : Form
     {
+
         //true means you need to update it
         public class Diffrence
         {
@@ -29,6 +30,7 @@ namespace GUI.Forms
         }
         public class ServerResponse
         {
+
             public List<Image> CardImages = new List<Image>();
             public List<PlayerInfo> Players = new List<PlayerInfo>();
             public string turn;
@@ -94,63 +96,66 @@ namespace GUI.Forms
         public ServerResponse call_server()
         {
             ServerResponse response = new ServerResponse();
-            TakiMessage getrooms = new TakiMessage
-            {
-                Code = (int)TakiRequest.GET_GAME_STATE,
-                Content = ""
-            };
+            string getrooms = TakiProtocol.GetCurrentGameState();
 
-            TakiClient.Socket.SendMsg(getrooms.ToString());
+            TakiClient.Socket.SendMsg(getrooms);
+            MSG p1 = TakiClient.Socket.RecvMsg();
             MSG msg = TakiClient.Socket.RecvMsg();
+            if (p1.code == 112 && msg != null)
+            {
+                ///string msg = Socket.RecvMsgByResponse((int)TakiResponse.GET_GAME_STATE);
+                Console.WriteLine("k");
+                JArray jsonArray = (JArray)JObject.Parse(msg.json)["players"];
+                response.Players = new List<PlayerInfo>();
+                try
+                {
+                    foreach (JObject obj in jsonArray)
+                    {
+                        response.Players.Add(new PlayerInfo { Name = obj.Value<string>("name"), cardCount = obj.Value<int>("card_count") });
+                    }
+                }
+                catch { MessageBox.Show(msg.json); }
 
-            JArray jsonArray = (JArray)JObject.Parse(msg.json)["players"];
-            response.Players = new List<PlayerInfo>();
-            try {
+
+                //Client cards
+
+                jsonArray = (JArray)JObject.Parse(msg.json)["cards"];
+                var imgs = new List<Image>();
                 foreach (JObject obj in jsonArray)
                 {
-                    response.Players.Add(new PlayerInfo { Name = obj.Value<string>("name"), cardCount = obj.Value<int>("card_count") });
+                    string color = obj.Value<string>("color");
+                    string what = obj.Value<string>("what");
+                    Image cardImage;
+                    cardImage = (Bitmap)global::GUI.Properties.Resources.ResourceManager.GetObject($"{color}_{what}");
+                    cardImage.Tag = (color + what);
+                    response.CardImages.Add((cardImage));
+
                 }
-            }
-            catch { MessageBox.Show(msg.json); }
 
+                //Current player
 
-            //Client cards
+                response.turn = JObject.Parse(msg.json)["turn"].ToString();
 
-            jsonArray = (JArray)JObject.Parse(msg.json)["cards"];
-            var imgs = new List<Image>();
-            foreach (JObject obj in jsonArray)
-            {
-                string color = obj.Value<string>("color");
-                string what = obj.Value<string>("what");
-                Image cardImage;
-                cardImage = (Bitmap)global::GUI.Properties.Resources.ResourceManager.GetObject($"{color}_{what}");
-                cardImage.Tag = (color + what);
-                response.CardImages.Add((cardImage));
-                
-            }
+                //Last Card
 
-            //Current player
+                {
+                    var obj = JObject.Parse(msg.json)["placed_card"];
+                    string color = obj.Value<string>("color");
+                    string what = obj.Value<string>("what");
+                    //MessageBox.Show(color + what);
+                    if (color == "none")
+                    {
+                        response.placed_card = ((Bitmap)global::GUI.Properties.Resources.Empty);
+                        response.placed_card.Tag = (color + what);
+                    }
+                    else
+                    {
+                        response.placed_card = ((Bitmap)global::GUI.Properties.Resources.ResourceManager.GetObject($"{color}_{what}"));
+                        response.placed_card.Tag = (color + what);
+                    }
 
-            response.turn = JObject.Parse(msg.json)["turn"].ToString();
-            
-            //Last Card
-            
-            {
-            var obj = JObject.Parse(msg.json)["placed_card"];
-            string color = obj.Value<string>("color");
-            string what = obj.Value<string>("what");
-               //MessageBox.Show(color + what);
-            if (color == "none")
-            {
-                    response.placed_card = ((Bitmap)global::GUI.Properties.Resources.Empty);
-                    response.placed_card.Tag = (color+what);
                 }
-            else
-            {
-                response.placed_card = ((Bitmap)global::GUI.Properties.Resources.ResourceManager.GetObject($"{color}_{what}"));
-                    response.placed_card.Tag = (color + what);
-             }
-           
+                return response;
             }
             return response;
         }
@@ -210,15 +215,14 @@ namespace GUI.Forms
         private List<Image> cardImages;
         private string[] colors = { "Red", "Blue", "Yellow", "Green" };
 
-        public GameRoom(int playerCount = 3)
+        public GameRoom(int playerCount = 2)
         {
-           
-
+            Text += Socket.LoggedUserFormatted;
             InitializeComponent(playerCount);
             createEmpty();
             resp = call_server();
             CreateCardBank(deck_count);
-            diff = new Diffrence { CardImages = true, firstPlayer = true, secondPlayer = true, thirdPlayer = true, card_bank = false };
+            diff = new Diffrence { CardImages = true, firstPlayer = true, secondPlayer = true, thirdPlayer = false, card_bank = false };
             InitializeGameRoom();
 
             DiscardCard_Click(null,null);

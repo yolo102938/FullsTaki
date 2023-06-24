@@ -27,7 +27,12 @@ public:
 	RequestResult handleRequest(const RequestInfo request) const override;
 
 	//function returns a response after playing the card.
-	RequestResult cardPlaydResponse(const RequestInfo request) const;
+	//RequestResult cardPlaydResponse(const RequestInfo request) const;
+
+	RequestResult gameState() const;
+	RequestResult bankRequest() const;
+	RequestResult playCardRequest(const RequestInfo request) const;
+
 private:
 
 	LoggedUser m_user;

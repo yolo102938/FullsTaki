@@ -18,6 +18,7 @@
         LEAVE_ROOM,
         LEAVE_GAME,
         PLAY_CARD_ANSWER,
+        GET_GAME_STATE,
         GET_GAME_RESULT,
         SUCCESS = 1,
         FAIL = 0

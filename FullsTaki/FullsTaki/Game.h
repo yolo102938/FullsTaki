@@ -16,27 +16,50 @@ using std::mutex;
 class Game
 {
 public:
-	//Constructors
-	Game(const vector<LoggedUser> users, const int gameId);
-	Game(const Game& game);
+    Game(int gameId);
+    Game(LoggedUser* curr, vector<LoggedUser> players, int gameId);
 
-	//Operator overloading
-	void operator=(const Game& game);
+    GameData getGameStatus();
+    bool tryPlacement(Card card);
+    bool tryCardBank();
 
-	//defult destructor for Game.
-	~Game() = default;
-
-	//function plays a card to the board and end's the given user's turn
-	void playCard(const LoggedUser user, const unsigned int cardId);
-
-	//function returns the game's id
-	int getGameId() const;
-
-	mutable vector<LoggedUser> m_players;
-
-	mutable int usersInGame;
-
+    std::string getWhat(std::string card)
+    {
+        std::string full = card;
+        std::string colors[] = { "Red", "Green", "Blue", "Yellow" };
+        for (const std::string& color : colors)
+        {
+            size_t pos = full.find(color);
+            while (pos != std::string::npos)
+            {
+                full.replace(pos, color.length(), "");
+                pos = full.find(color);
+            }
+        }
+        return full;
+    }
+    std::string getColor(std::string card)
+    {
+        std::string full = card;
+        std::string colors[] = { "Red", "Green", "Blue", "Yellow" };
+        for (const std::string& color : colors)
+        {
+            size_t pos = full.find(color);
+            if (pos != std::string::npos)
+            {
+                return color;
+            }
+        }
+        return "";
+    }
+    int gameId;
 private:
-	int game_id;
-	mutable mutex players_mtx;
+    std::vector<Player> players;
+    std::vector<Card> av_Cards;
+    LoggedUser* m_user;
+    Card current_card;
+    Card last_card;
+    int current_player;
+    int start;
+
 };

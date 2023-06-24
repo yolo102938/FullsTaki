@@ -16,17 +16,23 @@ bool LoginRequestHandler::isRequestRelevant(const RequestInfo request) const
 RequestResult LoginRequestHandler::handleRequest(const RequestInfo request) const
 {
 	RequestResult res;//temp, will delete before returning
+	return res;
+}
+
+RequestResult LoginRequestHandler::handleRequest(const RequestInfo request, SOCKET sock) const
+{
+	RequestResult res;//temp, will delete before returning
 	try
 	{
 		if (request.id == LOGIN)
 		{
-			
-			res = login(request);
+
+			res = login(request, sock);
 		}
 
 		else if (request.id == SIGN_UP)
 		{
-			res = signup(request);
+			res = signup(request, sock);
 
 		}
 	}
@@ -39,20 +45,19 @@ RequestResult LoginRequestHandler::handleRequest(const RequestInfo request) cons
 	}
 	return res;
 }
-
-RequestResult LoginRequestHandler::login(const RequestInfo request) const
+RequestResult LoginRequestHandler::login(const RequestInfo request, SOCKET sock) const
 {
 	LoginRequest req = JsonRequestPacketDeserializer::deserializeLoginRequest(request.buffer);
-	this->m_loginManager.login(req.username, req.password);
+	this->m_loginManager.login(req.username, req.password, sock);
 	LoginResponse res = { LOGIN_RESPONSE };
-	return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory.createMenuRequestHandler(new LoggedUser{req.username})};
+	return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory.createMenuRequestHandler(new LoggedUser{req.username, sock}) };
 }
 
-RequestResult LoginRequestHandler::signup(const RequestInfo request) const
+RequestResult LoginRequestHandler::signup(const RequestInfo request, SOCKET sock) const
 {
 	SignupRequest req = JsonRequestPacketDeserializer::deserializeSignupRequest(request.buffer);
-	std::cout << req.username, req.password, req.email;
-	this->m_loginManager.signup(req.username, req.password, req.email);
+	//std::cout << req.username, req.password, req.email;
+	this->m_loginManager.signup(req.username, req.password, req.email, sock);
 	SignupResponse res = { SIGNUP_RESPONSE };
 	return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory.createLoginRequestHandler() };
 }

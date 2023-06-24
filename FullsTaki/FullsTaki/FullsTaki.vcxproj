@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClCompile Include="Communicator.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="gameHeaders.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameRequestHandler.cpp" />
     <ClCompile Include="IRequestHandler.cpp" />
@@ -152,6 +153,7 @@
   <ItemGroup>
     <ClInclude Include="Communicator.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="gameHeaders.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameRequestHandler.h" />
     <ClInclude Include="RoomMemberRequestHandler.h" />

@@ -51,7 +51,7 @@ namespace GUI.Forms
         private void button1_Click(object sender, EventArgs e)
         {
             ObsessiveDataRefresher.StopAutoRefreshData();
-            bool isGameAlreadyRunning = IsRoomActive(RoomList.SelectedItem.ToString());
+            bool isGameAlreadyRunning = !IsRoomActive(RoomList.SelectedItem.ToString());
             if (isGameAlreadyRunning)
             {
                 string sendJoinMsg = TakiProtocol.JoinRoom(ExtractId(RoomList.SelectedItem.ToString()));

@@ -118,7 +118,7 @@ Output: vector<char> response (A serialized json response as a vector of chars).
 vector<char> JsonResponsePacketSerializer::serializeResponse(const getHighScoreResponse response)
 {
 	json sData = { {"status", response.status}, {"statistics", response.statistics} };
-	std::cout << "DONEDID\n";
+	//std::cout << "DONEDID\n";
 	return responseBuilder(response.status, sData.dump());
 }
 
@@ -187,6 +187,47 @@ vector<char> JsonResponsePacketSerializer::serializeResponse(const GetGameResult
 	return responseBuilder(GET_GAME_RESULT_RESPONSE, serializedData.dump());
 }
 
+vector<char> JsonResponsePacketSerializer::serializeResponse(const GameData& response)
+{
+	json jsonData;
+
+	//player list
+	std::vector<json> players;
+	for (const auto& player : response.players) {
+		json playerData;
+		playerData["name"] = player.name;
+		playerData["card_count"] = player.cards.size();
+		players.push_back(playerData);
+	}
+	jsonData["players"] = players;
+
+	//client cards
+	std::vector<json> cards;
+	for (const auto& card : response.cards) {
+		json cardData;
+		cardData["color"] = card.color;
+		cardData["what"] = card.what;
+		cards.push_back(cardData);
+	}
+	jsonData["cards"] = cards;
+
+	//current turn
+	jsonData["turn"] = response.turn;
+
+	//current on top card
+	json placedCard;
+	if (response.placed_card.color != "None") {
+		placedCard["color"] = response.placed_card.color;
+		placedCard["what"] = response.placed_card.what;
+	}
+	else {
+		placedCard["color"] = "none";
+		placedCard["what"] = "";
+	}
+	jsonData["placed_card"] = placedCard;
+	return responseBuilder(response.status, jsonData.dump());
+}
+
 
 /*
 Function constructs a response packet using a response status code and serialized json data.
@@ -212,6 +253,6 @@ vector<char> JsonResponsePacketSerializer::responseBuilder(const int resStatusCo
 	//adding the json data to the response packet.
 	response.insert(response.end(), sData.begin(), sData.end());
 	//returning the response packet.
-	std::cout << response.data();
+	//std::cout << response.data();
 	return response;
 }

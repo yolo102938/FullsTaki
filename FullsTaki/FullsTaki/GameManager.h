@@ -17,8 +17,7 @@ public:
 	//default destructor
 	~GameManager() = default;
 	//function creates a game for the given room reference.
-	Game& createGame(const Room& room);
-	Game& getGame(const Room& room);
+	Game& createGame(LoggedUser* user, const Room& room);
 	//function deletes a game by a given Game reference.
 	void deleteGame(const Game& game);
 	//function returns a reference for the Game object matching the given id.
