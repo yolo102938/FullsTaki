@@ -99,11 +99,17 @@ namespace GUI.Forms
             string getrooms = TakiProtocol.GetCurrentGameState();
 
             TakiClient.Socket.SendMsg(getrooms);
-            MSG p1 = TakiClient.Socket.RecvMsg();
-            Console.WriteLine(Socket.LoggedUser + p1.ToString());
+            //MSG p1 = TakiClient.Socket.RecvMsg();
+            //Console.WriteLine(Socket.LoggedUser + " --> " + p1.code + " --> " + p1.json.ToString());
             MSG msg = TakiClient.Socket.RecvMsg();
-            Console.WriteLine(Socket.LoggedUser + msg.ToString());
-            if (p1.code == 112 && msg != null)
+            Console.WriteLine(Socket.LoggedUser + " --> " + msg.code + " --> " + msg.json.ToString());
+            while (msg.code != (int)TakiResponse.GET_GAME_STATE)
+            {
+                msg = TakiClient.Socket.RecvMsg();
+                Console.WriteLine(Socket.LoggedUser + " --> " + msg.code + " --> " + msg.json.ToString());
+            }
+            //(p1.code == 112 || p1.code == 113)
+            if ( msg != null && msg.code == (int)TakiResponse.GET_GAME_STATE)
             {
                 ///string msg = Socket.RecvMsgByResponse((int)TakiResponse.GET_GAME_STATE);
                 Console.WriteLine("k");

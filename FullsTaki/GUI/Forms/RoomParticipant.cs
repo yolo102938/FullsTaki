@@ -131,6 +131,7 @@ namespace GUI.Forms
 
         public void StartGameForm()
         {
+            ObsessiveDataRefresher.StopAutoRefreshData();
             GameRoom game = new GameRoom();
             Hide();
             game.ShowDialog();

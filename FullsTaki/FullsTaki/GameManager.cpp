@@ -8,9 +8,7 @@ GameManager::GameManager(IDatabase* db)
 
 Game& GameManager::createGame(LoggedUser* user, const Room& room)
 {
-	vector<LoggedUser> players = room.m_users;
-
-	Game* new_game = new Game(user, players, room.m_metadata.id);
+	Game* new_game = new Game(user, room.m_users, room.m_metadata.id);
 
 	room.m_metadata.isActive = true;
 

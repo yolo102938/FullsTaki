@@ -49,7 +49,7 @@ void Communicator::handleNewClient(SOCKET socketClient)
 		while (isActive)
 		{
 			int msgCode = GetMsgCode(socketClient); //The code of the messaage
-			cout << "\nMsg code: " << msgCode << endl;
+			//cout << "\nMsg code: " << msgCode << endl;
 			if (msgCode == 211)
 			{
 				cout << "\nMsg code: " << msgCode << "\nSocket: " << socketClient << endl;
@@ -90,11 +90,13 @@ void Communicator::handleNewClient(SOCKET socketClient)
 				{
 					reqResult = ((LoginRequestHandler*)(this->m_clients[socketClient]))->handleRequest(reqInfo, socketClient);
 				}
+
 				else
 				{
 					//Processing the received request and obtaining the result
 					reqResult = this->m_clients[socketClient]->handleRequest(reqInfo);
 				}
+
 				//Sending the response data
 				if (send(socketClient, reinterpret_cast<char*>(reqResult.response.data()), reqResult.response.size(), 0) == SOCKET_ERROR)
 				{
@@ -105,14 +107,14 @@ void Communicator::handleNewClient(SOCKET socketClient)
 			}
 			else
 			{
-				ErrorResponse res{ "Not Relevant" };
+				ErrorResponse res{"Code: " + std::to_string(msgCode) + " --> Not Relevant" };
 				//Sending the response data
 				if (send(socketClient, reinterpret_cast<char*>(JsonResponsePacketSerializer::serializeResponse(res).data()), JsonResponsePacketSerializer::serializeResponse(res).size(), 0) == SOCKET_ERROR)
 				{
 					sendError(socketClient); //sending an error if the response data is not sent correctly
 				}
 			}
-			Sleep(200);
+			Sleep(400);
 		}
 	}
 	catch (const std::exception& e)

@@ -88,7 +88,7 @@ namespace GUI.Forms
                     }
                     
                 }
-                Thread.Sleep(AutoRefreshSeconds * 1000);
+                Thread.Sleep(AutoRefreshSeconds * 1010);
             }
         }
 

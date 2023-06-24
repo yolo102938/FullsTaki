@@ -3,6 +3,7 @@
 #include <vector>
 #include <algorithm>
 #include <random>
+#include "ServerData.h"
 typedef struct Card
 {
     std::string color;
@@ -18,13 +19,14 @@ typedef struct Player {
     std::vector<Card> cards;
 } Player;
 
-class  GameData {
+class  GameData
+{
 public:
     std::vector<Player> players;
     std::vector<Card> cards;
     std::string turn;
     Card placed_card;
-    int status = 200;
+    int status = GET_GAME_STATE_RESPONSE;
 private:
     int L = 9;
 };

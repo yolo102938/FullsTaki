@@ -8,10 +8,11 @@ public:
 	~LoggedUser() = default;
 	string getUsername() const;
 	SOCKET getSocket() const;
+	void setSocket(SOCKET sock);
 	bool operator==(const LoggedUser user) const;
 	void operator=(const LoggedUser user);
 	void operator=(const LoggedUser* user);
 private:
 	string m_username;
-	const SOCKET m_socket;
+	SOCKET m_socket;
 };

@@ -18,6 +18,8 @@ public:
 	RoomMemberRequestHandler(const string username, const SOCKET socket, RoomManager& roomManager, RequestHandlerFactory& factory, const int roomId);
 	bool isRequestRelevant(const RequestInfo request) const override;
 	RequestResult handleRequest(const RequestInfo request) const override;
+	RequestResult gameState() const;
+
 private:
 
 	RequestResult leaveRoom(const RequestInfo request) const;

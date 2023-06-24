@@ -69,23 +69,32 @@ RequestResult GameRequestHandler::cardPlaydResponse(const RequestInfo request) c
 
 RequestResult GameRequestHandler::gameState() const
 {
+	mutexUsers.lock();
+	m_game.m_user = &this->m_user;
+	m_game.m_user->setSocket(this->m_user.getSocket());
 	GameRequestHandler* g = new GameRequestHandler(this->m_user.getUsername(), this->m_user.getSocket(), this->m_gameManager, this->m_handlerFactory, this->m_game);
+	mutexUsers.unlock();
 	return { JsonResponsePacketSerializer::serializeResponse(m_game.getGameStatus()), g };
 }
 
 RequestResult GameRequestHandler::bankRequest() const
 {
+	mutexUsers.lock();
 	bool temp = m_game.tryCardBank();
 	LoginResponse resp = { 200 };
 	if (temp)
 	{
-		resp.status = 100;
+		resp.status = 199;
 	}
+	mutexUsers.unlock();
+
 	return { JsonResponsePacketSerializer::serializeResponse(resp),nullptr };
 
 }
 
-RequestResult GameRequestHandler::playCardRequest(const RequestInfo request) const {
+RequestResult GameRequestHandler::playCardRequest(const RequestInfo request) const
+{
+	mutexUsers.lock();
 	Card ret;
 	std::string temp_str = JsonRequestPacketDeserializer::deserializePlaceCard(request.buffer);
 	ret.color = m_game.getColor(temp_str);
@@ -94,8 +103,10 @@ RequestResult GameRequestHandler::playCardRequest(const RequestInfo request) con
 	LoginResponse resp = { 200 };
 	if (temp)
 	{
-		resp.status = 100;
+		resp.status = 199;
 	}
+	mutexUsers.unlock();
+
 	return { JsonResponsePacketSerializer::serializeResponse(resp),nullptr };
 }
 

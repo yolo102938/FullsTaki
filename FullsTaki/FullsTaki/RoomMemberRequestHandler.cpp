@@ -11,7 +11,7 @@ RoomMemberRequestHandler::RoomMemberRequestHandler(const string username, const 
 
 bool RoomMemberRequestHandler::isRequestRelevant(const RequestInfo request) const
 {
-	return (request.id == LEAVE_ROOM) || (request.id == GET_ROOM_STATE || request.id == LOGOUT || request.id == GET_ROOMS);
+	return (request.id == LEAVE_ROOM) || (request.id == GET_ROOM_STATE || request.id == LOGOUT || request.id == GET_ROOMS || request.id == START_GAME || request.id == GET_GAME_STATE);
 }
 
 
@@ -33,12 +33,20 @@ RequestResult RoomMemberRequestHandler::handleRequest(const RequestInfo request)
 		
 		else if (request.id == GET_ROOM_STATE)
 		{
+			Sleep(500);
 			return this->getRoomState(request);
 		}
 
-		else if (request.id == START_GAME || request.id == GET_GAME_STATE)
+		else if (request.id == START_GAME)
 		{
+			Sleep(3000);
 			return startGame(request);
+		}
+
+		else if (request.id == GET_GAME_STATE)
+		{
+			Sleep(3000);
+			return gameState();
 		}
 	}
 
@@ -77,12 +85,13 @@ RequestResult RoomMemberRequestHandler::getRoomState(const RequestInfo request) 
 
 RequestResult RoomMemberRequestHandler::startGame(RequestInfo request) const
 {
-	//StartGameResponse res = { START_GAME_RESPONSE };
+	StartGameResponse res = { START_GAME_RESPONSE };
 
 	map<SOCKET, IRequestHandler*>& clients = Communicator::m_clients_stat;
 
 	Game& current_game = this->m_handlerFactory->getGameManager().getGame(this->m_room->m_metadata.id);
-
+	current_game.m_user = this->m_user;
+	current_game.m_user->setSocket(this->m_user->getSocket());
 	for (auto& user : this->m_room->m_users)
 	{
 		clients[user.getSocket()] = this->m_handlerFactory->createGameRequestHandler(user.getUsername(), user.getSocket(), current_game);
@@ -93,9 +102,13 @@ RequestResult RoomMemberRequestHandler::startGame(RequestInfo request) const
 
 	this->m_room->m_metadata.isActive = true;
 
-	//return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory->createGameRequestHandler(this->m_user->getUsername(), this->m_user->getSocket(), current_game) };
+	return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory->createGameRequestHandler(this->m_user->getUsername(), this->m_user->getSocket(), current_game) };
+}
 
-	return { JsonResponsePacketSerializer::serializeResponse(current_game.getGameStatus()), clients[this->m_user->getSocket()] };
+RequestResult RoomMemberRequestHandler::gameState() const
+{
+	GameRequestHandler* g = new GameRequestHandler(this->m_user->getUsername(), this->m_user->getSocket(), this->m_handlerFactory->getGameManager(), *this->m_handlerFactory, this->m_handlerFactory->getGameManager().getGame(this->m_room->m_metadata.id));
+	return { JsonResponsePacketSerializer::serializeResponse(this->m_handlerFactory->getGameManager().getGame(this->m_room->m_metadata.id).getGameStatus()), g };
 }
 
 void RoomMemberRequestHandler::sendData(SOCKET sc, vector<char> message) const

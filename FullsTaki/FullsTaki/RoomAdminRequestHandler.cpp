@@ -103,7 +103,6 @@ RequestResult RoomAdminRequestHandler::startGame(RequestInfo request) const
     for (auto& user : this->m_room->m_users)
     {
         clients[user.getSocket()] = this->m_handlerFactory->createGameRequestHandler(user.getUsername(), user.getSocket(), current_game);
-
         StartGameResponse start_game_res = { START_GAME_RESPONSE };
         vector<char> serialized_res = JsonResponsePacketSerializer::serializeResponse(start_game_res);
         sendData(user.getSocket(), serialized_res);

@@ -17,7 +17,8 @@ class Game
 {
 public:
     Game(int gameId);
-    Game(LoggedUser* curr, vector<LoggedUser> players, int gameId);
+    Game(Game& game, LoggedUser* user);
+    Game(LoggedUser* curr, vector<LoggedUser> users, int gameId);
 
     GameData getGameStatus();
     bool tryPlacement(Card card);
@@ -53,13 +54,13 @@ public:
         return "";
     }
     int gameId;
-private:
-    std::vector<Player> players;
-    std::vector<Card> av_Cards;
     LoggedUser* m_user;
+    std::vector<Player> players;
+private:
+    std::vector<Card> av_Cards;
     Card current_card;
     Card last_card;
     int current_player;
     int start;
-
+    mutable mutex mutexGame;
 };

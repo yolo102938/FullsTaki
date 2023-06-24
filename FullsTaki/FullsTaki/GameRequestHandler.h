@@ -35,9 +35,9 @@ public:
 
 private:
 
-	LoggedUser m_user;
+	mutable LoggedUser m_user;
 	Game& m_game;
 	GameManager& m_gameManager;
 	RequestHandlerFactory& m_handlerFactory;
-	mutable mutex mutexUsersCounter;
+	mutable mutex mutexUsers;
 };

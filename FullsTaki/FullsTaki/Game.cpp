@@ -1,7 +1,11 @@
 #include "Game.h"
 
+bool CheckInPlayers(vector<Player> players, string name);
+
+
 Game::Game(int gameId)
 {
+    mutexGame.lock();
     generateCards(av_Cards);
     shuffleCards(av_Cards);
     current_player = 0;
@@ -9,10 +13,15 @@ Game::Game(int gameId)
     last_card = { "None","None" };
     this->gameId = gameId;
     start = 0;
+    mutexGame.unlock();
 }
-
-Game::Game(LoggedUser* curr, vector<LoggedUser> players, int gameId)
+Game::Game(Game& game, LoggedUser* user)
 {
+
+}
+Game::Game(LoggedUser* curr, vector<LoggedUser> users, int gameId)
+{
+    mutexGame.lock();
     generateCards(av_Cards);
     shuffleCards(av_Cards);
     current_player = 0;
@@ -20,17 +29,20 @@ Game::Game(LoggedUser* curr, vector<LoggedUser> players, int gameId)
     last_card = { "None","None" };
     m_user = curr;
     this->gameId = gameId;
-    for (int i = 0; i < players.size(); i++)
+    start = 0;
+    for (int i = 0; i < users.size(); i++)
     {
         vector<Card> cv;
-        this->players.push_back(Player{ players[i].getUsername(), cv });
+        this->players.push_back(Player{ users[i].getUsername(), cv });
     }
-    start = 0;
+    mutexGame.unlock();
 }
 
 //function will check if its allowed to place a card in the middle. if it is allowed, it will place it and make all of the changes.
 //then it will return true or false if it did it or not.
-bool Game::tryPlacement(Card card) {
+bool Game::tryPlacement(Card card)
+{
+    mutexGame.lock();
     if (players[current_player].name == m_user->getUsername() && current_card.what != "Draw") {
         if (current_card.color == "None" && last_card.color == "None") {
             current_card = card;
@@ -46,6 +58,7 @@ bool Game::tryPlacement(Card card) {
             }
             av_Cards.push_back(card);
             shuffleCards(av_Cards);
+            mutexGame.unlock();
             return true;
         }
         else if (current_card.what != "None" && current_card.what == card.what || current_card.color == card.color) {
@@ -67,6 +80,7 @@ bool Game::tryPlacement(Card card) {
             }
             av_Cards.push_back(card);
             shuffleCards(av_Cards);
+            mutexGame.unlock();
             return true;
         }
         else if (last_card.what != "None" && last_card.what == card.what || last_card.color == card.color) {
@@ -88,15 +102,18 @@ bool Game::tryPlacement(Card card) {
             }
             av_Cards.push_back(card);
             shuffleCards(av_Cards);
+            mutexGame.unlock();
             return true;
         }
     }
+    mutexGame.unlock();
     return false;
 }
 
 
 bool Game::tryCardBank()
 {
+    mutexGame.lock();
     if (players[current_player].name == m_user->getUsername()) {
         if (av_Cards.empty()) {
             generateCards(av_Cards);
@@ -114,30 +131,46 @@ bool Game::tryCardBank()
         last_card = current_card;
         current_card = { "None","None" };
         current_player = (current_player + 1) % players.size();
+        mutexGame.unlock();
         return(true);
     }
     else {
+        mutexGame.unlock();
         return(false);
     }
 }
 
 GameData Game::getGameStatus()
 {
+    mutexGame.lock();
     std::vector<Player*> other_players;
     Player* tempPlayer = new Player;
-    std::string name_temp = players[current_player].name;
+    std::string name_temp;
+    if (players.size() > 0)
+    {
+        name_temp = players[current_player % 2].name;
+    }
+    else
+    {
+        name_temp = "";
+    }
+
+    //debug
+    std::cout << "\nGAME STATUS FUNC | Names: ";
+    for (Player p : players)
+    {
+         std::cout << p.name << " , ";
+    }
+    std::cout << "Count: " << players.size() << "\CurrentPlayerNum: " << current_player << std::endl;
+
     std::vector<Card> crds = std::vector<Card>();
-    bool present = false; //is he in the player list already
+    bool present = CheckInPlayers(players, name_temp); //is he in the player list already
 
     for (auto& player : players)
     {
         if (player.name == m_user->getUsername())
         {
-            if (player.name == name_temp)
-            {
-                present = true;
-                tempPlayer = &player;
-            }
+            tempPlayer = &player;
             name_temp = "You";
             crds = player.cards;
         }
@@ -149,7 +182,7 @@ GameData Game::getGameStatus()
 
     if (!present)
     {
-        std::vector<Card>* first_cards = new std::vector<Card>(8);
+        std::vector<Card>* first_cards = new std::vector<Card>();
         for (int i = 0; i < 7; i++)
         {
             Card temp = av_Cards.back();
@@ -161,7 +194,7 @@ GameData Game::getGameStatus()
 
     else if ((tempPlayer->cards.size() == 0) && (av_Cards.size() + other_players[0]->cards.size()) == 112)
     {
-        std::vector<Card>* first_cards = new std::vector<Card>(8);
+        std::vector<Card>* first_cards = new std::vector<Card>();
         for (int i = 0; i < 7; i++)
         {
             Card temp = av_Cards.back();
@@ -172,7 +205,7 @@ GameData Game::getGameStatus()
 
     if ((other_players[0]->cards.size() == 0) && (av_Cards.size() + tempPlayer->cards.size()) == 112)
     {
-        std::vector<Card>* first_cards = new std::vector<Card>(8);
+        std::vector<Card>* first_cards = new std::vector<Card>();
         for (int i = 0; i < 7; i++)
         {
             Card temp = av_Cards.back();
@@ -193,7 +226,25 @@ GameData Game::getGameStatus()
     }
     response_data.turn = name_temp;
     response_data.placed_card = current_card;
-
+    current_player++;
+    //std::cout << "\nCurrent Player: " << current_player << " --> " << players[current_player % 2].name;
+    mutexGame.unlock();
     return response_data;
 
+}
+
+bool CheckInPlayers(vector<Player> players, string name)
+{
+    if (name == "")
+    {
+        return true;
+    }
+    for (Player player : players)
+    {
+        if (player.name == name)
+        {
+            return true;
+        }
+    }
+    return false;
 }

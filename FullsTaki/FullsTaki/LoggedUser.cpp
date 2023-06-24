@@ -25,3 +25,8 @@ void LoggedUser::operator=(const LoggedUser* user)
 {
 	this->m_username = user->m_username;
 }
+
+void LoggedUser::setSocket(SOCKET sock)
+{
+	this->m_socket = sock;
+}
