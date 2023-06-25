@@ -57,9 +57,7 @@ namespace GUI.Forms
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Items.AddRange(new object[] {
             "2",
-            "3",
-            "4",
-            "5"});
+            "3"});
             this.comboBox1.Location = new System.Drawing.Point(934, 309);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(121, 28);
@@ -68,11 +66,12 @@ namespace GUI.Forms
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(930, 278);
+            this.label1.Location = new System.Drawing.Point(929, 287);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(192, 28);
+            this.label1.Size = new System.Drawing.Size(259, 19);
             this.label1.TabIndex = 12;
-            this.label1.Text = "Max player count:";
+            this.label1.Text = "Number Of Players For The Room:";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // label2
             // 
@@ -89,6 +88,7 @@ namespace GUI.Forms
             this.label3.Size = new System.Drawing.Size(188, 23);
             this.label3.TabIndex = 14;
             this.label3.Text = "JOIN ROOM";
+            this.label3.Click += new System.EventHandler(this.label3_Click);
             // 
             // button2
             // 
@@ -141,7 +141,7 @@ namespace GUI.Forms
             // 
             // name_label
             // 
-            this.name_label.Location = new System.Drawing.Point(930, 216);
+            this.name_label.Location = new System.Drawing.Point(929, 216);
             this.name_label.Name = "name_label";
             this.name_label.Size = new System.Drawing.Size(122, 19);
             this.name_label.TabIndex = 5;

@@ -173,6 +173,7 @@ namespace GUI.Forms
         {
             Hide();
             MainMenu menu = new MainMenu();
+            menu.ShowDialog();
             Close();
         }
 

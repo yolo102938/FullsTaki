@@ -1,6 +1,7 @@
 #include "Game.h"
 
 bool CheckInPlayers(vector<Player> players, string name);
+int OtherPlayersCardsCount(vector<Player*> players);
 
 
 Game::Game(int gameId)
@@ -42,7 +43,7 @@ Game::Game(LoggedUser* curr, vector<LoggedUser> users, int gameId)
 bool Game::tryPlacement(Card card, LoggedUser* m_user)
 {
     mutexGame.lock();
-    if (players[current_player%players.size()].name == m_user->getUsername() && current_card.what != "Draw")
+    if (players[current_player % players.size()].name == m_user->getUsername() && current_card.what != "Draw")
     {
         if (current_card.color == "None" && last_card.color == "None")
         {
@@ -65,7 +66,7 @@ bool Game::tryPlacement(Card card, LoggedUser* m_user)
             //current_player--;
             return true;
         }
-        else if ((current_card.what != "None" && current_card.what != "") &&  (current_card.what == card.what || current_card.color == card.color))
+        else if ((current_card.what != "None" && current_card.what != "") && (current_card.what == card.what || current_card.color == card.color))
         {
             current_card = card;
             last_card = card;
@@ -125,7 +126,7 @@ bool Game::tryPlacement(Card card, LoggedUser* m_user)
 bool Game::tryCardBank(LoggedUser* m_user)
 {
     mutexGame.lock();
-    
+
     if (players[current_player % players.size()].name == m_user->getUsername())
     {
         if (av_Cards.empty())
@@ -151,7 +152,7 @@ bool Game::tryCardBank(LoggedUser* m_user)
     }
     else
     {
-        
+
         mutexGame.unlock();
         return(false);
     }
@@ -177,7 +178,7 @@ GameData Game::getGameStatus(LoggedUser* m_user)
     std::cout << "\nGAME STATUS FUNC | Names: ";
     for (Player p : players)
     {
-         std::cout << p.name << " , ";
+        std::cout << p.name << " , ";
     }
     std::cout << "Count: " << players.size() << "  |  CurrentPlayerNum: " << current_player << std::endl;
 
@@ -213,7 +214,7 @@ GameData Game::getGameStatus(LoggedUser* m_user)
         players.push_back({ m_user->getUsername(),*first_cards });
     }
 
-    else if ((tempPlayer->cards.size() == 0) && (av_Cards.size() + other_players[0]->cards.size()) == 112)
+    else if ((tempPlayer->cards.size() == 0) && (av_Cards.size() + OtherPlayersCardsCount(other_players)) == 112)
     {
         std::vector<Card>* first_cards = new std::vector<Card>();
         for (int i = 0; i < 7; i++)
@@ -224,14 +225,74 @@ GameData Game::getGameStatus(LoggedUser* m_user)
         }
     }
 
-    if ((other_players[0]->cards.size() == 0) && (av_Cards.size() + tempPlayer->cards.size()) == 112)
+    if (other_players.size() == 1)
     {
-        std::vector<Card>* first_cards = new std::vector<Card>();
-        for (int i = 0; i < 7; i++)
+        if ((other_players[0]->cards.size() == 0) && (av_Cards.size() + tempPlayer->cards.size()) == 112)
         {
-            Card temp = av_Cards.back();
-            other_players[0]->cards.push_back({ temp.color,temp.what });
-            av_Cards.pop_back();
+            std::vector<Card>* first_cards = new std::vector<Card>();
+            for (int i = 0; i < 7; i++)
+            {
+                Card temp = av_Cards.back();
+                other_players[0]->cards.push_back({ temp.color,temp.what });
+                av_Cards.pop_back();
+            }
+        }
+    }
+    else if (other_players.size() == 2)
+    {
+        if ((other_players[0]->cards.size() == 0) && (other_players[1]->cards.size() + av_Cards.size() + tempPlayer->cards.size()) == 112)
+        {
+            std::vector<Card>* first_cards = new std::vector<Card>();
+            for (int i = 0; i < 7; i++)
+            {
+                Card temp = av_Cards.back();
+                other_players[0]->cards.push_back({ temp.color,temp.what });
+                av_Cards.pop_back();
+            }
+        }
+        if ((other_players[1]->cards.size() == 0) && (other_players[0]->cards.size() + av_Cards.size() + tempPlayer->cards.size()) == 112)
+        {
+            std::vector<Card>* first_cards = new std::vector<Card>();
+            for (int i = 0; i < 7; i++)
+            {
+                Card temp = av_Cards.back();
+                other_players[1]->cards.push_back({ temp.color,temp.what });
+                av_Cards.pop_back();
+            }
+        }
+    }
+
+    else if (other_players.size() == 3)
+    {
+        if ((other_players[0]->cards.size() == 0) && (other_players[2]->cards.size() + other_players[1]->cards.size() + av_Cards.size() + tempPlayer->cards.size()) == 112)
+        {
+            std::vector<Card>* first_cards = new std::vector<Card>();
+            for (int i = 0; i < 7; i++)
+            {
+                Card temp = av_Cards.back();
+                other_players[0]->cards.push_back({ temp.color,temp.what });
+                av_Cards.pop_back();
+            }
+        }
+        if ((other_players[1]->cards.size() == 0) && (other_players[2]->cards.size() + other_players[0]->cards.size() + av_Cards.size() + tempPlayer->cards.size()) == 112)
+        {
+            std::vector<Card>* first_cards = new std::vector<Card>();
+            for (int i = 0; i < 7; i++)
+            {
+                Card temp = av_Cards.back();
+                other_players[1]->cards.push_back({ temp.color,temp.what });
+                av_Cards.pop_back();
+            }
+        }
+        if ((other_players[2]->cards.size() == 0) && (other_players[1]->cards.size() + other_players[0]->cards.size() + av_Cards.size() + tempPlayer->cards.size()) == 112)
+        {
+            std::vector<Card>* first_cards = new std::vector<Card>();
+            for (int i = 0; i < 7; i++)
+            {
+                Card temp = av_Cards.back();
+                other_players[2]->cards.push_back({ temp.color,temp.what });
+                av_Cards.pop_back();
+            }
         }
     }
 
@@ -269,4 +330,14 @@ bool CheckInPlayers(vector<Player> players, string name)
         }
     }
     return false;
+}
+
+int OtherPlayersCardsCount(vector<Player*> players)
+{
+    int count = 0;
+    for (Player* player : players)
+    {
+        count += player->cards.size();
+    }
+    return count;
 }

@@ -59,5 +59,5 @@ RequestResult LoginRequestHandler::signup(const RequestInfo request, SOCKET sock
 	//std::cout << req.username, req.password, req.email;
 	this->m_loginManager.signup(req.username, req.password, req.email, sock);
 	SignupResponse res = { SIGNUP_RESPONSE };
-	return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory.createLoginRequestHandler() };
+	return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory.createMenuRequestHandler(new LoggedUser{req.username, sock}) };
 }
