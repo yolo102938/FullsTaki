@@ -168,6 +168,7 @@ vector<char> JsonResponsePacketSerializer::serializeResponse(const LeaveGameResp
 vector<char> JsonResponsePacketSerializer::serializeResponse(const PlaceCardResponse response)
 {
 	json serializedData = { {"status", response.status} };
+	std::cout << serializedData.dump();
 	return responseBuilder(PLAY_CARD_RESPONSE, serializedData.dump());
 }
 
@@ -217,6 +218,7 @@ vector<char> JsonResponsePacketSerializer::serializeResponse(const GameData& res
 		placedCard["what"] = "";
 	}
 	jsonData["placed_card"] = placedCard;
+	jsonData["turn_number"] = response.tur;
 	return responseBuilder(response.status, jsonData.dump());
 }
 

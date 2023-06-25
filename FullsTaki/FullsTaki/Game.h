@@ -20,9 +20,9 @@ public:
     Game(Game& game, LoggedUser* user);
     Game(LoggedUser* curr, vector<LoggedUser> users, int gameId);
 
-    GameData getGameStatus();
-    bool tryPlacement(Card card);
-    bool tryCardBank();
+    GameData getGameStatus(LoggedUser* m_user);
+    bool tryPlacement(Card card, LoggedUser* m_user);
+    bool tryCardBank(LoggedUser* m_user);
 
     std::string getWhat(std::string card)
     {
@@ -54,7 +54,6 @@ public:
         return "";
     }
     int gameId;
-    LoggedUser* m_user;
     std::vector<Player> players;
 private:
     std::vector<Card> av_Cards;

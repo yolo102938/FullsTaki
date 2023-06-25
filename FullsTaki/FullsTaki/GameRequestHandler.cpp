@@ -70,24 +70,21 @@ RequestResult GameRequestHandler::cardPlaydResponse(const RequestInfo request) c
 RequestResult GameRequestHandler::gameState() const
 {
 	mutexUsers.lock();
-	m_game.m_user = &this->m_user;
-	m_game.m_user->setSocket(this->m_user.getSocket());
 	GameRequestHandler* g = new GameRequestHandler(this->m_user.getUsername(), this->m_user.getSocket(), this->m_gameManager, this->m_handlerFactory, this->m_game);
 	mutexUsers.unlock();
-	return { JsonResponsePacketSerializer::serializeResponse(m_game.getGameStatus()), g };
+	return { JsonResponsePacketSerializer::serializeResponse(m_game.getGameStatus(&this->m_user)), g };
 }
 
 RequestResult GameRequestHandler::bankRequest() const
 {
 	mutexUsers.lock();
-	bool temp = m_game.tryCardBank();
+	bool temp = m_game.tryCardBank(&this->m_user);
 	CardBankResponse resp = { 101 };
 	if (temp)
 	{
 		resp.status = (int)CARD_BANK_PREMISION_RESPONSE;
 	}
-	m_game.m_user = &this->m_user;
-	m_game.m_user->setSocket(this->m_user.getSocket());
+
 	GameRequestHandler* g = new GameRequestHandler(this->m_user.getUsername(), this->m_user.getSocket(), this->m_gameManager, this->m_handlerFactory, this->m_game);
 	mutexUsers.unlock();
 
@@ -102,14 +99,12 @@ RequestResult GameRequestHandler::playCardRequest(const RequestInfo request) con
 	std::string temp_str = JsonRequestPacketDeserializer::deserializePlaceCard(request.buffer);
 	ret.color = m_game.getColor(temp_str);
 	ret.what = m_game.getWhat(temp_str);
-	bool temp = m_game.tryPlacement(ret);
+	bool temp = m_game.tryPlacement(ret, &this->m_user);
 	PlaceCardResponse resp = { 101 };
 	if (temp)
 	{
 		resp.status = (int)PLAY_CARD_RESPONSE;
 	}
-	m_game.m_user = &this->m_user;
-	m_game.m_user->setSocket(this->m_user.getSocket());
 	GameRequestHandler* g = new GameRequestHandler(this->m_user.getUsername(), this->m_user.getSocket(), this->m_gameManager, this->m_handlerFactory, this->m_game);
 	mutexUsers.unlock();
 

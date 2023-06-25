@@ -27,6 +27,7 @@ public:
     std::string turn;
     Card placed_card;
     int status = GET_GAME_STATE_RESPONSE;
+    int tur = 0;
 private:
     int L = 9;
 };

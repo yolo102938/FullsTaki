@@ -27,7 +27,6 @@ Game::Game(LoggedUser* curr, vector<LoggedUser> users, int gameId)
     current_player = 0;
     current_card = { "None","None" };
     last_card = { "None","None" };
-    m_user = curr;
     this->gameId = gameId;
     start = 0;
     for (int i = 0; i < users.size(); i++)
@@ -40,10 +39,9 @@ Game::Game(LoggedUser* curr, vector<LoggedUser> users, int gameId)
 
 //function will check if its allowed to place a card in the middle. if it is allowed, it will place it and make all of the changes.
 //then it will return true or false if it did it or not.
-bool Game::tryPlacement(Card card)
+bool Game::tryPlacement(Card card, LoggedUser* m_user)
 {
     mutexGame.lock();
-    current_player++;
     if (players[current_player%players.size()].name == m_user->getUsername() && current_card.what != "Draw")
     {
         if (current_card.color == "None" && last_card.color == "None")
@@ -64,7 +62,7 @@ bool Game::tryPlacement(Card card)
             av_Cards.push_back(card);
             shuffleCards(av_Cards);
             mutexGame.unlock();
-            current_player--;
+            //current_player--;
             return true;
         }
         else if ((current_card.what != "None" && current_card.what != "") &&  (current_card.what == card.what || current_card.color == card.color))
@@ -90,7 +88,7 @@ bool Game::tryPlacement(Card card)
             av_Cards.push_back(card);
             shuffleCards(av_Cards);
             mutexGame.unlock();
-            current_player--;
+            //current_player--;
             return true;
         }
         else if (last_card.what != "None" && last_card.what == card.what || last_card.color == card.color) {
@@ -114,20 +112,20 @@ bool Game::tryPlacement(Card card)
             av_Cards.push_back(card);
             shuffleCards(av_Cards);
             mutexGame.unlock();
-            current_player--;
+            //current_player--;
             return true;
         }
     }
     mutexGame.unlock();
-    current_player--;
+    //current_player--;
     return false;
 }
 
 
-bool Game::tryCardBank()
+bool Game::tryCardBank(LoggedUser* m_user)
 {
     mutexGame.lock();
-    current_player++;
+    
     if (players[current_player % players.size()].name == m_user->getUsername())
     {
         if (av_Cards.empty())
@@ -146,20 +144,21 @@ bool Game::tryCardBank()
         }
         last_card = current_card;
         current_card = { "None","None" };
-        current_player = (current_player + 1);
+        //current_player = (current_player + 1);
         mutexGame.unlock();
-        current_player--;
+        current_player++;
         return(true);
     }
     else
     {
-        current_player--;
+        
         mutexGame.unlock();
         return(false);
     }
+
 }
 
-GameData Game::getGameStatus()
+GameData Game::getGameStatus(LoggedUser* m_user)
 {
     mutexGame.lock();
     std::vector<Player*> other_players;
@@ -190,8 +189,11 @@ GameData Game::getGameStatus()
         if (player.name == m_user->getUsername())
         {
             tempPlayer = &player;
-            name_temp = "You";
+
             crds = player.cards;
+            if (player.name == name_temp) {
+                name_temp = "You";
+            }
         }
         else
         {
@@ -245,6 +247,7 @@ GameData Game::getGameStatus()
     }
     response_data.turn = name_temp;
     response_data.placed_card = current_card;
+    response_data.tur = current_player;
     //current_player++;
     //std::cout << "\nCurrent Player: " << current_player << " --> " << players[current_player % 2].name;
     mutexGame.unlock();

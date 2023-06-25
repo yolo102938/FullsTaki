@@ -90,8 +90,6 @@ RequestResult RoomMemberRequestHandler::startGame(RequestInfo request) const
 	map<SOCKET, IRequestHandler*>& clients = Communicator::m_clients_stat;
 
 	Game& current_game = this->m_handlerFactory->getGameManager().getGame(this->m_room->m_metadata.id);
-	current_game.m_user = this->m_user;
-	current_game.m_user->setSocket(this->m_user->getSocket());
 	for (auto& user : this->m_room->m_users)
 	{
 		clients[user.getSocket()] = this->m_handlerFactory->createGameRequestHandler(user.getUsername(), user.getSocket(), current_game);
@@ -108,7 +106,7 @@ RequestResult RoomMemberRequestHandler::startGame(RequestInfo request) const
 RequestResult RoomMemberRequestHandler::gameState() const
 {
 	GameRequestHandler* g = new GameRequestHandler(this->m_user->getUsername(), this->m_user->getSocket(), this->m_handlerFactory->getGameManager(), *this->m_handlerFactory, this->m_handlerFactory->getGameManager().getGame(this->m_room->m_metadata.id));
-	return { JsonResponsePacketSerializer::serializeResponse(this->m_handlerFactory->getGameManager().getGame(this->m_room->m_metadata.id).getGameStatus()), g };
+	return { JsonResponsePacketSerializer::serializeResponse(this->m_handlerFactory->getGameManager().getGame(this->m_room->m_metadata.id).getGameStatus(this->m_user)), g };
 }
 
 void RoomMemberRequestHandler::sendData(SOCKET sc, vector<char> message) const
