@@ -101,7 +101,8 @@ vector<char> JsonResponsePacketSerializer::serializeResponse(const GetRoomsRespo
 	json rooms = json::array();
 	for (const auto& room : response.rooms)
 	{
-		rooms.push_back({"id", room.id,"name",room.name,"max_players",room.maxPlayers,"q_number",room.numOfQuestionsInGame,"time_per_q",room.timePerQuestion,"is_active",room.isActive});
+	
+		rooms.push_back({"id", room.id,"name",room.name,"max_players",room.maxPlayers,"is_active",room.isActive});
 	}
 
 	json sData = { {"status", response.status}, {"rooms", rooms} };
@@ -117,10 +118,109 @@ Output: vector<char> response (A serialized json response as a vector of chars).
 vector<char> JsonResponsePacketSerializer::serializeResponse(const getHighScoreResponse response)
 {
 	json sData = { {"status", response.status}, {"statistics", response.statistics} };
-
+	//std::cout << "DONEDID\n";
 	return responseBuilder(response.status, sData.dump());
 }
 
+
+vector<char> JsonResponsePacketSerializer::serializeResponse(const CloseRoomResponse& response)
+{
+	json sData;
+	sData["status"] = response.status;
+	return responseBuilder(response.status, sData.dump());
+}
+
+vector<char> JsonResponsePacketSerializer::serializeResponse(const StartGameResponse& response)
+{
+	json sData;
+	sData["status"] = response.status;
+	return responseBuilder(response.status, sData.dump());
+}
+
+vector<char> JsonResponsePacketSerializer::serializeResponse(const GetRoomStateResponse& response)
+{
+	json sData;
+	sData["status"] = response.status;
+	sData["hasGameBegun"] = response.hasGameBegun;
+	std::string user_line = "";
+	for (auto name : response.players) {
+		user_line = user_line + name + ",";
+	}
+	user_line.pop_back();
+	sData["players"] = user_line;
+	return responseBuilder(response.status, sData.dump());
+}
+
+vector<char> JsonResponsePacketSerializer::serializeResponse(const LeaveRoomResponse& response)
+{
+	json sData;
+	sData["status"] = response.status;
+	return responseBuilder(response.status, sData.dump());
+}
+
+vector<char> JsonResponsePacketSerializer::serializeResponse(const LeaveGameResponse response)
+{
+	json serializedData = { {"status", response.status} };
+	return responseBuilder(LEAVE_GAME_RESPONSE, serializedData.dump());
+}
+
+
+vector<char> JsonResponsePacketSerializer::serializeResponse(const PlaceCardResponse response)
+{
+	json serializedData = { {"status", response.status} };
+	std::cout << serializedData.dump();
+	return responseBuilder(PLAY_CARD_RESPONSE, serializedData.dump());
+}
+
+vector<char> JsonResponsePacketSerializer::serializeResponse(const CardBankResponse response)
+{
+	json serializedData = { {"status", response.status} };
+	return responseBuilder(CARD_BANK_PREMISION_RESPONSE, serializedData.dump());
+}
+
+vector<char> JsonResponsePacketSerializer::serializeResponse(const GameData& response)
+{
+	ordered_json jsonData;
+
+	//player list
+	std::vector<ordered_json> players;
+	for (const auto& player : response.players)
+	{
+		ordered_json playerData;
+		playerData["name"] = player.name;
+		playerData["card_count"] = player.cards.size();
+		players.push_back(playerData);
+	}
+	jsonData["players"] = players;
+
+	//client cards
+	std::vector<ordered_json> cards;
+	for (const auto& card : response.cards)
+	{
+		ordered_json cardData;
+		cardData["color"] = card.color;
+		cardData["what"] = card.what;
+		cards.push_back(cardData);
+	}
+	jsonData["cards"] = cards;
+
+	//current turn
+	jsonData["turn"] = response.turn;
+
+	//current on top card
+	ordered_json placedCard;
+	if (response.placed_card.color != "none" && response.placed_card.color != "None") {
+		placedCard["color"] = response.placed_card.color;
+		placedCard["what"] = response.placed_card.what;
+	}
+	else {
+		placedCard["color"] = "none";
+		placedCard["what"] = "";
+	}
+	jsonData["placed_card"] = placedCard;
+	jsonData["turn_number"] = response.tur;
+	return responseBuilder(response.status, jsonData.dump());
+}
 
 
 /*
@@ -147,5 +247,6 @@ vector<char> JsonResponsePacketSerializer::responseBuilder(const int resStatusCo
 	//adding the json data to the response packet.
 	response.insert(response.end(), sData.begin(), sData.end());
 	//returning the response packet.
+	//std::cout << response.data();
 	return response;
 }

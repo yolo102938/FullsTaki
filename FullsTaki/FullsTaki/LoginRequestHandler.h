@@ -4,6 +4,7 @@
 #include "JsonResponsePacketSerializer.h"
 #include "RequestTypes.hpp"
 #include "RequestHandlerFactory.h"
+#include "ServerData.h"
 
 class RequestHandlerFactory;
 
@@ -18,12 +19,11 @@ public:
 
 	virtual RequestResult handleRequest(const RequestInfo request) const override;
 
-	RequestResult login(const RequestInfo request) const;
-
-	RequestResult signup(const RequestInfo request) const;
-
+	RequestResult handleRequest(const RequestInfo request, SOCKET sock) const;
+	RequestResult login(const RequestInfo request, SOCKET sock) const;
+	RequestResult signup(const RequestInfo request, SOCKET sock) const;
+	LoginManager& m_loginManager;
 private:
 
-	LoginManager& m_loginManager;
 	RequestHandlerFactory& m_handlerFactory;
 };

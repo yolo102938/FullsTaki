@@ -36,12 +36,13 @@ GetPlayersInRoomRequest JsonRequestPacketDeserializer::deserializeGetPlayersInRo
     return GetPlayersInRoomRequest({ jsonData["room_id"]});
 }
 
-JoinRoomRequest JsonRequestPacketDeserializer::deserializeJoinRoom(const std::vector<unsigned char>& buffer)
+JoinRoomRequest JsonRequestPacketDeserializer::desirializeJoinRoom(const vector<unsigned char>& buffer)
 {
-    //parsing json data from the buffer to a json object.
-    json jsonData = parseJson(buffer);
-    //initializing and returning a SignupRequest object with the extracted data.
-    return JoinRoomRequest({ jsonData["room_id"] });
+    string data(buffer.begin(), buffer.end());
+    data = data.substr(data.find('{'));// get only the json part
+
+    json jsonData = json::parse(data); // parse to json
+    return JoinRoomRequest({ jsonData["roomId"] });
 }
 
 CreateRoomRequest JsonRequestPacketDeserializer::deserializeCreateRoom(const std::vector<unsigned char>& buffer)
@@ -49,7 +50,28 @@ CreateRoomRequest JsonRequestPacketDeserializer::deserializeCreateRoom(const std
     //parsing json data from the buffer to a json object.
     json jsonData = parseJson(buffer);
     //initializing and returning a SignupRequest object with the extracted data.
-    return CreateRoomRequest({ jsonData["name"],jsonData["max_users"],jsonData["q_count"],jsonData["answer_time"]});
+    //std::cout<<(jsonData["max_users"]);
+    return CreateRoomRequest({ jsonData["name"],jsonData["max_users"]});
+}
+/*
+PlaceCardRequest JsonRequestPacketDeserializer::deserializePlayCardRequest(const vector<unsigned char>& buffer)
+{
+    string data(buffer.begin(), buffer.end());
+    data = data.substr(data.find('{'));// get only the json part
+
+    json jsonData = json::parse(data); // parse to json
+    return PlaceCardRequest({ jsonData["cardId"] });
+}
+*/
+
+string JsonRequestPacketDeserializer::deserializePlaceCard(const vector<unsigned char>& buffer)
+{
+    //parsing json data from the buffer to a json object.
+    json jsonData = parseJson(buffer);
+    std::string fullTag = jsonData["picture_tag"];
+
+    //initializing and returning a SignupRequest object with the extracted data.
+    return fullTag;
 }
 
 /*
@@ -61,7 +83,7 @@ Output: A json object parsed from the given buffer.
 */
 json JsonRequestPacketDeserializer::parseJson(const vector<unsigned char>& buffer)
 {
-	string data(buffer.begin(), buffer.end()); //creating a string with the buffer's data.
-	data = data.substr(data.find('{')); //locating the first '{' to get only the json data.
-	return json::parse(data); //parsing the data to a json object and returning it.
+    string data(buffer.begin(), buffer.end()); //creating a string with the buffer's data.
+    data = data.substr(data.find('{')); //locating the first '{' to get only the json data.
+    return json::parse(data); //parsing the data to a json object and returning it.
 }

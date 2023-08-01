@@ -41,12 +41,17 @@
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Configuration.ConfigurationManager, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Configuration.ConfigurationManager.8.0.0-preview.4.23259.5\lib\net462\System.Configuration.ConfigurationManager.dll</HintPath>
+      <HintPath>..\packages\System.Configuration.ConfigurationManager.8.0.0-preview.5.23280.8\lib\net462\System.Configuration.ConfigurationManager.dll</HintPath>
     </Reference>
     <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.IO.Log" />
+    <Reference Include="System.Net.Sockets, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Sockets.4.3.0\lib\net46\System.Net.Sockets.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Runtime, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.4.3.1\lib\net462\System.Runtime.dll</HintPath>
       <Private>True</Private>
@@ -66,8 +71,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataTypes\User.cs" />
     <Compile Include="DataTypes\Room.cs" />
     <Compile Include="Forms\Address.cs" />
+    <Compile Include="Forms\Exceptions.cs" />
+    <Compile Include="Forms\ObsessiveDataRefresher.cs" />
+    <Compile Include="Forms\RoomParticipant.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\RoomParticipant.Designer.cs">
+      <DependentUpon>RoomParticipant.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Signup.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -97,8 +111,18 @@
     <Compile Include="Forms\TakiProtocol.cs" />
     <Compile Include="Forms\TakiRequest.cs" />
     <Compile Include="Forms\TakiResponse.cs" />
+    <Compile Include="GameRoom.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GameRoom.designer.cs">
+      <DependentUpon>GameRoom.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs" />
     <Compile Include="Source.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Forms\RoomParticipant.resx">
+      <DependentUpon>RoomParticipant.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Rooms.resx">
       <DependentUpon>Rooms.cs</DependentUpon>
     </EmbeddedResource>
@@ -111,22 +135,16 @@
     <EmbeddedResource Include="Forms\Signup.resx">
       <DependentUpon>Signup.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    <EmbeddedResource Include="GameRoom.resx">
+      <DependentUpon>GameRoom.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx" />
     <None Include="packages.config" />
     <None Include="Properties\DataSources\GUI.Forms.Rooms.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>

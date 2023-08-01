@@ -65,9 +65,9 @@ namespace GUI.Forms
             // 
             // pass_label
             // 
-            this.pass_label.Location = new System.Drawing.Point(573, 369);
+            this.pass_label.Location = new System.Drawing.Point(573, 376);
             this.pass_label.Name = "pass_label";
-            this.pass_label.Size = new System.Drawing.Size(94, 28);
+            this.pass_label.Size = new System.Drawing.Size(97, 21);
             this.pass_label.TabIndex = 2;
             this.pass_label.Text = "Password:";
             // 
@@ -155,6 +155,7 @@ namespace GUI.Forms
             {
                 MessageBox.Show("Successfully logged in", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 Socket.LoggedUser = name_input.Text;
+                Socket.LoggedUserPass = pass_input.Text;
                 Text += Socket.LoggedUserFormatted;
                 MainMenu mainM = new MainMenu(name_input.Text);
                 this.Hide();

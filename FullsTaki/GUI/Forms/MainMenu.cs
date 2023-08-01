@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TakiClient;
 
 namespace GUI
 {
@@ -25,8 +26,7 @@ namespace GUI
         {
             Rooms menu = new Rooms();
             Hide();
-            menu.ShowDialog();
-            Show();
+            menu.Show();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -46,14 +46,25 @@ namespace GUI
 
         private void button4_Click(object sender, EventArgs e)
         {
-
-            //ohad backend goes here
-            Login menu = new Login();
-            this.Hide();
-            menu.Show();
-            //else MessageBox.Show(errormsg.tostring);
+            LogoutClient();
         }
+        public void LogoutClient()
+        {
+            if (Socket.Connected)
+            {
+                string sendLoginMsg = TakiClient.TakiProtocol.Logout(Socket.LoggedUser, Socket.LoggedUserPass);
+                TakiClient.Socket.SendMsg(sendLoginMsg);
 
+                string recvLoginMsg = Socket.RecvMsgByResponse((int)TakiResponse.LOGOUT);
+                if (recvLoginMsg != null)
+                {
+                    MessageBox.Show("Successfully logged out", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Login login = new Login();
+                    this.Hide();
+                    login.Show();
+                }
+            }
+        }
         private void label1_Click(object sender, EventArgs e)
         {
 

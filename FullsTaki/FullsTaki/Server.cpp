@@ -2,7 +2,7 @@
 #include "Server.h"
 
 Server::Server(IDatabase* database) : 
-	m_database(database), m_handlerFactory(RequestHandlerFactory(database)), m_communicator(Communicator(m_handlerFactory))
+	m_database(database), m_handlerFactory(database), m_communicator(Communicator(m_handlerFactory))
 {}
 
 Server::~Server()

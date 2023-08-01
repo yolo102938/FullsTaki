@@ -8,6 +8,7 @@
 //found this json library online
 #include "json.hpp"
 using json = nlohmann::json;
+using ordered_json = nlohmann::ordered_json;
 //--------------------------
 
 //using specific functions from the std namespace
@@ -43,7 +44,21 @@ public:
 
 	static vector<char> serializeResponse(const getHighScoreResponse response);
 
+	static vector<char> serializeResponse(const CloseRoomResponse& response);
 
+	static vector<char> serializeResponse(const StartGameResponse& response);
+
+	static vector<char> serializeResponse(const GetRoomStateResponse& response);
+
+	static vector<char> serializeResponse(const LeaveRoomResponse& response);
+
+	static vector<char> serializeResponse(const LeaveGameResponse response);
+
+	static vector<char> serializeResponse(const PlaceCardResponse response);
+
+	static vector<char> serializeResponse(const GameData& response);
+
+	static vector<char> serializeResponse(const CardBankResponse response);
 private:
 
 	static vector<char> responseBuilder(const int response_code, const string sData);

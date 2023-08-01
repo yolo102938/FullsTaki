@@ -21,14 +21,15 @@ class JsonRequestPacketDeserializer
 
 public:
 
-	static LoginRequest deserializeLoginRequest(const std::vector<unsigned char>& buffer);
+	static LoginRequest deserializeLoginRequest(const vector<unsigned char>& buffer);
 
-	static SignupRequest deserializeSignupRequest(const std::vector<unsigned char>& buffer);
+	static SignupRequest deserializeSignupRequest(const vector<unsigned char>& buffer);
 
-	static GetPlayersInRoomRequest deserializeGetPlayersInRoom(const std::vector<unsigned char>& buffer);
-	static JoinRoomRequest deserializeJoinRoom(const std::vector<unsigned char>& buffer);
-	static CreateRoomRequest deserializeCreateRoom(const std::vector<unsigned char>& buffer);
-
+	static GetPlayersInRoomRequest deserializeGetPlayersInRoom(const vector<unsigned char>& buffer);
+	static JoinRoomRequest desirializeJoinRoom(const vector<unsigned char>& buffer);
+	static CreateRoomRequest deserializeCreateRoom(const vector<unsigned char>& buffer);
+	//static PlaceCardRequest deserializePlayCardRequest(const vector<unsigned char>& buffer);
+	static string deserializePlaceCard(const vector<unsigned char>& buffer);
 private:
-	static json parseJson(const std::vector<unsigned char>& buffer);
+	static json parseJson(const vector<unsigned char>& buffer);
 };

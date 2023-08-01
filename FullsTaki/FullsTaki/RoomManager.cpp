@@ -1,18 +1,21 @@
 #include "RoomManager.h"
 
-void RoomManager::createRoom(LoggedUser user, RoomData data)
+void RoomManager::createRoom(const LoggedUser user, RoomData& data)
 {
-    m_rooms[data.id] = Room(data, user);
+    data.id = this->prevRoomId++;
+    Room newRoom(data);
+    newRoom.addUser(user);
+    this->m_rooms.insert({ data.id, newRoom });
 }
 
 void RoomManager::deleteRoom(int ID)
 {
-    m_rooms.erase(ID);
+    this->m_rooms.erase(this->m_rooms.find(ID));
 }
 
 unsigned int RoomManager::getRoomState(int ID)
 {
-    return m_rooms[ID].getRoomData().isActive;
+    return this->m_rooms.find(ID)->second.getRoomData().isActive;
 }
 
 std::vector<RoomData> RoomManager::getRooms()
@@ -26,7 +29,18 @@ std::vector<RoomData> RoomManager::getRooms()
     return ret;
 }
 
-Room& RoomManager::getRoom(int ID)
+Room& RoomManager::getRoom(const int ID)
 {
-    return m_rooms[ID];
+    for (auto& room : this->m_rooms)
+    {
+        if (room.first == ID)
+        {
+            return room.second;
+        }
+    }
+}
+
+bool RoomManager::hasRoom(const int ID) const
+{
+    return this->m_rooms.find(ID) != this->m_rooms.end();
 }

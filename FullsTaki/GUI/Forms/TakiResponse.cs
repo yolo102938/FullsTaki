@@ -17,10 +17,10 @@
         GET_ROOM_STATE,
         LEAVE_ROOM,
         LEAVE_GAME,
-        GET_QUESTION,
-        SUBMIT_ANSWER,
+        PLAY_CARD_ANSWER,
         GET_GAME_RESULT,
-        ADD_QUESTION,
+        GET_GAME_STATE,
+        CARD_BANK_PREMISION,
         SUCCESS = 1,
         FAIL = 0
     }

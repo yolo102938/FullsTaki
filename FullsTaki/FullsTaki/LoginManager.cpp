@@ -1,14 +1,16 @@
 #include "LoginManager.h"
 
 LoginManager::LoginManager(IDatabase* database) : m_database(database)
-{}
+{
+
+}
 
 LoginManager::~LoginManager()
 {
 	this->m_loggedUsers.clear();
 }
 
-void LoginManager::signup(const string username, const string password, const string email)
+void LoginManager::signup(const string username, const string password, const string email, SOCKET sock)
 {
 	if (this->m_database->doesUserExist(username))
 	{
@@ -17,12 +19,12 @@ void LoginManager::signup(const string username, const string password, const st
 	else
 	{
 		this->m_database->addNewUser(username, password, email);
-		this->m_loggedUsers.push_back(LoggedUser(username));
+		this->m_loggedUsers.push_back(LoggedUser(username, sock));
 	}
 }
 
 
-void LoginManager::login(const string username, const string password)
+void LoginManager::login(const string username, const string password, SOCKET sock)
 {
 	for (auto& user : this->m_loggedUsers)
 	{
@@ -34,7 +36,7 @@ void LoginManager::login(const string username, const string password)
 
 	if (this->m_database->doesPasswordMatch(username, password))
 	{
-		this->m_loggedUsers.push_back(LoggedUser(username));
+		this->m_loggedUsers.push_back(LoggedUser(username, sock));
 	}
 	else
 	{
