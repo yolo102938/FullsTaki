@@ -52,37 +52,5 @@ namespace TakiClient
             };
             return loginMessage.ToString();
         }
-        public static string CreateRoom(string name, int maxp)
-        {
-            Dictionary<string, object> jsonDictionary = new Dictionary<string, object>
-    {
-        { "name", name },
-        { "max_users", maxp }
-    };
-
-            TakiMessage loginMessage = new TakiMessage
-            {
-                Code = (int)TakiRequest.CREATE_ROOM,
-                Content = JsonConvert.SerializeObject(jsonDictionary)
-            };
-
-            return loginMessage.ToString();
-        }
-        public static string joinRoom( int id)
-        {
-            Dictionary<string, object> jsonDictionary = new Dictionary<string, object>
-    {
-        { "id", id }
-    };
-
-            TakiMessage loginMessage = new TakiMessage
-            {
-                Code = (int)TakiRequest.CREATE_ROOM,
-                Content = JsonConvert.SerializeObject(jsonDictionary)
-            };
-
-            return loginMessage.ToString();
-        }
-
     }
 }
