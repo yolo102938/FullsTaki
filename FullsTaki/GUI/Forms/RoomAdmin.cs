@@ -19,13 +19,14 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace GUI.Forms
 {
-    public partial class Rooms : Form
+    public partial class RoomAdmin : Form
     {
 
         private Timer timer;
 
-        public Rooms()
+        public RoomAdmin(int roomid)
         {
+            room_id= roomid;
             InitializeComponent();
             timer = new Timer();
             timer.Interval = 2000; //2 seconds
@@ -34,7 +35,7 @@ namespace GUI.Forms
             if (!comboBox2.DroppedDown)
             {
                 int temp = comboBox2.SelectedIndex;
-                UpdateRooms();
+                UpdateRoomAdmin();
                 comboBox2.SelectedIndex = temp;
             }
             
@@ -42,20 +43,21 @@ namespace GUI.Forms
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            UpdateRooms();
+            UpdateRoomAdmin();
         }
 
-        private void UpdateRooms()
+        private void UpdateRoomAdmin()
         {
-            TakiMessage getrooms = new TakiMessage
+            TakiMessage getRoomAdmin = new TakiMessage
             {
-                Code = (int)TakiRequest.GET_ROOMS,
+                Code = (int)TakiRequest.GET_ROOM_STATE,
                 Content = ""
             };
-
-            TakiClient.Socket.SendMsg(getrooms.ToString());
-
-            
+            MessageBox.Show(getRoomAdmin.ToString());
+            TakiClient.Socket.SendMsg(getRoomAdmin.ToString());
+            MSG msg = TakiClient.Socket.RecvMsg();
+            MessageBox.Show(msg.ToString());
+            /*
             if(true)
             {
 
@@ -64,40 +66,40 @@ namespace GUI.Forms
                 if(msg.code == 100)
                 {
 
-                    JArray jsonArray = (JArray)JObject.Parse(msg.json)["rooms"];
-                    rooms = new List<DataTypes.Room>();
+                    JArray jsonArray = (JArray)JObject.Parse(msg.json)["RoomAdmin"];
+                    rooms = new List<User>();
 
-                    foreach (JArray roomArray in jsonArray)
-                    {
-                        int roomId = roomArray[1].Value<int>();
-                        string name = roomArray[3].Value<string>();
-                        int maxPlayers = roomArray[5].Value<int>();
-                        int players = 0;
+                    //foreach (JArray roomArray in jsonArray)
+                   // {
+                        //int roomId = 0;// roomArray[1].Value<int>();
+                        //string name = roomArray[1].Value<string>();
+                       // int maxPlayers = 0;// roomArray[5].Value<int>();
+                       // int players = 0;
                         TakiMessage getplayercount = new TakiMessage
                         {
                             Code = (int)TakiRequest.GET_USERS_IN_ROOM,
-                            Content = "{\"room_id\":" + roomId.ToString() + "}"
+                            Content = "{\"room_id\":" + room_id.ToString() + "}"
                         };
-                        //MessageBox.Show(getplayercount.ToString()); 
+
                         TakiClient.Socket.SendMsg(getplayercount.ToString());
                         string tmp = TakiClient.Socket.RecvMsg().json;
                         JArray players_ = ((JArray)JObject.Parse(tmp)["players"]);
-                        players = players_.Count;
+                        int players = players_.Count;
                         //add later getplayers inroom request
-                        if (roomArray[7].Value<int>() != 1)
-                        {
-                            rooms.Add(new DataTypes.Room(name, roomId, maxPlayers, players));
-                        }
-                    }
+                       // if (roomArray[7].Value<int>() != 1)
+                        //{
+                            //rooms.Add(new User(name, roomId, maxPlayers, players));
+                        //}
+                    //}
                     index = comboBox2.SelectedIndex;
                     comboBox2.Items.Clear();
                     
                     RoomList.Items.Clear();
-                    if (rooms.Count!=0)
+                    /*if (rooms.Count!=0)
                     {
-                        RoomList.Items.Add("|" + "Room ID".PadLeft(35).PadRight(65) + "|" + "Name".PadLeft(35).PadRight(70) + "|" + "Players".PadLeft(35).PadRight(70) + "|");
+                       // RoomList.Items.Add("|" + "Room ID".PadLeft(35).PadRight(65) + "|" + "Name".PadLeft(35).PadRight(70) + "|" + "Players".PadLeft(35).PadRight(70) + "|");
                         RoomList.Items.AddRange(rooms.ToArray());
-                        foreach (DataTypes.Room room in rooms)
+                        foreach (User room in rooms)
                         {
                             comboBox2.Items.Add(room.name);
                         }
@@ -106,12 +108,13 @@ namespace GUI.Forms
                     }
                     else
                     {
-                        RoomList.Items.Add("|" + "Room ID".PadLeft(35).PadRight(66) + "|" + "Name".PadLeft(35).PadRight(70) + "|" + "Players".PadLeft(35).PadRight(70) + "|");
-                        RoomList.Items.Add("                \n\n\n\n\n                              No rooms at the moment. Create one!");
+                        //RoomList.Items.Add("|" + "Room ID".PadLeft(35).PadRight(66) + "|" + "Name".PadLeft(35).PadRight(70) + "|" + "Players".PadLeft(35).PadRight(70) + "|");
+                        RoomList.Items.Add("                \n\n\n\n\n                              No Users at the moment. Invite your friends!");
                     }
+                    RoomList.Items.AddRange(players_.ToArray());
                 }
 
-            }
+            }*/
 
 
         }
@@ -166,18 +169,17 @@ namespace GUI.Forms
 
         private void login_button_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("create room" + name_input.Text + " Ohad add server pls");
+            //MessageBox.Show("create room" + name_input.Text + " Ohad add server pls");
         }
 
         private void Logout_Button_Click(object sender, EventArgs e)
         {
-            timer.Stop();
             Login menu = new Login();
             this.Hide();
             menu.Show();
         }
 
-        private void Rooms_Load(object sender, EventArgs e)
+        private void RoomAdmin_Load(object sender, EventArgs e)
         {
 
         }
@@ -195,7 +197,7 @@ namespace GUI.Forms
         private void button2_Click(object sender, EventArgs e)
         {
 
-            string sendLoginMsg = TakiClient.TakiProtocol.CreateRoom(name_input.Text, int.Parse((string)comboBox1.SelectedItem));
+           /* string sendLoginMsg = TakiClient.TakiProtocol.CreateRoom(name_input.Text, int.Parse((string)comboBox1.SelectedItem));
             TakiClient.Socket.SendMsg(sendLoginMsg);
 
             MSG recv = TakiClient.Socket.RecvMsg();
@@ -207,20 +209,11 @@ namespace GUI.Forms
                 //MainMenu mainM = new MainMenu(name_input.Text);
                 //this.Hide();
                 //mainM.Show();
-                if (rooms.Count != 0) { RoomAdmin menu = new RoomAdmin(rooms[rooms.Count - 1].id + 1); Hide();
-                    menu.ShowDialog();
-                    Show();
-                }
-                else { RoomAdmin menu = new RoomAdmin(0); Hide();
-                    menu.ShowDialog();
-                    Show();
-                }
-                
             }
             else
             {
 
-            }
+            }*/
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -230,13 +223,17 @@ namespace GUI.Forms
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
-            index = comboBox1.SelectedIndex;
+            index = comboBox2.SelectedIndex;
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void RoomAdmin_Load_1(object sender, EventArgs e)
         {
-            timer.Stop();
-            this.Hide();
+
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

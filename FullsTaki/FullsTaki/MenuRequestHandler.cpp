@@ -91,14 +91,14 @@ RequestResult MenuRequestHandler::joinRoom(RequestInfo request) const
     int currPlayers = this->m_roomManager->getRoom(req.roomId).getAllUsers().size();
     if(maxPlayers == currPlayers)
     {
-
         throw("Room is full!");
     }
     else if (this->m_roomManager->getRoom(req.roomId).getRoomData().isActive) {
         throw("Room is currently in a game!");
     }
     this->m_roomManager->getRoom(req.roomId).addUser(*m_user);
-    return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory->createMenuRequestHandler(m_user) };
+    return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory->createRoomRequestHandler(&(this->m_roomManager->getRoom(this->m_roomManager->getRooms().size())),m_user) };
+
 }
 
 RequestResult MenuRequestHandler::createRoom(RequestInfo request) const
@@ -106,7 +106,8 @@ RequestResult MenuRequestHandler::createRoom(RequestInfo request) const
     CreateRoomResponse res = { GENERIC_OK };
     CreateRoomRequest req = JsonRequestPacketDeserializer::deserializeCreateRoom(request.buffer);
     
-    this->m_roomManager->createRoom(*m_user, { static_cast<unsigned int>(this->m_roomManager->getRooms().size()) + 1, req.roomName,req.maxUsers,req.questionCount,0});
-    return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory->createMenuRequestHandler(m_user) };
+    this->m_roomManager->createRoom(*m_user, { static_cast<unsigned int>(this->m_roomManager->getRooms().size()) + 1, req.roomName,req.maxUsers,0 });
+
+    return { JsonResponsePacketSerializer::serializeResponse(res), (IRequestHandler*)this->m_handlerFactory->createRoomAdminRequestHandler(&(this->m_roomManager->getRoom(this->m_roomManager->getRooms().size())),m_user)};
 }
 

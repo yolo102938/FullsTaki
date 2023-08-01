@@ -41,23 +41,34 @@ void Communicator::handleNewClient(SOCKET socketClient)
 		//Continuously process incoming messages in a loop while the connection is active
 		while (isActive)
 		{
+			vector<unsigned char> budfas;
+			RequestInfo test = { 333, std::time(nullptr), budfas};
+
 			int msgCode = GetMsgCode(socketClient); //The code of the messaage
 			int msgSize = GetDataLength(socketClient); //The length of the messaage
-			vector<unsigned char> bufferData = GetMsgData(socketClient, msgSize); //The data of the messaage
-			string dataStr = string(bufferData.begin(), bufferData.end());
-
-			//If the client is not logged in, creating a new LoginRequestHandler instance and adding it to the clients map
+			vector<unsigned char> bufferData;
+			if (msgSize != 0) {
+				bufferData = GetMsgData(socketClient, msgSize); //The data of the messaage
+				string dataStr = string(bufferData.begin(), bufferData.end());
+				std::cout <<"\n\n"<< dataStr << std::endl;
+			}
+			else {
+				std::string temp = "prob not needed";
+				std::cout << "\n\nCode:" << msgCode<<std::endl;
+				bufferData.insert(bufferData.begin(),temp.begin(),temp.end()) ;
+			}
+			/*If the client is not logged in, creating a new LoginRequestHandler instanceand adding it to the clients map
 			if (!isLoggedIn)
 			{
 				this->m_clients.insert(std::pair<SOCKET, IRequestHandler*>(socketClient, m_handlerFactory.createLoginRequestHandler()));
 				isLoggedIn = false;
-			}
+			}*/
 
 			//Ensuring the received request code is either LOGIN_REQUEST or SIGNUP_REQUEST if the client is not logged in
-			if (msgCode != LOGIN_REQUEST && msgCode != SIGNUP_REQUEST && !isLoggedIn)
-			{
-				sendError(socketClient); //sending an error if the received request code is invalid
-			}
+			//if (msgCode != LOGIN_REQUEST && msgCode != SIGNUP_REQUEST && !isLoggedIn)
+			//{
+			//	sendError(socketClient); //sending an error if the received request code is invalid
+			//}
 
 			//Creating a RequestInfo object to store the received request information
 			RequestInfo reqInfo = { msgCode, std::time(nullptr), bufferData };
@@ -67,17 +78,13 @@ void Communicator::handleNewClient(SOCKET socketClient)
 			{
 				//Processing the received request and obtaining the result
 				RequestResult reqResult = this->m_clients[socketClient]->handleRequest(reqInfo);
-				for (int i = 0; i < reqResult.response.size()-8; i++)
-				{
-					reqResult.response[i] = reqResult.response[i + 8];
-					reqResult.response[i + 8] = '\0';
-				}
+
 				//Sending the response data
-				if (send(socketClient,reqResult.response.data(), reqResult.response.size(), 0) == SOCKET_ERROR)
+				if (send(socketClient, reinterpret_cast<char*>(reqResult.response.data()), reqResult.response.size(), 0) == SOCKET_ERROR)
 				{
 					sendError(socketClient); //sending an error if the response data is not sent correctly
 				}
-
+				delete[] this->m_clients[socketClient];
 				this->m_clients[socketClient] = reqResult.newHandler;
 			}
 			else

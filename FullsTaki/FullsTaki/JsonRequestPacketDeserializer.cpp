@@ -49,7 +49,8 @@ CreateRoomRequest JsonRequestPacketDeserializer::deserializeCreateRoom(const std
     //parsing json data from the buffer to a json object.
     json jsonData = parseJson(buffer);
     //initializing and returning a SignupRequest object with the extracted data.
-    return CreateRoomRequest({ jsonData["name"],jsonData["max_users"],jsonData["q_count"],jsonData["answer_time"]});
+    std::cout<<(jsonData["max_users"]);
+    return CreateRoomRequest({ jsonData["name"],jsonData["max_users"]});
 }
 
 /*
@@ -65,3 +66,4 @@ json JsonRequestPacketDeserializer::parseJson(const vector<unsigned char>& buffe
 	data = data.substr(data.find('{')); //locating the first '{' to get only the json data.
 	return json::parse(data); //parsing the data to a json object and returning it.
 }
+
